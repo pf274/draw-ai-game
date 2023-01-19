@@ -1,0 +1,47 @@
+body {
+  background-color: #333333;
+  font-family: Impact;
+  text-align: center;
+  color: #FFFFFF;
+}
+#Title {
+  color: rgba(0, 255, 255, 0.5);
+  font-size: 400%;
+  font-weight: 1;
+  text-shadow: 2px 2px 24px rgba(0, 0, 0, 0.8);
+  -webkit-text-stroke: 2px #FFFFFF;
+}
+#BackButton {
+  padding: 1% 5%;
+  background-color: rgba(0, 0, 0, 0.5);
+  border: 2px solid #FFFFFF;
+  position: absolute;
+  left: 4%;
+  top: 4%;
+  font-family: Impact;
+  color: #FFFFFF;
+  font-size: 100%;
+}
+#UsernameLabel {
+  padding-right: 5%;
+}
+#PasswordLabel {
+  padding-right: 5%;
+}
+#UsernameSection {
+  padding: 5%
+}
+#PasswordSection {
+  padding: 5%
+}
+#SubmitButton {
+  padding: 1% 5%;
+  background-color: rgba(0, 0, 0, 0.5);
+  border: 2px solid #FFFFFF;
+/*   position: absolute;
+  left: 4%;
+  top: 4%; */
+  font-family: Impact;
+  color: #FFFFFF;
+  font-size: 100%;
+}
