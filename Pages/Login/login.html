@@ -9,11 +9,12 @@
   <button id="BackButton" onclick="goToHome()">Back</button>
   <div id="UsernameSection">
     <Label for="username" id="UsernameLabel">Username:</Label>
-    <input type="text" id="UsernameField">
+    <input type="text" id="UsernameField" placeholder="username" autocomplete="off">
   </div>
   <div id="PasswordSection">
     <Label for="password" id="PasswordLabel">Password:</Label>
-    <input type="text" id="PasswordField">
+    <input type="password" id="PasswordField" placeholder="password">
   </div>
-  <button id="SubmitButton" onclick="attemptLogin()">Log In</button>
+  <button id="SubmitButton" onclick="manageLogin()">Log In</button>
+  <h2 id="Notification"></h2>
 </body>

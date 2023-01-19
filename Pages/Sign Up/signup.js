@@ -10,11 +10,11 @@ function goToHome() {
  * 
  * 
 **/
-function manageLogin() {
-  if (verifyLogin()) {
+function manageSignup() {
+  if (verifySignup()) {
     let username = document.getElementById("UsernameField").value;
     let password = document.getElementById("PasswordField").value;
-    attemptLogin(username, password);
+    attemptSignup(username, password);
   }
 }
 
@@ -22,10 +22,12 @@ function manageLogin() {
  * Verifies if a valid username and password were entered.
  * @return {boolean} success
  */
-function verifyLogin() {
-  console.log("Verifying Login Credentials...");
+function verifySignup() {
+  console.log("Verifying Signup Credentials...");
   let username = document.getElementById("UsernameField").value;
   let password = document.getElementById("PasswordField").value;
+  let reenteredPassword = document.getElementById("ReenterPasswordField").value;
+
   console.log(`Username: ${JSON.stringify(username)}, Password: ${JSON.stringify(password)}`);
   // username
   let UsernameSection = document.getElementById("UsernameSection");
@@ -41,11 +43,16 @@ function verifyLogin() {
     Notification.innerHTML = "Please provide a password.";
   } else if (!username && !password) {
     Notification.innerHTML = "Please provide a username and password.";
+  } else if (!reenteredPassword) {
+    Notification.innerHTML = "Please re-enter your password."
+  } else if (reenteredPassword != password) {
+    Notification.innerHTML = "Passwords do not match."
   } else {
     Notification.innerHTML = "";
   }
-  console.log(`${username && password ? "V" : "Inv"}alid credentials`);
-  return (username && password);
+  let success = username && password && (password == reenteredPassword);
+  console.log(`${success ? "V" : "Inv"}alid credentials`);
+  return (username && password && (password == reenteredPassword));
 }
 
 /**
@@ -54,7 +61,8 @@ function verifyLogin() {
  * @param {string} password
  * @return {boolean} success
  */
-function attemptLogin(username, password) {
-  console.log("Attempting Login...");
-  // TODO: see if username exists in database. If so, check to see if password matches before logging in.
+function attemptSignup(username, password) {
+  console.log("Attempting Signup...");
+  // TODO: check to see if username is taken.
+  // If not, set up new user.
 }

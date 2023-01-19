@@ -1,0 +1,22 @@
+<head>
+  <title>Sign Up</title>
+  <link rel="stylesheet" href="signup.css">
+  <script src="signup.js"></script>
+</head>
+
+<body>
+  <h1 id="Title">Sign Up</h1>
+  <button id="BackButton" onclick="goToHome()">Back</button>
+  <div id="UsernameSection" class="grid-container">
+    <Label for="username" id="UsernameLabel" class="grid-item">Username:</Label>
+    <input type="text" id="UsernameField" class="grid-item" placeholder="username" autocomplete="off">
+  </div>
+  <div id="PasswordSection" class="grid-container">
+    <Label for="password" id="PasswordLabel" class="grid-item">Password:</Label>
+    <input type="password" id="PasswordField" class="grid-item" placeholder="password">
+    <div></div>
+    <input type="password" id="ReenterPasswordField" class="grid-item" placeholder="re-enter password">
+  </div>
+  <button id="SubmitButton" onclick="manageSignup()">Sign Up</button>
+  <h2 id="Notification"></h2>
+</body>

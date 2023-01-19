@@ -2,6 +2,9 @@ body {
   background-color: #333333;
   font-family: Impact;
   text-align: center;
+/*   animation-name: rainbow;  
+  animation-iteration-count: infinite;  
+  animation-duration: 20s;  */
 }
 #Title {
   color: rgba(0, 255, 255, 0.5);
@@ -14,21 +17,26 @@ body {
   padding: 1% 5%;
   background-color: rgba(0, 0, 0, 0.5);
   border: 2px solid #FFFFFF;
-  position: absolute;
-  left: 50%;
-  top: 18%;
-  transform: translate(-50%, -50%);
   color: #FFFFFF;
   font-size: 300%;
 }
 #SignUp {
   padding: 1% 5%;
   background-color: rgba(0, 0, 0, 0.5);
+  margin: 20px;
   border: 2px solid #FFFFFF;
-  position: absolute;
-  left: 50%;
-  top: 30%;
-  transform: translate(-50%, -50%);
   color: #FFFFFF;
   font-size: 300%;
+}
+
+@keyframes rainbow {  
+  0% { background-color: red; }
+  12% { background-color: orange; }
+  25% { background-color: yellow; }
+  37% { background-color: lime; }
+  50% { background-color: cyan; }
+  62% { background-color: blue; }
+  75% { background-color: purple; }
+  87% { background-color: fuchsia; }
+  100% { background-color: red; }
 }
