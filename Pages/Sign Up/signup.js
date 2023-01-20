@@ -34,7 +34,7 @@ function verifySignup() {
   UsernameSection.style.border = `${username ? "0px" : "2px"} solid red`;
   // password
   let PasswordSection = document.getElementById("PasswordSection");
-  PasswordSection.style.border = `${password ? "0px" : "2px"} solid red`;
+  PasswordSection.style.border = `${password && (password === reenteredPassword) ? "0px" : "2px"} solid red`;
   // Notification
   let Notification = document.getElementById("Notification");
   if (!username && password) {

@@ -1,4 +1,3 @@
-
 /**
  * Redirects to the home page.
 **/
