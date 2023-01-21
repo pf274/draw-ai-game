@@ -28,12 +28,11 @@ window.onload = function() {
   function startDraw(event) {
     prevCoords = calculateMouseCoords(event, canvas);
     mouseDown = 1;
-    context.beginPath();
   }
 
   function continueDraw(event) {
     primaryMouseButtonDown = setPrimaryButtonState(event);
-    if (mouseDown > 1 && (event?.touches || primaryMouseButtonDown)) {
+    if (mouseDown == 1 && (event?.touches || primaryMouseButtonDown)) {
       newCoords = calculateMouseCoords(event, canvas);
       context = canvas.getContext("2d");
       let thickness = 4 * document.getElementById('ThicknessSlider').value;
@@ -46,10 +45,8 @@ window.onload = function() {
       context.moveTo(...prevCoords);
       context.lineTo(...newCoords);
       context.stroke();
+      context.beginPath();
       prevCoords = [...newCoords];
-    } else if (mouseDown == 1) {
-      prevCoords = calculateMouseCoords(event, canvas);
-      mouseDown++;
     }
   }
   function endDraw(event) {
@@ -82,7 +79,8 @@ window.onload = function() {
 function clearCanvas() {
   let canvas = document.getElementById('DrawingCanvas');
   let context = canvas.getContext("2d");
-  context.fillStyle = "#FFFFFF";
+  context.fillStyle = "rgba(255, 255, 255, 0.75)";
+  context.clearRect(0, 0, canvas.width, canvas.height);
   context.fillRect(0, 0, canvas.width, canvas.height);
   context.beginPath();
 }
