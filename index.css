@@ -6,26 +6,16 @@ body {
   animation-iteration-count: infinite;  
   animation-duration: 20s;  */
 }
-#Title {
-  color: rgba(0, 255, 255, 0.5);
-  font-size: 400%;
-  font-weight: 1;
-  text-shadow: 2px 2px 24px rgba(0, 0, 0, 0.8);
-  -webkit-text-stroke: 2px #FFFFFF;
-}
 #Login {
-  padding: 1% 5%;
-  background-color: rgba(0, 0, 0, 0.5);
-  border: 2px solid #FFFFFF;
-  color: #FFFFFF;
   font-size: 300%;
+  margin: 10px;
 }
 #SignUp {
-  padding: 1% 5%;
-  background-color: rgba(0, 0, 0, 0.5);
-  margin: 20px;
-  border: 2px solid #FFFFFF;
-  color: #FFFFFF;
+  margin: 10px;
+  font-size: 300%;
+}
+#Shortcut {
+  margin: 10px;
   font-size: 300%;
 }
 

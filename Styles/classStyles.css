@@ -1,0 +1,21 @@
+button {
+  padding: 1% 5%;
+  background-color: rgba(0, 0, 0, 0.5);
+  border: 2px solid #FFFFFF;
+  color: #FFFFFF;
+}
+
+.textbox {
+  padding: 5px;
+  border-radius: 5px;
+  font-family: Courier;
+}
+
+h1 {
+  color: rgba(0, 255, 255, 0.5);
+  font-size: 400%;
+  font-weight: 1;
+  text-shadow: 2px 2px 24px rgba(0, 0, 0, 0.8);
+  -webkit-text-stroke: 2px #FFFFFF;
+  font-family: Impact,
+}
