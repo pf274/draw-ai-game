@@ -1,7 +1,8 @@
 body {
-  background-color: #333333;
+/*   background-color: #333333; */
   font-family: Impact;
   text-align: center;
+  background-image: url('Images/vectors.jpg');
 /*   animation-name: rainbow;  
   animation-iteration-count: infinite;  
   animation-duration: 20s;  */

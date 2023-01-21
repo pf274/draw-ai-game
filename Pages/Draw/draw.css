@@ -3,6 +3,11 @@ body {
   font-family: Impact;
   text-align: center;
   color: white;
+  /* prevent users from highlighting text */
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  background-image: url('../../Images/vectors.jpg');
 }
 #BackButton {
   padding: 1% 5%;
@@ -17,3 +22,58 @@ body {
 #ClearCanvasButton {
   margin: 5px;
 }
+.grid-container {
+  display:inline-grid;
+  width: 400px;
+  grid-template-columns: repeat(auto-fit, minmax(0, min(100%/9, max(400px / 9, 100%/9))));
+  justify-content: center;
+  align-items: center;
+}
+.grid-item {
+  text-align: center;
+/*   border: 1px solid rgba(255, 0, 0, 0.8); */
+  height: 40px;
+/*   background: red; */
+}
+#DrawingCanvas {
+  border: 1px solid black;
+}
+#red {
+  background: red;
+}
+#orange {
+  background: orange;
+}
+#yellow {
+  background: yellow;
+}
+#lime {
+  background: lime;
+}
+#blue {
+  background: blue;
+}
+#purple {
+  background: purple;
+}
+#magenta {
+  background: magenta;
+}
+#black {
+  background: black;
+}
+#white {
+  background: white;
+}
+
+input[type="range"] {
+  position: absolute;
+  transform: rotate(90deg);
+  -webkit-transform: rotate(90deg);
+  -moz-transform: rotate(90deg);
+  left: 400px;
+  top: 400px;
+  width: 400px;
+  background: magenta;
+}
+

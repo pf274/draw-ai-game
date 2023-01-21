@@ -9,39 +9,43 @@ function setPrimaryButtonState(event) { // since it's possible to click out of t
   var flags = event.buttons !== undefined ? event.buttons : event.which;
   return (flags & 1) === 1;
 }
+function setColor(color) {
+  let canvas = document.getElementById('DrawingCanvas');
+  canvas.setAttribute("penColor", color);
+}
 
 window.onload = function() {
+  setSliderPosition();
   let canvas = document.getElementById('DrawingCanvas');
   let context = canvas.getContext("2d");
+  canvas.setAttribute("penColor", "#000000");
   let mouseDown = 0;
   let newCoords = [0, 0];
   let prevCoords = [0, 0];
   let primaryMouseButtonDown = false;
+  clearCanvas();
 
-  context.fillStyle = "#FFFFFF";
-  context.fillRect(0, 0, canvas.width, canvas.height);
   function startDraw(event) {
     prevCoords = calculateMouseCoords(event, canvas);
     mouseDown = 1;
+    context.beginPath();
   }
 
   function continueDraw(event) {
-    console.log("yep!");
     primaryMouseButtonDown = setPrimaryButtonState(event);
     if (mouseDown > 1 && (event?.touches || primaryMouseButtonDown)) {
       newCoords = calculateMouseCoords(event, canvas);
       context = canvas.getContext("2d");
-      let thickness = 4;
+      let thickness = 4 * document.getElementById('ThicknessSlider').value;
       if (event?.targetTouches) {
         thickness = 0.5 * thickness + 1.5 * thickness * event?.targetTouches[0].force;
       }
       context.lineWidth = thickness;
       context.lineCap = "round";
-      context.fillStyle = "#000000";
+      context.strokeStyle = canvas.getAttribute("penColor");
       context.moveTo(...prevCoords);
       context.lineTo(...newCoords);
       context.stroke();
-      context.beginPath();
       prevCoords = [...newCoords];
     } else if (mouseDown == 1) {
       prevCoords = calculateMouseCoords(event, canvas);
@@ -90,3 +94,15 @@ function goToHome() {
   console.log("Going to home page...")
   window.location.assign('../../index.html');
 }
+
+function setSliderPosition() {
+  let slider = document.getElementById('ThicknessSlider');
+  let canvas = document.getElementById('DrawingCanvas');
+  let rect = canvas.getBoundingClientRect();
+  console.log(rect.left, rect.top, rect.width, rect.height);
+
+  slider.style.left = rect.left + rect.height / 2 + 10;
+  slider.style.top = rect.top + rect.width / 2 - 12;
+}
+
+addEventListener("resize", (event) => { setSliderPosition() });

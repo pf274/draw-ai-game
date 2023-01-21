@@ -21,7 +21,17 @@
   <div>
     <canvas width="400" height="400" id="DrawingCanvas">Hmmmm, it appears that your browser does not support
       canvases.</canvas>
+    <input type="range" id="ThicknessSlider" min="0.5" max="3" step="0.1" value="1">
   </div>
-
-
+  <div id="colorPalette" class="grid-container">
+    <div id="red" class="grid-item" onclick="setColor('red')"></div>
+    <div id="orange" class="grid-item" onclick="setColor('orange')"></div>
+    <div id="yellow" class="grid-item" onclick="setColor('yellow')"></div>
+    <div id="lime" class="grid-item" onclick="setColor('lime')"></div>
+    <div id="blue" class="grid-item" onclick="setColor('blue')"></div>
+    <div id="purple" class="grid-item" onclick="setColor('purple')"></div>
+    <div id="magenta" class="grid-item" onclick="setColor('magenta')"></div>
+    <div id="white" class="grid-item" onclick="setColor('white')"></div>
+    <div id="black" class="grid-item" onclick="setColor('black')"></div>
+  </div>
 </body>

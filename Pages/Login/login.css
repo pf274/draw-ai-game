@@ -3,6 +3,7 @@ body {
   font-family: Impact;
   text-align: center;
   color: #FFFFFF;
+  background-image: url('../../Images/vectors.jpg');
 }
 #BackButton {
   padding: 1% 5%;
@@ -14,9 +15,11 @@ body {
 }
 #UsernameLabel {
   padding-right: 5%;
+  color: black;
 }
 #PasswordLabel {
   padding-right: 5%;
+  color: black;
 }
 #UsernameSection {
   padding: 5px;
