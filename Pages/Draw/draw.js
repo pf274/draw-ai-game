@@ -36,7 +36,6 @@ window.onload = function() {
   }
 
   function continueDraw(event) {
-    AIGuess();
     primaryMouseButtonDown = setPrimaryButtonState(event);
     if (mouseDown == 1 && (event?.touches || primaryMouseButtonDown)) {
       newCoords = calculateMouseCoords(event, canvas);
@@ -59,18 +58,21 @@ window.onload = function() {
   function endDraw(event) {
     mouseDown = 0;
   }
-  function AIGuess() {
+  async function AIGuess() {
     let image = new Image();
     image.src = canvas.toDataURL();
-    classifier.classify(canvas, 5, (err, results) => {
+    classifier.classify(canvas, 10, (err, results) => {
       console.log("---");
       results.map(guess => {
         console.log(`${guess.label} ${Math.floor(guess.confidence * 100)}%`);
       });
       let output = document.getElementById("top_guess");
-      output.innerText = results[0]["label"];
+      output.innerText = results[0]["label"].replaceAll("_", " ");
     });
   }
+  let guessInterval = setInterval(function() {
+    AIGuess();
+  }, 250)
   canvas.addEventListener('mousedown', function(event) {
     startDraw(event);
   });
