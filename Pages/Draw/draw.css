@@ -78,3 +78,7 @@ input[type="range"] {
   background: magenta;
 }
 
+#top_guess {
+  color: black;
+  font-family: arial;
+}

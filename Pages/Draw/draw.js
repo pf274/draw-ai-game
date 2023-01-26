@@ -15,7 +15,12 @@ function setColor(color) {
 }
 
 window.onload = function() {
-  setSliderPosition();
+  let classifier = ml5.imageClassifier('doodlenet', modelReady); // mobilenet, darknet, doodlenet
+  function modelReady() {
+    console.log("Model Ready!");
+  }
+  console.log('ml5 version:', ml5.version);
+  // setSliderPosition();
   let canvas = document.getElementById('DrawingCanvas');
   let context = canvas.getContext("2d");
   canvas.setAttribute("penColor", "#000000");
@@ -31,11 +36,12 @@ window.onload = function() {
   }
 
   function continueDraw(event) {
+    AIGuess();
     primaryMouseButtonDown = setPrimaryButtonState(event);
     if (mouseDown == 1 && (event?.touches || primaryMouseButtonDown)) {
       newCoords = calculateMouseCoords(event, canvas);
       context = canvas.getContext("2d");
-      let thickness = 4 * document.getElementById('ThicknessSlider').value;
+      let thickness = 16; // * document.getElementById('ThicknessSlider').value;
       if (event?.targetTouches) {
         thickness = 0.5 * thickness + 1.5 * thickness * event?.targetTouches[0].force;
       }
@@ -48,11 +54,23 @@ window.onload = function() {
       context.beginPath();
       prevCoords = [...newCoords];
     }
+
   }
   function endDraw(event) {
     mouseDown = 0;
   }
-
+  function AIGuess() {
+    let image = new Image();
+    image.src = canvas.toDataURL();
+    classifier.classify(canvas, 5, (err, results) => {
+      console.log("---");
+      results.map(guess => {
+        console.log(`${guess.label} ${Math.floor(guess.confidence * 100)}%`);
+      });
+      let output = document.getElementById("top_guess");
+      output.innerText = results[0]["label"];
+    });
+  }
   canvas.addEventListener('mousedown', function(event) {
     startDraw(event);
   });
@@ -79,7 +97,7 @@ window.onload = function() {
 function clearCanvas() {
   let canvas = document.getElementById('DrawingCanvas');
   let context = canvas.getContext("2d");
-  context.fillStyle = "rgba(255, 255, 255, 0.75)";
+  context.fillStyle = "rgba(255, 255, 255, 1)";
   context.clearRect(0, 0, canvas.width, canvas.height);
   context.fillRect(0, 0, canvas.width, canvas.height);
   context.beginPath();
@@ -97,10 +115,10 @@ function setSliderPosition() {
   let slider = document.getElementById('ThicknessSlider');
   let canvas = document.getElementById('DrawingCanvas');
   let rect = canvas.getBoundingClientRect();
-  console.log(rect.left, rect.top, rect.width, rect.height);
+  // console.log(rect.left, rect.top, rect.width, rect.height);
 
   slider.style.left = rect.left + rect.height / 2 + 10;
   slider.style.top = rect.top + rect.width / 2 - 12;
 }
 
-addEventListener("resize", (event) => { setSliderPosition() });
+// addEventListener("resize", (event) => { setSliderPosition() });

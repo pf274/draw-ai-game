@@ -1,4 +1,4 @@
-var Title = document.getElementById('Title');
+// var Title = document.getElementById('Title');
 
 function goToLogin() {
   console.log("Going to login page...")
