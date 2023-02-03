@@ -1,26 +1,20 @@
-function calculateMouseCoords(event, canvas) {
-  const clientX = event.clientX || event.touches[0].clientX;
-  const clientY = event.clientY || event.touches[0].clientY;
-  let rect = canvas.getBoundingClientRect();
-  return [clientX - rect.left, clientY - rect.top];
-}
+import {
+  calculateMouseCoords,
+  setPrimaryButtonState,
+  clearCanvas,
+  setSliderPosition
+} from './helper_functions.js';
 
-function setPrimaryButtonState(event) { // since it's possible to click out of the canvas and still have mouseDown set to more than 0, double check!
-  var flags = event.buttons !== undefined ? event.buttons : event.which;
-  return (flags & 1) === 1;
-}
-function setColor(color) {
-  let canvas = document.getElementById('DrawingCanvas');
-  canvas.setAttribute("penColor", color);
-}
-
+/**
+ * When the page loads up, set up the drawing experience!
+ */
 window.onload = function() {
-  let classifier = ml5.imageClassifier('doodlenet', modelReady); // mobilenet, darknet, doodlenet
-  function modelReady() {
+  const classifier = ml5.imageClassifier('doodlenet', modelReady); // 'mobilenet', 'darknet', 'doodlenet'
+  function modelReady() { // loading the AI model
+    console.log('ml5 version:', ml5.version);
     console.log("Model Ready!");
   }
-  console.log('ml5 version:', ml5.version);
-  // setSliderPosition();
+  setSliderPosition();
   let canvas = document.getElementById('DrawingCanvas');
   let context = canvas.getContext("2d");
   canvas.setAttribute("penColor", "#000000");
@@ -28,6 +22,7 @@ window.onload = function() {
   let newCoords = [0, 0];
   let prevCoords = [0, 0];
   let primaryMouseButtonDown = false;
+  console.log('test');
   clearCanvas();
 
   function startDraw(event) {
@@ -40,7 +35,7 @@ window.onload = function() {
     if (mouseDown == 1 && (event?.touches || primaryMouseButtonDown)) {
       newCoords = calculateMouseCoords(event, canvas);
       context = canvas.getContext("2d");
-      let thickness = 16; // * document.getElementById('ThicknessSlider').value;
+      let thickness = 16 * document.getElementById('ThicknessSlider').value;
       if (event?.targetTouches) {
         thickness = 0.5 * thickness + 1.5 * thickness * event?.targetTouches[0].force;
       }
@@ -58,21 +53,27 @@ window.onload = function() {
   function endDraw(event) {
     mouseDown = 0;
   }
+
+  /**
+   * Uses free online datasets to classify your drawing
+   */
   async function AIGuess() {
     let image = new Image();
     image.src = canvas.toDataURL();
     classifier.classify(canvas, 10, (err, results) => {
-      console.log("---");
-      results.map(guess => {
-        console.log(`${guess.label} ${Math.floor(guess.confidence * 100)}%`);
-      });
       let output = document.getElementById("top_guess");
-      output.innerText = results[0]["label"].replaceAll("_", " ");
+      console.log(results);
+      let text = results.map(guess => `${guess.label.replaceAll("_", " ")} ${Math.floor(guess.confidence * 10000) / 100}%`).join("\n");
+      output.innerText = text;
     });
   }
+
+  // AI Guessing every 250 milliseconds
   let guessInterval = setInterval(function() {
     AIGuess();
   }, 250)
+
+  // Start Draw Event Listeners
   canvas.addEventListener('mousedown', function(event) {
     startDraw(event);
   });
@@ -80,47 +81,24 @@ window.onload = function() {
     startDraw(event);
   });
 
+  // Continue Draw Event Listeners
+  canvas.addEventListener('mousemove', function(event) {
+    continueDraw(event);
+  });
+  canvas.addEventListener('touchmove', function(event) {
+    continueDraw(event);
+  });
+
+  // End Draw Event Listeners
   canvas.addEventListener('mouseup', function(event) {
     endDraw(event);
   });
   canvas.addEventListener('touchend', function(event) {
     endDraw(event);
   });
-
-  canvas.addEventListener('mousemove', function(event) {
-    continueDraw(event);
-  });
-
-  canvas.addEventListener('touchmove', function(event) {
-    continueDraw(event);
-  });
 }
 
-function clearCanvas() {
-  let canvas = document.getElementById('DrawingCanvas');
-  let context = canvas.getContext("2d");
-  context.fillStyle = "rgba(255, 255, 255, 1)";
-  context.clearRect(0, 0, canvas.width, canvas.height);
-  context.fillRect(0, 0, canvas.width, canvas.height);
-  context.beginPath();
-}
 
-/**
- * Redirects to the home page.
-**/
-function goToHome() {
-  console.log("Going to home page...")
-  window.location.assign('../../index.html');
-}
 
-function setSliderPosition() {
-  let slider = document.getElementById('ThicknessSlider');
-  let canvas = document.getElementById('DrawingCanvas');
-  let rect = canvas.getBoundingClientRect();
-  // console.log(rect.left, rect.top, rect.width, rect.height);
+addEventListener("resize", (event) => { setSliderPosition() });
 
-  slider.style.left = rect.left + rect.height / 2 + 10;
-  slider.style.top = rect.top + rect.width / 2 - 12;
-}
-
-// addEventListener("resize", (event) => { setSliderPosition() });
