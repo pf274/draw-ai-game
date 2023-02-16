@@ -2,19 +2,19 @@ import {
   calculateMouseCoords,
   setPrimaryButtonState,
   clearCanvas,
-  setSliderPosition
+  resizeCanvasToDisplaySize,
 } from './helper_functions.js';
 
 /**
  * When the page loads up, set up the drawing experience!
  */
-window.onload = function() {
+window.onload = function () {
   const classifier = ml5.imageClassifier('doodlenet', modelReady); // 'mobilenet', 'darknet', 'doodlenet'
   function modelReady() { // loading the AI model
     console.log('ml5 version:', ml5.version);
     console.log("Model Ready!");
   }
-  setSliderPosition();
+  resizeCanvasToDisplaySize();
   let canvas = document.getElementById('DrawingCanvas');
   let context = canvas.getContext("2d");
   canvas.setAttribute("penColor", "#000000");
@@ -33,7 +33,7 @@ window.onload = function() {
     primaryMouseButtonDown = setPrimaryButtonState(event);
     if (mouseDown == 1 && (event?.touches || primaryMouseButtonDown)) {
       newCoords = calculateMouseCoords(event, canvas);
-      console.log(newCoords);
+      // console.log(newCoords);
       context = canvas.getContext("2d");
       let thickness = 16 * document.getElementById('ThicknessSlider').value;
       if (event?.targetTouches) {
@@ -69,36 +69,39 @@ window.onload = function() {
   }
 
   // AI Guessing every 250 milliseconds
-  let guessInterval = setInterval(function() {
+  let guessInterval = setInterval(function () {
     AIGuess();
   }, 250)
 
   // Start Draw Event Listeners
-  canvas.addEventListener('mousedown', function(event) {
+  canvas.addEventListener('mousedown', function (event) {
     startDraw(event);
   });
-  canvas.addEventListener('touchstart', function(event) {
+  canvas.addEventListener('touchstart', function (event) {
     startDraw(event);
   });
 
   // Continue Draw Event Listeners
-  canvas.addEventListener('mousemove', function(event) {
+  canvas.addEventListener('mousemove', function (event) {
     continueDraw(event);
   });
-  canvas.addEventListener('touchmove', function(event) {
+  canvas.addEventListener('touchmove', function (event) {
     continueDraw(event);
   });
 
   // End Draw Event Listeners
-  canvas.addEventListener('mouseup', function(event) {
+  canvas.addEventListener('mouseup', function (event) {
     endDraw(event);
   });
-  canvas.addEventListener('touchend', function(event) {
+  canvas.addEventListener('touchend', function (event) {
     endDraw(event);
   });
 }
 
 
 
-addEventListener("resize", (event) => { setSliderPosition() });
+addEventListener("resize", (event) => {
+  // setSliderPosition();
+  resizeCanvasToDisplaySize()
+});
 
