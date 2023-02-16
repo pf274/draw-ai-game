@@ -7,9 +7,6 @@ I am already really familiar with github. I am a web developer for the BYU Law s
 
 **[Startup Repository](https://github.com/pf274/startup.git)**
 
-## Simon Assignment
-The most useful part of the simon assignment was learning about tables and svg graphics. And the forms allowing information to be sent between pages. I'll definitely have to remember that to simplify logging in and signing up. It was also good to know that the way I guessed that page navigation would work was correct, and I don't have to redo that.
-
 ## Elevator Pitch
 Have you ever wanted to pit your drawing abilities against your friends and have an impartial judge? With Draw AI, you can do just that! Draw AI allows you to enter into a fun, fast-paced drawing challenge judged by Artificial Intelligence. To play the game, the website first gives you and your friends the same prompt. Each person playing then draws the prompt to the best of their ability under the time constraint, then the AI looks at each drawing and gives each one a score based on how recognizable it is. These scores are converted to points in the game, and the game continues on until several rounds have passed. This game is quick and quirky, and will leave you and your friends laughing.
 

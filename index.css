@@ -1,33 +1,36 @@
 body {
-/*   background-color: #333333; */
+  background-color: #333333;
   font-family: Impact;
   text-align: center;
-  background-image: url('Images/vectors.jpg');
-/*   animation-name: rainbow;  
-  animation-iteration-count: infinite;  
-  animation-duration: 20s;  */
+/*   background-image: url('Images/vectors.jpg'); */
+  box-sizing: border-box;
+  display: flex;
+  margin: 0;
+  justify-content: center;
+  flex-direction: column;
+}
+section {
+  justify-content: center;
+/*   text-align: center; */
+  align-items: center;
+/*   align-self: center;
+  align-content: center;
+  justify-self: center;
+  justify-items: center; */
+  display: flex;
 }
 #Login {
+  display: block;
   font-size: 300%;
   margin: 10px;
 }
 #SignUp {
   margin: 10px;
   font-size: 300%;
+  display: block;
 }
 #Shortcut {
   margin: 10px;
   font-size: 300%;
-}
-
-@keyframes rainbow {  
-  0% { background-color: red; }
-  12% { background-color: orange; }
-  25% { background-color: yellow; }
-  37% { background-color: lime; }
-  50% { background-color: cyan; }
-  62% { background-color: blue; }
-  75% { background-color: purple; }
-  87% { background-color: fuchsia; }
-  100% { background-color: red; }
+  display: block;
 }

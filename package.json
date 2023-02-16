@@ -1,5 +1,6 @@
 {
     "scripts": {
-        "deploy": "./deployFiles.sh -k ~/keys/production.pem -h peterfullmer.net -s startup"
+        "deploy": "./deployFiles.sh -k ~/keys/production.pem -h peterfullmer.net -s startup",
+        "test": "echo testing..."
     }
 }

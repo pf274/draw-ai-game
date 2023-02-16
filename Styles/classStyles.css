@@ -1,8 +1,9 @@
 button {
   padding: 1% 5%;
-  background-color: rgba(0, 0, 0, 0.5);
-  border: 2px solid #FFFFFF;
+  background-color: #2596be;
+/*   border: 2px solid #FFFFFF; */
   color: #FFFFFF;
+  border-radius: 6px;
 }
 
 .textbox {
