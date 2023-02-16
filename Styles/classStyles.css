@@ -4,6 +4,11 @@ button {
 /*   border: 2px solid #FFFFFF; */
   color: #FFFFFF;
   border-radius: 6px;
+  border: none;
+  font-family: Calibri;
+}
+button:hover {
+  background-color: #38bff0;
 }
 
 .textbox {

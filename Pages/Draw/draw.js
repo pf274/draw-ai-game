@@ -22,7 +22,6 @@ window.onload = function() {
   let newCoords = [0, 0];
   let prevCoords = [0, 0];
   let primaryMouseButtonDown = false;
-  console.log('test');
   clearCanvas();
 
   function startDraw(event) {
@@ -34,6 +33,7 @@ window.onload = function() {
     primaryMouseButtonDown = setPrimaryButtonState(event);
     if (mouseDown == 1 && (event?.touches || primaryMouseButtonDown)) {
       newCoords = calculateMouseCoords(event, canvas);
+      console.log(newCoords);
       context = canvas.getContext("2d");
       let thickness = 16 * document.getElementById('ThicknessSlider').value;
       if (event?.targetTouches) {
@@ -62,7 +62,7 @@ window.onload = function() {
     image.src = canvas.toDataURL();
     classifier.classify(canvas, 10, (err, results) => {
       let output = document.getElementById("top_guess");
-      console.log(results);
+      // console.log(results);
       let text = results.map(guess => `${guess.label.replaceAll("_", " ")} ${Math.floor(guess.confidence * 10000) / 100}%`).join("\n");
       output.innerText = text;
     });

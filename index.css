@@ -1,5 +1,5 @@
 body {
-  background-color: #333333;
+  background-color: #666666;
   font-family: Impact;
   text-align: center;
 /*   background-image: url('Images/vectors.jpg'); */
@@ -21,16 +21,16 @@ section {
 }
 #Login {
   display: block;
-  font-size: 300%;
+  font-size: 100%;
   margin: 10px;
 }
 #SignUp {
   margin: 10px;
-  font-size: 300%;
+  font-size: 100%;
   display: block;
 }
 #Shortcut {
   margin: 10px;
-  font-size: 300%;
+  font-size: 100%;
   display: block;
 }

@@ -1,5 +1,5 @@
 body {
-  background-color: #333333;
+  background-color: #666666;
   font-family: Impact;
   text-align: center;
   color: white;
@@ -7,16 +7,16 @@ body {
   user-select: none;
   -webkit-user-select: none;
   -moz-user-select: none;
-  background-image: url('../../Images/vectors.jpg');
+/*   background-image: url('../../Images/vectors.jpg'); */
   overscroll-behavior: contain;
 }
 #BackButton {
   padding: 1% 5%;
-  background-color: rgba(0, 0, 0, 0.5);
-  border: 2px solid #FFFFFF;
+/*   background-color: rgba(0, 0, 0, 0.5); */
+/*   border: 2px solid #FFFFFF; */
   align-content: left;
   display: flex;
-  font-family: Impact;
+/*   font-family: Impact; */
   color: #FFFFFF;
   font-size: 100%;
 }
@@ -38,6 +38,7 @@ body {
 }
 #DrawingCanvas {
   border: 1px solid black;
+/*   width: 100%; */
 }
 #red {
   background: red;

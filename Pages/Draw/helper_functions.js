@@ -2,6 +2,9 @@ export function calculateMouseCoords(event, canvas) {
   const clientX = event.clientX || event.touches[0].clientX;
   const clientY = event.clientY || event.touches[0].clientY;
   let rect = canvas.getBoundingClientRect();
+  console.log(clientX);
+  console.log(clientY);
+  console.log(rect)
   return [clientX - rect.left, clientY - rect.top];
 }
 
