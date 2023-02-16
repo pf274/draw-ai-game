@@ -40,7 +40,6 @@ export function clearCanvas() {
 }
 
 export function resizeCanvasToDisplaySize() {
-  console.log("Resized!");
   let canvas = document.getElementById('DrawingCanvas');
   let slider = document.getElementById('ThicknessSlider');
   // Lookup the size the browser is displaying the canvas in CSS pixels.
@@ -59,4 +58,40 @@ export function resizeCanvasToDisplaySize() {
     // gl.viewport(0, 0, displayWidth, displayHeight);
     clearCanvas();
   }
+}
+
+export function cropContent(canvas) { // takes in the drawing canvas and outputs a cropped canvas
+  const context = canvas.getContext("2d");
+  const width = canvas.width;
+  const height = canvas.height;
+  const tolerance = 20; // the tolerance to detect the difference between the background and the drawing
+  const imageData = context.getImageData(0, 0, width, height).data;
+  const bounds = {
+    x: [width, 0],
+    y: [height, 0]
+  }
+  for (let x = 0; x < width; x++) {
+    for (let y = 0; y < height; y++) {
+      const i = (y * width + x) * 4; // get the beginning of the pixel's data
+      const pixelData = imageData.slice(i, i + 4);
+      if (pixelData[0] + pixelData[1] + pixelData[2] < 3 * 255 - tolerance) {
+        bounds.x[0] = Math.min(bounds.x[0], x);
+        bounds.x[1] = Math.max(bounds.x[1], x);
+        bounds.y[0] = Math.min(bounds.y[0], y);
+        bounds.y[1] = Math.max(bounds.y[1], y);
+      }
+    }
+  }
+  const croppedCanvas = document.createElement('canvas');
+
+  const cropWidth = bounds.x[1] - bounds.x[0];
+  const cropHeight = bounds.y[1] - bounds.y[0];
+
+  croppedCanvas.width = cropWidth;
+  croppedCanvas.height = cropHeight;
+
+  const croppedContext = croppedCanvas.getContext('2d');
+  croppedContext.drawImage(canvas, bounds.x[0], bounds.y[0], cropWidth, cropHeight, 0, 0, cropWidth, cropHeight);
+
+  return croppedCanvas;
 }

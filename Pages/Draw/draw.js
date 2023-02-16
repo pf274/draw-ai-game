@@ -3,6 +3,7 @@ import {
   setPrimaryButtonState,
   clearCanvas,
   resizeCanvasToDisplaySize,
+  cropContent,
 } from './helper_functions.js';
 
 /**
@@ -60,7 +61,7 @@ window.onload = function () {
   async function AIGuess() {
     let image = new Image();
     image.src = canvas.toDataURL();
-    classifier.classify(canvas, 10, (err, results) => {
+    classifier.classify(cropContent(canvas), 10, (err, results) => {
       let output = document.getElementById("top_guess");
       // console.log(results);
       let text = results.map(guess => `${guess.label.replaceAll("_", " ")} ${Math.floor(guess.confidence * 10000) / 100}%`).join("\n");

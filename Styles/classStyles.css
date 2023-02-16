@@ -1,12 +1,14 @@
 button {
-  padding: 1% 5%;
+  padding: 1% 1%;
   background-color: #2596be;
-/*   border: 2px solid #FFFFFF; */
+  /*   border: 2px solid #FFFFFF; */
   color: #FFFFFF;
   border-radius: 6px;
   border: none;
   font-family: Calibri;
+  font-size: 300%;
 }
+
 button:hover {
   background-color: #38bff0;
 }

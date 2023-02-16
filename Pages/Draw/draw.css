@@ -12,19 +12,31 @@ body {
   box-sizing: border-box;
 }
 
+header {
+  display: flex;
+  align-items: center;
+}
+
 #BackButton {
-  padding: 1% 5%;
+  padding: 1% 1%;
+  position: absolute;
   /*   background-color: rgba(0, 0, 0, 0.5); */
   /*   border: 2px solid #FFFFFF; */
   align-content: left;
-  display: flex;
+  /* display: flex; */
   /*   font-family: Impact; */
   color: #FFFFFF;
-  font-size: 100%;
+  /* font-size: 100%; */
+  /* flex: 1; */
 }
 
 #ClearCanvasButton {
   margin: 5px;
+}
+
+#Title {
+  text-align: center;
+  flex: 1;
 }
 
 .grid-container {
