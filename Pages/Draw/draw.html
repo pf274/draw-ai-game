@@ -19,6 +19,7 @@
   </header>
   <div>
     <button id="ClearCanvasButton" onclick="clearCanvasFromButton()">Clear Canvas</button>
+    <button id="GuessButton">Guess</button>
   </div>
   <div id="canvasContainerParent">
     <div id="canvasContainer">
@@ -40,7 +41,7 @@
     <div id="black" class="grid-item" onclick="setColorFromButton('black')"></div>
   </div>
   <div>
-    <h2 id="top_guess">Guessing...</h2>
+    <h2 id="top_guess">...</h2>
   </div>
   <script type="module"> // since module functions are not directly accessible in HTML, we have to do this trick
     import { clearCanvas, setColor, goToHome } from './helper_functions.js'

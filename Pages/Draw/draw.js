@@ -4,6 +4,7 @@ import {
   clearCanvas,
   resizeCanvasToDisplaySize,
   cropContent,
+  AIGuess,
 } from './helper_functions.js';
 
 /**
@@ -17,6 +18,7 @@ window.onload = function () {
   }
   resizeCanvasToDisplaySize();
   let canvas = document.getElementById('DrawingCanvas');
+  let guessButton = document.getElementById("GuessButton");
   let context = canvas.getContext("2d");
   canvas.setAttribute("penColor", "#000000");
   let mouseDown = 0;
@@ -55,24 +57,10 @@ window.onload = function () {
     mouseDown = 0;
   }
 
-  /**
-   * Uses free online datasets to classify your drawing
-   */
-  async function AIGuess() {
-    let image = new Image();
-    image.src = canvas.toDataURL();
-    classifier.classify(cropContent(canvas), 10, (err, results) => {
-      let output = document.getElementById("top_guess");
-      // console.log(results);
-      let text = results.map(guess => `${guess.label.replaceAll("_", " ")} ${Math.floor(guess.confidence * 10000) / 100}%`).join("\n");
-      output.innerText = text;
-    });
-  }
-
-  // AI Guessing every 250 milliseconds
-  let guessInterval = setInterval(function () {
-    AIGuess();
-  }, 250)
+  // AI Guessing every 1000 milliseconds
+  // let guessInterval = setInterval(function () {
+  //   AIGuess(classifier);
+  // }, 1000)
 
   // Start Draw Event Listeners
   canvas.addEventListener('mousedown', function (event) {
@@ -97,6 +85,9 @@ window.onload = function () {
   canvas.addEventListener('touchend', function (event) {
     endDraw(event);
   });
+  guessButton.addEventListener('click', function (event) {
+    AIGuess(classifier);
+  })
 }
 
 

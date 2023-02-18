@@ -60,7 +60,7 @@ export function resizeCanvasToDisplaySize() {
   }
 }
 
-export function cropContent(canvas) { // takes in the drawing canvas and outputs a cropped canvas
+export async function cropContent(canvas) { // takes in the drawing canvas and outputs a cropped canvas
   const context = canvas.getContext("2d");
   const width = canvas.width;
   const height = canvas.height;
@@ -94,4 +94,20 @@ export function cropContent(canvas) { // takes in the drawing canvas and outputs
   croppedContext.drawImage(canvas, bounds.x[0], bounds.y[0], cropWidth, cropHeight, 0, 0, cropWidth, cropHeight);
 
   return croppedCanvas;
+}
+
+/**
+ * Uses free online datasets to classify your drawing
+ */
+export async function AIGuess(classifier) {
+  let canvas = document.getElementById("DrawingCanvas");
+  let shouldCrop = true;
+  let image = new Image();
+  image.src = canvas.toDataURL();
+  classifier.classify(shouldCrop ? await cropContent(canvas): canvas, 10, (err, results) => {
+    let output = document.getElementById("top_guess");
+    // console.log(results);
+    let text = results.map(guess => `${guess.label.replaceAll("_", " ")} ${Math.floor(guess.confidence * 10000) / 100}%`).join("\n");
+    output.innerText = text;
+  });
 }
