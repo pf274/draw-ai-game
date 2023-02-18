@@ -21,6 +21,7 @@
     <h2 id="Prompt">Draw</h2>
   </div>
   <div>
+    <button id="NewPromptButton" onclick="newPromptFromButton()">New Prompt</button>
     <button id="ClearCanvasButton" onclick="clearCanvasFromButton()">Clear Canvas</button>
     <button id="GuessButton">Guess</button>
   </div>
@@ -50,7 +51,6 @@
     import { clearCanvas, setColor, goToHome, newPrompt } from './helper_functions.js'
     function clearCanvasFromButton() { // we're making an HTML-accessible function that calls the normal function
       clearCanvas();
-      newPrompt();
     }
     function setColorFromButton(color) {
       setColor(color);
@@ -58,8 +58,12 @@
     function goToHomeFromButton() {
       goToHome();
     }
+    function newPromptFromButton() {
+      newPrompt();
+    }
     window.goToHomeFromButton = goToHomeFromButton;
     window.clearCanvasFromButton = clearCanvasFromButton;
     window.setColorFromButton = setColorFromButton;
+    window.newPromptFromButton = newPromptFromButton;
   </script>
 </body>
