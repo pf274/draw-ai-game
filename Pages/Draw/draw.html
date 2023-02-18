@@ -13,16 +13,20 @@
 </style>
 
 <body>
-
-  <button id="BackButton" onclick="goToHomeFromButton()">Back</button>
-  <h1 id="Title">Start drawing!</h1>
+  <header>
+    <button id="BackButton" onclick="goToHomeFromButton()">Back</button>
+    <h1 id="Title">Start drawing!</h1>
+  </header>
   <div>
     <button id="ClearCanvasButton" onclick="clearCanvasFromButton()">Clear Canvas</button>
   </div>
-  <div>
-    <canvas width="400" height="400" id="DrawingCanvas">Hmmmm, it appears that your browser does not support
-      canvases.</canvas>
-    <input type="range" id="ThicknessSlider" min="0.5" max="3" step="0.1" value="1.0">
+  <div id="canvasContainerParent">
+    <div id="canvasContainer">
+      <canvas width="100%" height="100%" id="DrawingCanvas">Hmmmm, it appears that your browser does not support
+        canvases.</canvas>
+      <input type="range" id="ThicknessSlider" min="0.5" max="3" step="0.1" value="1.0">
+    </div>
+
   </div>
   <div id="colorPalette" class="grid-container">
     <div id="red" class="grid-item" onclick="setColorFromButton('red')"></div>
@@ -39,7 +43,7 @@
     <h2 id="top_guess">Guessing...</h2>
   </div>
   <script type="module"> // since module functions are not directly accessible in HTML, we have to do this trick
-    import {clearCanvas, setColor, goToHome} from './helper_functions.js'
+    import { clearCanvas, setColor, goToHome } from './helper_functions.js'
     function clearCanvasFromButton() { // we're making an HTML-accessible function that calls the normal function
       clearCanvas();
     }
