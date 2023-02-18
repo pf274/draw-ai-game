@@ -1,31 +1,40 @@
 import {
   calculateMouseCoords,
   setPrimaryButtonState,
-  clearCanvas,
   resizeCanvasToDisplaySize,
-  cropContent,
   AIGuess,
+  newPrompt,
 } from './helper_functions.js';
 
 /**
  * When the page loads up, set up the drawing experience!
  */
 window.onload = function () {
+  // get elements
+  let canvas = document.getElementById('DrawingCanvas');
+  let guessButton = document.getElementById("GuessButton");
+  // prepare AI model
   const classifier = ml5.imageClassifier('doodlenet', modelReady); // 'mobilenet', 'darknet', 'doodlenet'
   function modelReady() { // loading the AI model
     console.log('ml5 version:', ml5.version);
     console.log("Model Ready!");
   }
+  // prepare prompt
+  newPrompt();
+  
+  // prepare canvas
   resizeCanvasToDisplaySize();
-  let canvas = document.getElementById('DrawingCanvas');
-  let guessButton = document.getElementById("GuessButton");
   let context = canvas.getContext("2d");
   canvas.setAttribute("penColor", "#000000");
+
+  // prepare drawing variables
   let mouseDown = 0;
   let newCoords = [0, 0];
   let prevCoords = [0, 0];
   let primaryMouseButtonDown = false;
-  clearCanvas();
+
+
+  // define the drawing functions
 
   function startDraw(event) {
     prevCoords = calculateMouseCoords(event, canvas);
@@ -90,10 +99,7 @@ window.onload = function () {
   })
 }
 
-
-
 addEventListener("resize", (event) => {
-  // setSliderPosition();
   resizeCanvasToDisplaySize()
 });
 

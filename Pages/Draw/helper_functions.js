@@ -111,3 +111,15 @@ export async function AIGuess(classifier) {
     output.innerText = text;
   });
 }
+
+export function newPrompt() {
+  let prompt = document.getElementById("Prompt");
+  // prepare categories
+  let guesses_source = "categories.txt";
+  fetch(guesses_source).then(response => response.text()).then(data => {
+    let categories = data.split("\r\n");
+    let new_prompt = categories[Math.floor(Math.random() * categories.length)];
+    prompt.innerText = `Draw ${new_prompt}`;
+  });
+
+}

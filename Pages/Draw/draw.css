@@ -1,6 +1,6 @@
 body {
   background-color: #666666;
-  font-family: Impact;
+  font-family: Calibri;
   text-align: center;
   color: white;
   /* prevent users from highlighting text */
@@ -81,9 +81,6 @@ header {
 
 #ThicknessSlider {
   appearance: slider-vertical;
-  /* transform: rotate(90deg); */
-  /* -webkit-transform: rotate(90deg);
-  -moz-transform: rotate(90deg); */
   display: flex;
   flex: 0.01;
   width: 50px;
@@ -127,6 +124,6 @@ header {
 }
 
 #top_guess {
-  color: black;
-  font-family: arial;
+  color: white;
+  font-family: "Calibri";
 }

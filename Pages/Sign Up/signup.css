@@ -1,6 +1,6 @@
 body {
   background-color: #666666;
-/*   font-family: Impact; */
+  font-family: Calibri;
   text-align: center;
   color: #FFFFFF;
 /*   background-image: url('../../Images/vectors.jpg'); */
@@ -24,12 +24,12 @@ body {
 /*   color: black; */
 }
 #UsernameSection {
-  padding: 5%;
+  /* padding: 5%; */
   border-radius: 10px;
   margin: 1%;
 }
 #PasswordSection {
-  padding: 5%;
+  /* padding: 5%; */
   border-radius: 10px;
   margin: 1%;
 }
@@ -37,7 +37,7 @@ body {
   padding: 1% 5%;
 /*   background-color: rgba(0, 0, 0, 0.5);
   border: 2px solid #FFFFFF; */
-  margin-top: 5%;
+  /* margin-top: 5%; */
 /*   font-family: Impact; */
 /*   color: #FFFFFF; */
   font-size: 100%;
@@ -57,7 +57,4 @@ body {
 .grid-item {
   text-align: center;
 /*   border: 1px solid rgba(255, 0, 0, 0.8); */
-}
-h1 {
-  font-family: Impact;
 }

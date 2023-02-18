@@ -1,6 +1,6 @@
 body {
   background-color: #666666;
-/*   font-family: Impact; */
+  font-family: Calibri;
   text-align: center;
   color: #FFFFFF;
 /*   background-image: url('../../Images/vectors.jpg'); */
@@ -48,7 +48,4 @@ body {
 #Notification {
   color: red;
   font-family: Helvetica;
-}
-h1 {
-  font-family: Impact;
 }
