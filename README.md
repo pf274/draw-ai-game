@@ -32,3 +32,9 @@ Have you ever wanted to pit your drawing abilities against your friends and have
 * Game synchronization
 * Responsive drawing board
 * Touch / Stylus support
+
+### What I have learned from the Simon css assignment:
+* When a header or footer is always at the top/bottom of a page, it's called 'sticky'
+* You need to include the bootstrap javascript file at the bottom of your body element so that dropdown menus and other items work as expected.
+* Bootstrap class names are often predictable, and are necessary.
+* Bootstrap makes web development very fast!
