@@ -1,0 +1,69 @@
+<head>
+  <title>Startup Home</title>
+  <link rel="stylesheet" href="draw.css">
+  <link rel="stylesheet" href="../../Styles/classStyles.css">
+  <script type="module" src="draw.js"></script>
+  <script src="https://unpkg.com/ml5@latest/dist/ml5.min.js"></script>
+</head>
+<style>
+  /* Disable panning or zooming */
+  canvas {
+    touch-action: none;
+  }
+</style>
+
+<body>
+  <header>
+    <button id="BackButton" onclick="goToHomeFromButton()">Back</button>
+    <h1 id="Title">Start drawing!</h1>
+  </header>
+  <div>
+    <h2 id="Prompt">Draw</h2>
+  </div>
+  <div>
+    <button id="NewPromptButton" onclick="newPromptFromButton()">New Prompt</button>
+    <button id="ClearCanvasButton" onclick="clearCanvasFromButton()">Clear Canvas</button>
+    <button id="GuessButton">Guess</button>
+  </div>
+  <div id="canvasContainerParent">
+    <div id="canvasContainer">
+      <canvas width="100%" height="100%" id="DrawingCanvas">Hmmmm, it appears that your browser does not support
+        canvases.</canvas>
+      <input type="range" id="ThicknessSlider" min="0.5" max="3" step="0.1" value="1.0">
+    </div>
+
+  </div>
+  <!-- <div id="colorPalette" class="grid-container">
+    <div id="red" class="grid-item" onclick="setColorFromButton('red')"></div>
+    <div id="orange" class="grid-item" onclick="setColorFromButton('orange')"></div>
+    <div id="yellow" class="grid-item" onclick="setColorFromButton('yellow')"></div>
+    <div id="lime" class="grid-item" onclick="setColorFromButton('lime')"></div>
+    <div id="blue" class="grid-item" onclick="setColorFromButton('blue')"></div>
+    <div id="purple" class="grid-item" onclick="setColorFromButton('purple')"></div>
+    <div id="magenta" class="grid-item" onclick="setColorFromButton('magenta')"></div>
+    <div id="white" class="grid-item" onclick="setColorFromButton('white')"></div>
+    <div id="black" class="grid-item" onclick="setColorFromButton('black')"></div>
+  </div> -->
+  <div>
+    <h2 id="top_guess">...</h2>
+  </div>
+  <script type="module"> // since module functions are not directly accessible in HTML, we have to do this trick
+    import { clearCanvas, setColor, goToHome, newPrompt } from './helper_functions.js'
+    function clearCanvasFromButton() { // we're making an HTML-accessible function that calls the normal function
+      clearCanvas();
+    }
+    function setColorFromButton(color) {
+      setColor(color);
+    }
+    function goToHomeFromButton() {
+      goToHome();
+    }
+    function newPromptFromButton() {
+      newPrompt();
+    }
+    window.goToHomeFromButton = goToHomeFromButton;
+    window.clearCanvasFromButton = clearCanvasFromButton;
+    window.setColorFromButton = setColorFromButton;
+    window.newPromptFromButton = newPromptFromButton;
+  </script>
+</body>

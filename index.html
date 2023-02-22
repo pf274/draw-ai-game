@@ -4,7 +4,7 @@
         <title>Startup Home</title>
         
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
-        <link rel="stylesheet" href="./home.css">
+        <link rel="stylesheet" href="./index.css">
     </head>
     <body>
         <header>
@@ -15,8 +15,9 @@
                 <div class="card-body">
                     <h1 class="card-title">Draw AI</h1>
                     <p class="card-text">Login to Play</p>
-                    <form method="get" action="./Pages/Login/login.html">
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#loginModal">Login</button>
+                    <form method="get" action="./Pages/Login/login.html" id="cardButtons">
+                        <button type="button" class="btn btn-primary mb-2" data-bs-toggle="modal" data-bs-target="#loginModal">Login</button>
+                        <button type="button" class="btn btn-primary" onclick="window.location.href='Pages/Draw_boot/draw.html';">Skip to Drawing</button>
                     </form>
                 </div>
             </div>

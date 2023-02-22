@@ -31,3 +31,8 @@ main {
     align-items: center;
     flex: 1;
 }
+
+#cardButtons {
+    display: flex;
+    flex-direction: column;
+}
