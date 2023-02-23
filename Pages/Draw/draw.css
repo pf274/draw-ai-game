@@ -75,3 +75,7 @@ main {
   display: flex;
   flex-direction: column;
 }
+
+#colorPicker {
+  background-color: black;
+}
