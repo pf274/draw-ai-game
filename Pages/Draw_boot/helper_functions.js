@@ -41,8 +41,7 @@ export function clearCanvas() {
 
 export function resizeCanvasToDisplaySize() {
   let canvas = document.getElementById('DrawingCanvas');
-  let slider = document.getElementById('ThicknessSlider');
-  // Lookup the size the browser is displaying the canvas in CSS pixels.
+  // Look up the size the browser is displaying the canvas in CSS pixels.
   const displayWidth = canvas.clientWidth;
   const displayHeight = canvas.clientHeight;
 
@@ -54,7 +53,6 @@ export function resizeCanvasToDisplaySize() {
     // Make the canvas the same size
     canvas.width = displayWidth;
     canvas.height = displayHeight;
-    slider.width = displayWidth;
     // gl.viewport(0, 0, displayWidth, displayHeight);
     clearCanvas();
   }
@@ -104,11 +102,17 @@ export async function AIGuess(classifier) {
   let shouldCrop = true;
   let image = new Image();
   image.src = canvas.toDataURL();
-  classifier.classify(shouldCrop ? await cropContent(canvas): canvas, 10, (err, results) => {
-    let output = document.getElementById("top_guess");
-    // console.log(results);
-    let text = results.map(guess => `${guess.label.replaceAll("_", " ")} ${Math.floor(guess.confidence * 10000) / 100}%`).join("\n");
-    output.innerText = text;
+  classifier.classify(shouldCrop ? await cropContent(canvas): canvas, 5, (err, results) => {
+    console.log(results);
+    console.log(Array.isArray(results));
+    for (let i = 0; i < 5; i++) {
+      console.log(results[i]);
+      const {label, confidence} = results[i];
+      let guessElement = document.getElementById(`g${i+1}guess`);
+      let confElement = document.getElementById(`g${i+1}conf`);
+      guessElement.textContent = label;
+      confElement.textContent = `${Math.floor(confidence * 10000) / 100}%`;
+    }
   });
 }
 

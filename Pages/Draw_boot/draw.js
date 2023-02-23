@@ -33,7 +33,6 @@ window.onload = function () {
   let prevCoords = [0, 0];
   let primaryMouseButtonDown = false;
 
-
   // define the drawing functions
 
   function startDraw(event) {
@@ -45,9 +44,8 @@ window.onload = function () {
     primaryMouseButtonDown = setPrimaryButtonState(event);
     if (mouseDown == 1 && (event?.touches || primaryMouseButtonDown)) {
       newCoords = calculateMouseCoords(event, canvas);
-      // console.log(newCoords);
       context = canvas.getContext("2d");
-      let thickness = 16 * document.getElementById('ThicknessSlider').value;
+      let thickness = 16 * document.getElementById('thicknessSlider').value;
       if (event?.targetTouches) {
         thickness = 0.5 * thickness + 1.5 * thickness * event?.targetTouches[0].force;
       }
@@ -66,9 +64,8 @@ window.onload = function () {
     mouseDown = 0;
   }
 
-  // AI Guessing every 1000 milliseconds
   // let guessInterval = setInterval(function () {
-  //   AIGuess(classifier);
+  //   console.log(document.getElementById('thicknessSlider').value);
   // }, 1000)
 
   // Start Draw Event Listeners
