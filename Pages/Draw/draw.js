@@ -14,8 +14,12 @@ window.onload = function () {
   let canvas = document.getElementById('DrawingCanvas');
   let guessButton = document.getElementById("GuessButton");
   let colorPicker = document.getElementById("colorPicker");
+  let doodlenetSelect = document.getElementById("doodlenetSelect");
+  let mobilenetSelect = document.getElementById("mobilenetSelect");
+  let darknetSelect = document.getElementById("darknetSelect");
+  let modelButton = document.getElementById("modelButton");
   // prepare AI model
-  const classifier = ml5.imageClassifier('doodlenet', modelReady); // 'mobilenet', 'darknet', 'doodlenet'
+  let classifier = ml5.imageClassifier('doodlenet', modelReady); // 'mobilenet', 'darknet', 'doodlenet'
   function modelReady() { // loading the AI model
     console.log('ml5 version:', ml5.version);
     console.log("Model Ready!");
@@ -38,11 +42,11 @@ window.onload = function () {
 
   function startDraw(event) {
     prevCoords = calculateMouseCoords(event, canvas);
+    canvas.setAttribute("penColor", document.getElementById("colorPicker").value);
     mouseDown = 1;
   }
 
   function continueDraw(event) {
-    console.log(document.getElementById("colorPicker").value);
     primaryMouseButtonDown = setPrimaryButtonState(event);
     if (mouseDown == 1 && (event?.touches || primaryMouseButtonDown)) {
       newCoords = calculateMouseCoords(event, canvas);
@@ -105,6 +109,23 @@ window.onload = function () {
   colorPicker.addEventListener('change', function (event) {
     setColor(event);
   });
+
+  doodlenetSelect.addEventListener('click', function (event) {
+    classifier = ml5.imageClassifier('doodlenet', modelReady);
+    modelButton.innerText = "doodlenet";
+    AIGuess(classifier);
+  })
+  mobilenetSelect.addEventListener('click', function (event) {
+    classifier = ml5.imageClassifier('mobilenet', modelReady);
+    modelButton.innerText = "mobilenet";
+    AIGuess(classifier);
+  })
+  darknetSelect.addEventListener('click', function (event) {
+    classifier = ml5.imageClassifier('darknet', modelReady);
+    modelButton.innerText = "darknet";
+    AIGuess(classifier);
+  })
+
 }
 
 addEventListener("resize", (event) => {
