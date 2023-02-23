@@ -33,8 +33,19 @@ Have you ever wanted to pit your drawing abilities against your friends and have
 * Responsive drawing board
 * Touch / Stylus support
 
-### What I have learned from the Simon css assignment:
+### What I have learned from the Simon CSS assignment:
 * When a header or footer is always at the top/bottom of a page, it's called 'sticky'
 * You need to include the bootstrap javascript file at the bottom of your body element so that dropdown menus and other items work as expected.
 * Bootstrap class names are often predictable, and are necessary.
 * Bootstrap makes web development very fast!
+
+### Other notes on html and CSS:
+* Use media queries like this: @media screen and (max-width: 100px) {}
+* Flex is the easiest way that I have found to structure content the way I want.
+Just use display: flex; and flex-direction: row/column; to initialize it.
+* justify-content aligns things horizontally, while align-items aligns things vertically.
+* In order to use a function from a module in a html file, you need to do the following:
+    * create a script in html
+    * import the functions from the module
+    * create functions that call the imported functions (they cannot be accessed directly)
+    * bind them to the window object, like so: window.setColorFromButton = setColorFromButton;
