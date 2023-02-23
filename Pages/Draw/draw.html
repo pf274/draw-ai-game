@@ -1,69 +1,103 @@
-<head>
-  <title>Startup Home</title>
-  <link rel="stylesheet" href="draw.css">
-  <link rel="stylesheet" href="../../Styles/classStyles.css">
-  <script type="module" src="draw.js"></script>
-  <script src="https://unpkg.com/ml5@latest/dist/ml5.min.js"></script>
-</head>
-<style>
-  /* Disable panning or zooming */
-  canvas {
-    touch-action: none;
-  }
-</style>
+<html>
+  <head>
+    <title>Startup Draw</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <script type="module" src="./draw.js"></script>
+    <script src="https://unpkg.com/ml5@latest/dist/ml5.min.js"></script>
+    <link rel="stylesheet" href="./draw.css">
+  </head>
 
-<body>
-  <header>
-    <button id="BackButton" onclick="goToHomeFromButton()">Back</button>
-    <h1 id="Title">Start drawing!</h1>
-  </header>
-  <div>
-    <h2 id="Prompt">Draw</h2>
-  </div>
-  <div>
-    <button id="NewPromptButton" onclick="newPromptFromButton()">New Prompt</button>
-    <button id="ClearCanvasButton" onclick="clearCanvasFromButton()">Clear Canvas</button>
-    <button id="GuessButton">Guess</button>
-  </div>
-  <div id="canvasContainerParent">
-    <div id="canvasContainer">
-      <canvas width="100%" height="100%" id="DrawingCanvas">Hmmmm, it appears that your browser does not support
-        canvases.</canvas>
-      <input type="range" id="ThicknessSlider" min="0.5" max="3" step="0.1" value="1.0">
+  <body class="content-wrap bg-body-secondary">
+    <div class="card" id="mainCard">
+      <div class="card-header">
+        <button type="button" class="btn btn-secondary" id="BackButton" onclick="goToHomeFromButton()">Back</button>
+        <h1 id="title">Start Drawing!</h1>
+      </div>
+      <div class="card-body">
+        <header id="options">
+          <button class="btn btn-light m-1" id="NewPromptButton" onclick="newPromptFromButton()">New Prompt</button>
+          <button class="btn btn-light m-1" id="ClearCanvasButton" onclick="clearCanvasFromButton()">Clear Canvas</button>
+          <button class="btn btn-light m-1" id="GuessButton" data-bs-toggle="modal" data-bs-target="#guessModal">Guess</button>
+          <input type="range" class="form-range bg-primary-subtle" min="1" max="5" step="0.1" value="2" id="thicknessSlider">
+          <input type="color" id="colorPicker">
+        </header>
+        <main>
+          <div id="canvasContainerParent" height="100%">
+            <canvas width="100%" height="25%" id="DrawingCanvas">Hmmmm, it appears that your browser does not support
+              canvases.</canvas>
+          </div>
+        </main>
+      </div>
     </div>
-
-  </div>
-  <!-- <div id="colorPalette" class="grid-container">
-    <div id="red" class="grid-item" onclick="setColorFromButton('red')"></div>
-    <div id="orange" class="grid-item" onclick="setColorFromButton('orange')"></div>
-    <div id="yellow" class="grid-item" onclick="setColorFromButton('yellow')"></div>
-    <div id="lime" class="grid-item" onclick="setColorFromButton('lime')"></div>
-    <div id="blue" class="grid-item" onclick="setColorFromButton('blue')"></div>
-    <div id="purple" class="grid-item" onclick="setColorFromButton('purple')"></div>
-    <div id="magenta" class="grid-item" onclick="setColorFromButton('magenta')"></div>
-    <div id="white" class="grid-item" onclick="setColorFromButton('white')"></div>
-    <div id="black" class="grid-item" onclick="setColorFromButton('black')"></div>
-  </div> -->
-  <div>
-    <h2 id="top_guess">...</h2>
-  </div>
-  <script type="module"> // since module functions are not directly accessible in HTML, we have to do this trick
-    import { clearCanvas, setColor, goToHome, newPrompt } from './helper_functions.js'
-    function clearCanvasFromButton() { // we're making an HTML-accessible function that calls the normal function
-      clearCanvas();
-    }
-    function setColorFromButton(color) {
-      setColor(color);
-    }
-    function goToHomeFromButton() {
-      goToHome();
-    }
-    function newPromptFromButton() {
-      newPrompt();
-    }
-    window.goToHomeFromButton = goToHomeFromButton;
-    window.clearCanvasFromButton = clearCanvasFromButton;
-    window.setColorFromButton = setColorFromButton;
-    window.newPromptFromButton = newPromptFromButton;
-  </script>
-</body>
+    <div class="modal fade" id="guessModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1>AI Guesses</h1>
+          </div>
+          <div class="modal-body bg-body-tertiary">
+            <table class="table table-striped table-hover">
+              <thead>
+                <tr class="table-success">
+                  <th scope="col">#</th>
+                  <th scope="col">Guess</th>
+                  <th scope="col">Confidence</th>
+                </tr>
+              </thead>
+              <tbody class="table-light">
+                <tr>
+                  <th scope="row">1</th>
+                  <td id="g1guess">...</td>
+                  <td id="g1conf">...</td>
+                </tr>
+                <tr>
+                  <th scope="row">2</th>
+                  <td id="g2guess">...</td>
+                  <td id="g2conf">...</td>
+                </tr>
+                <tr>
+                  <th scope="row">3</th>
+                  <td id="g3guess">...</td>
+                  <td id="g3conf">...</td>
+                </tr>
+                <tr>
+                  <th scope="row">4</th>
+                  <td id="g4guess">...</td>
+                  <td id="g4conf">...</td>
+                </tr>
+                <tr>
+                  <th scope="row">5</th>
+                  <td id="g5guess">...</td>
+                  <td id="g5conf">...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+        </div>
+      </div>
+    </div>
+    <script type="module"> // since module functions are not directly accessible in HTML, we have to do this trick
+      import { clearCanvas, setColor, goToHome, newPrompt } from './helper_functions.js'
+      function clearCanvasFromButton() { // we're making an HTML-accessible function that calls the normal function
+        clearCanvas();
+      }
+      function setColorFromButton(color) {
+        setColor(color);
+      }
+      function goToHomeFromButton() {
+        goToHome();
+      }
+      function newPromptFromButton() {
+        newPrompt();
+      }
+      window.goToHomeFromButton = goToHomeFromButton;
+      window.clearCanvasFromButton = clearCanvasFromButton;
+      window.setColorFromButton = setColorFromButton;
+      window.newPromptFromButton = newPromptFromButton;
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+  </body>
+</html>

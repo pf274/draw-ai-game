@@ -13,6 +13,7 @@ window.onload = function () {
   // get elements
   let canvas = document.getElementById('DrawingCanvas');
   let guessButton = document.getElementById("GuessButton");
+  let colorPicker = document.getElementById("colorPicker");
   // prepare AI model
   const classifier = ml5.imageClassifier('doodlenet', modelReady); // 'mobilenet', 'darknet', 'doodlenet'
   function modelReady() { // loading the AI model
@@ -33,7 +34,6 @@ window.onload = function () {
   let prevCoords = [0, 0];
   let primaryMouseButtonDown = false;
 
-
   // define the drawing functions
 
   function startDraw(event) {
@@ -42,12 +42,12 @@ window.onload = function () {
   }
 
   function continueDraw(event) {
+    console.log(document.getElementById("colorPicker").value);
     primaryMouseButtonDown = setPrimaryButtonState(event);
     if (mouseDown == 1 && (event?.touches || primaryMouseButtonDown)) {
       newCoords = calculateMouseCoords(event, canvas);
-      // console.log(newCoords);
       context = canvas.getContext("2d");
-      let thickness = 16 * document.getElementById('ThicknessSlider').value;
+      let thickness = 16 * document.getElementById('thicknessSlider').value;
       if (event?.targetTouches) {
         thickness = 0.5 * thickness + 1.5 * thickness * event?.targetTouches[0].force;
       }
@@ -66,9 +66,12 @@ window.onload = function () {
     mouseDown = 0;
   }
 
-  // AI Guessing every 1000 milliseconds
+  function setColor(event) {
+    canvas.setAttribute("penColor", event.target.value);
+  }
+
   // let guessInterval = setInterval(function () {
-  //   AIGuess(classifier);
+  //   console.log(document.getElementById('thicknessSlider').value);
   // }, 1000)
 
   // Start Draw Event Listeners
@@ -94,9 +97,14 @@ window.onload = function () {
   canvas.addEventListener('touchend', function (event) {
     endDraw(event);
   });
+
+  // other listeners
   guessButton.addEventListener('click', function (event) {
     AIGuess(classifier);
   })
+  colorPicker.addEventListener('change', function (event) {
+    setColor(event);
+  });
 }
 
 addEventListener("resize", (event) => {
