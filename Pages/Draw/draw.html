@@ -11,6 +11,7 @@
       <div class="card-header">
         <button type="button" class="btn btn-secondary" id="BackButton" onclick="goToHomeFromButton()">Back</button>
         <h1 id="title">Start Drawing!</h1>
+        <h4 id="Prompt">Prompt: ...</h4>
       </div>
       <div class="card-body">
         <header id="options">
@@ -83,6 +84,18 @@
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
         </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal fade" tabindex="-1" keyboard="false" backdrop="static" focus="true" id="loadingModal" tabindex="-1" aria-labelledby="loadingModalTitle" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Loading</h5>
+          </div>
+          <div class="modal-body">
+            <p>Please wait while the AI model loads...</p>
+          </div>
         </div>
       </div>
     </div>

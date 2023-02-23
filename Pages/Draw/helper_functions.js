@@ -110,7 +110,7 @@ export async function AIGuess(classifier) {
       const {label, confidence} = results[i];
       let guessElement = document.getElementById(`g${i+1}guess`);
       let confElement = document.getElementById(`g${i+1}conf`);
-      guessElement.textContent = label;
+      guessElement.textContent = label.replaceAll('_',' ');
       confElement.textContent = `${Math.floor(confidence * 10000) / 100}%`;
     }
   });
@@ -125,5 +125,19 @@ export function newPrompt() {
     let new_prompt = categories[Math.floor(Math.random() * categories.length)];
     prompt.innerText = `Draw ${new_prompt}`;
   });
+}
+export function startLoading() {
+  const modal = document.getElementById('loadingModal');
+  modal.style.display = 'block';
+  modal.classList.add('show');
+  modal.setAttribute('aria-modal', 'true');
+  modal.setAttribute('aria-hidden', 'false');
+}
 
+export function endLoading() {
+  const modal = document.getElementById('loadingModal');
+  modal.style.display = 'none';
+  modal.classList.remove('show');
+  modal.setAttribute('aria-modal', 'false');
+  modal.setAttribute('aria-hidden', 'true');
 }

@@ -4,6 +4,8 @@ import {
   resizeCanvasToDisplaySize,
   AIGuess,
   newPrompt,
+  startLoading,
+  endLoading,
 } from './helper_functions.js';
 
 /**
@@ -19,10 +21,12 @@ window.onload = function () {
   let darknetSelect = document.getElementById("darknetSelect");
   let modelButton = document.getElementById("modelButton");
   // prepare AI model
+  startLoading();
   let classifier = ml5.imageClassifier('doodlenet', modelReady); // 'mobilenet', 'darknet', 'doodlenet'
   function modelReady() { // loading the AI model
     console.log('ml5 version:', ml5.version);
     console.log("Model Ready!");
+    endLoading();
   }
   // prepare prompt
   newPrompt();
@@ -111,16 +115,19 @@ window.onload = function () {
   });
 
   doodlenetSelect.addEventListener('click', function (event) {
+    startLoading();
     classifier = ml5.imageClassifier('doodlenet', modelReady);
     modelButton.innerText = "doodlenet";
     AIGuess(classifier);
   })
   mobilenetSelect.addEventListener('click', function (event) {
+    startLoading();
     classifier = ml5.imageClassifier('mobilenet', modelReady);
     modelButton.innerText = "mobilenet";
     AIGuess(classifier);
   })
   darknetSelect.addEventListener('click', function (event) {
+    startLoading();
     classifier = ml5.imageClassifier('darknet', modelReady);
     modelButton.innerText = "darknet";
     AIGuess(classifier);

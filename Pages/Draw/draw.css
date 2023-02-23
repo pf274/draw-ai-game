@@ -21,6 +21,8 @@ html {
 .card-header {
   display: flex;
   flex-direction: row;
+  justify-content: center;
+  align-items: center;
 }
 
 .card-body {
@@ -78,4 +80,20 @@ main {
 
 #colorPicker {
   background-color: black;
+  width: 30px;
+}
+
+#loadingModal {
+  background-color: rgba(94, 89, 127, 0.5);
+}
+
+
+@media (max-device-width: 850px) {
+  #GuessButton, #ClearCanvasButton, #NewPromptButton, #BackButton {
+    font-size: 200%;
+  }
+  #colorPicker {
+    height: 50px;
+    width: 50px;
+  }
 }
