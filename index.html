@@ -39,15 +39,17 @@
                             <h5 class="modal-title">Log In</h5>
                         </div>
                         <div class="modal-body">
-                            <div class="input-group">
-                                <input type="text" class="form-control" autocomplete="off" placeholder="Username" id="LoginUsernameField">
-                            </div>
-                            <div class="input-group">
-                                <input type="password" class="form-control" placeholder="Password" id="LoginPasswordField">
-                            </div>
-                            <div id="loginCredentialsAlert" class="alert alert-danger" role="alert" style="display: none;">
-                                Default alert message
-                            </div>
+                            <form>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" autocomplete="off" placeholder="Username" id="LoginUsernameField">
+                                </div>
+                                <div class="input-group">
+                                    <input type="password" class="form-control" placeholder="Password" autocomplete="current-password" id="LoginPasswordField">
+                                </div>
+                                <div id="loginCredentialsAlert" class="alert alert-danger" role="alert" style="display: none;">
+                                    Default alert message
+                                </div>
+                            </form>
                         </div>
                         <div class="modal-footer">
                             <div class="row" style="justify-content: center; align-items: center;">
@@ -70,18 +72,20 @@
                             <h5 class="modal-title">Sign Up</h5>
                         </div>
                         <div class="modal-body">
-                            <div class="input-group">
-                                <input type="text" class="form-control" autocomplete="off" placeholder="Username" id="SignupUsernameField">
-                            </div>
-                            <div class="input-group">
-                                <input type="password" class="form-control" placeholder="Password" id="SignupPasswordField">
-                            </div>
-                            <div class="input-group">
-                                <input type="password" class="form-control" placeholder="Reenter Password" id="SignupReenterPasswordField">
-                            </div>
-                            <div id="signupCredentialsAlert" class="alert alert-danger" role="alert" style="display: none;">
-                                Default alert message
-                            </div>
+                            <form>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" autocomplete="off" placeholder="Username" id="SignupUsernameField">
+                                </div>
+                                <div class="input-group">
+                                    <input type="password" class="form-control" autocomplete="current-password" placeholder="Password" id="SignupPasswordField">
+                                </div>
+                                <div class="input-group">
+                                    <input type="password" class="form-control" autocomplete="current-password" placeholder="Reenter Password" id="SignupReenterPasswordField">
+                                </div>
+                                <div id="signupCredentialsAlert" class="alert alert-danger" role="alert" style="display: none;">
+                                    Default alert message
+                                </div>
+                            </form>
                         </div>
                         <div class="modal-footer">
                             <div class="row" style="justify-content: center; align-items: center;">
@@ -105,11 +109,11 @@
                         </div>
                         <div class="modal-body">
                             <div class="input-group">
-                                <input type="text" class="form-control" placeholder="Game Code" id="joinGameCodeField">
+                                <input type="text" class="form-control" placeholder="Game Code" autocomplete="off" id="joinGameCodeField">
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#gameLobbyModal">Back</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Back</button>
                             <button type="button" class="btn btn-primary" id="joinGameButton">Join Game</button>
                         </div>
                     </div>
@@ -154,7 +158,7 @@
                             </label> -->
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#gameLobbyModal">Back</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Back</button>
                             <button type="button" class="btn btn-primary">Start Game</button>
                         </div>
                     </div>

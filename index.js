@@ -28,23 +28,22 @@ loginButton.addEventListener('click', () => {
 
     if (username in users) {
         if (users[username]?.password === password) {
-            console.log("Login Successful!");
+             // console.log("Login Successful!");
             localStorage.setItem("user_data", JSON.stringify(users[username]));
             $('#loginModal').modal('hide');
             $('.loggedIn').css("display", "block");
             $('.noCredentials').css("display", "none");
-            console.log("hidden");
             let lobbyTitle = document.getElementById("LobbyTitle");
             lobbyTitle.innerText = `Welcome, ${username}!`;
             $("#loginCredentialsAlert").hide();
         } else {
-            console.log("Invalid Password, scrub!");
+             // console.log("Invalid Password, scrub!");
             let alert = document.getElementById('loginCredentialsAlert');
             alert.innerHTML = "Invalid password. Please try again.";
             $("#loginCredentialsAlert").show();
         }
     } else {
-        console.log("unrecognized user!");
+         // console.log("unrecognized user!");
         let alert = document.getElementById('loginCredentialsAlert');
         alert.innerHTML = "Invalid username. Please try again.";
         $("#loginCredentialsAlert").show();
@@ -69,12 +68,12 @@ signupButton.addEventListener('click', () => {
                     username: username,
                     password: password,
                 };
-                console.log("Signup successful!");
+                 // console.log("Signup successful!");
                 $("#signupModal").modal("hide");
                 $("#loginModal").modal("show");
                 $("#signupCredentialsAlert").hide();
             } else {
-                console.log("Passwords do not match!");
+                 // console.log("Passwords do not match!");
                 let alert = document.getElementById('signupCredentialsAlert');
                 alert.innerHTML = "Passwords do not match. Please try again.";
                 $("#signupCredentialsAlert").show();
@@ -86,7 +85,7 @@ signupButton.addEventListener('click', () => {
         }
 
     } else {
-        console.log("User already exists!");
+         // console.log("User already exists!");
         let alert = document.getElementById('signupCredentialsAlert');
         alert.innerHTML = "Username already in use. Please try again.";
         $("#signupCredentialsAlert").show();
@@ -99,7 +98,6 @@ logoutButton.addEventListener('click', () => {
     localStorage.removeItem("user_data");
     $('.loggedIn').css("display", "none");
     $('.noCredentials').css("display", "block");
-    console.log("hidden");
 });
 
 // Joining a game
@@ -110,9 +108,9 @@ joinGameButton.addEventListener('click', () => {
     let gameCode = gameCodeField.value;
 
     if (gameCode in games) {
-        console.log("Join Game Successful!");
+         console.log("Join Game Successful!");
     } else {
-        console.log("Invalid game code!");
+         console.log("Invalid game code!");
     }
 })
 
@@ -120,7 +118,7 @@ joinGameButton.addEventListener('click', () => {
 let hostGameModalButton = document.getElementById("hostGameModalButton");
 hostGameModalButton.addEventListener('click', () => {
     let generatedCodeElement = document.getElementById("generatedCode");
-    let generatedCode = ((36 ** 3) + Math.floor(Math.random() * (34 * 36**3 + 35 * 36**2 + 35 * 36 + 35))).toString(36).toUpperCase();
+    let generatedCode = ((36 ** 3) + Math.floor(Math.random() * (34 * 36**3 + 35 * 36**2 + 35 * 36 + 35))).toString(36).toUpperCase(); // Generates a random game code four characters long, using chars 0-9 and A-Z.
     generatedCodeElement.innerText = generatedCode;
 });
 
@@ -129,16 +127,17 @@ $(document).ready(function () {
     if (localStorage.getItem("user_data")) {
         let user_data = JSON.parse(localStorage.getItem("user_data"));
         if (user_data?.username in users) {
-            if (users[username]?.password == user_data?.password) {
+            if (users[user_data?.username]?.password == user_data?.password) {
                 loggedIn = true;
             }
         }
     }
     if (loggedIn) {
+        let user_data = JSON.parse(localStorage.getItem("user_data"));
         $('.loggedIn').css("display", "block");
         $('.noCredentials').css("display", "none");
         let lobbyTitle = document.getElementById("LobbyTitle");
-        lobbyTitle.innerText = `Welcome, ${user_data.username}!`;
+        lobbyTitle.innerText = `Welcome, ${user_data?.username}!`;
     } else {
         $('.loggedIn').css("display", "none");
         $('.noCredentials').css("display", "block");
