@@ -36,3 +36,10 @@ main {
     display: flex;
     flex-direction: column;
 }
+
+.loggedIn {
+    display: none;
+}
+.noCredentials {
+    display: none;
+}

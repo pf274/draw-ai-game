@@ -1,25 +1,35 @@
 <html lang="en">
     <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, minimum-scale=1, user-scalable=no" />
         <title>Startup Home</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
         <link rel="stylesheet" href="./index.css">
     </head>
     <body>
-        <header>
-
-        </header>
         <main class="content-wrap bg-body-secondary">
-            <div class="card"> <!-- Main Screen -->
+            <div class="card" id="loginCard"> <!-- Main Screen -->
+                <div class="card-header">
+                    <h1 class="card-title noCredentials">Draw AI</h1>
+                    <h1 class="modal-title loggedIn" id="LobbyTitle">Lobby</h1>
+                </div>
                 <div class="card-body">
-                    <h1 class="card-title">Draw AI</h1>
-                    <p class="card-text">Login to Play</p>
-                    <form method="get" action="./Pages/Login/login.html" id="cardButtons">
-                        <button type="button" class="btn btn-primary mb-2" data-bs-toggle="modal" data-bs-target="#loginModal">Login</button>
+                    <div class = "noCredentials">
+                        <h3 class="card-text">Log In to Play</h3>
+                        <form method="get" action="./Pages/Login/login.html" id="cardButtons">
+                            <button type="button" class="btn btn-primary mb-2" data-bs-toggle="modal" data-bs-target="#loginModal" id="startCredentialsButton">Login</button>
+                        </form>
+                    </div>
+                    <div class="loggedIn">
+                        <h2>Multiplayer</h2>
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#joinGameModal">Join Game</button>
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#hostGameModal" id="hostGameModalButton">Host Game</button>
+                        <h2 class="mt-2">Singleplayer</h2>
                         <button type="button" class="btn btn-primary mb-2" onclick="window.location.href='Pages/Draw/draw.html';">Skip to Drawing</button>
-                        <button type="button" class="btn btn-primary disabled" onclick="window.location.href='Pages/Draw/draw.html';">Join Game</button>
-                    </form>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <button type="button" class="btn btn-secondary loggedIn" id="logoutButton">Log Out</button>
                 </div>
             </div>
             <div class="modal fade" id="loginModal" tabindex="-1" aria-hidden="true"> <!-- Login Modal -->
@@ -30,10 +40,13 @@
                         </div>
                         <div class="modal-body">
                             <div class="input-group">
-                                <input type="text" class="form-control" placeholder="Username">
+                                <input type="text" class="form-control" autocomplete="off" placeholder="Username" id="LoginUsernameField">
                             </div>
                             <div class="input-group">
-                                <input type="password" class="form-control" placeholder="Password">
+                                <input type="password" class="form-control" placeholder="Password" id="LoginPasswordField">
+                            </div>
+                            <div id="loginCredentialsAlert" class="alert alert-danger" role="alert" style="display: none;">
+                                Default alert message
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -43,7 +56,7 @@
                                 </div>
                                 <div class="col-md-6 text-right" style="align-items:center;">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#gameLobbyModal">Submit</button> <!-- Submit the username and password! -->
+                                    <button type="button" class="btn btn-primary" id="LoginSubmitButton">Submit</button> <!-- Submit the username and password! -->
                                 </div>
                             </div>
                         </div>
@@ -58,13 +71,16 @@
                         </div>
                         <div class="modal-body">
                             <div class="input-group">
-                                <input type="text" class="form-control" placeholder="Username">
+                                <input type="text" class="form-control" autocomplete="off" placeholder="Username" id="SignupUsernameField">
                             </div>
                             <div class="input-group">
-                                <input type="password" class="form-control" placeholder="Password">
+                                <input type="password" class="form-control" placeholder="Password" id="SignupPasswordField">
                             </div>
                             <div class="input-group">
-                                <input type="password" class="form-control" placeholder="Reenter Password">
+                                <input type="password" class="form-control" placeholder="Reenter Password" id="SignupReenterPasswordField">
+                            </div>
+                            <div id="signupCredentialsAlert" class="alert alert-danger" role="alert" style="display: none;">
+                                Default alert message
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -74,30 +90,14 @@
                                 </div>
                                 <div class="col-md-6 text-right" style="align-items:center;">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    <button type="button" class="btn btn-primary">Submit</button> <!-- Submit the username and password! -->
+                                    <button type="button" class="btn btn-primary" id="SignupSubmitButton">Submit</button> <!-- Submit the username and password! -->
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="modal fade" id="gameLobbyModal" tabindex="-1" aria-hidden="true"> <!-- Game Lobby Modal -->
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">Lobby</h5>
-                        </div>
-                        <div class="modal-body">
-                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#joinGameModal">Join Game</button>
-                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#hostGameModal">Host Game</button>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal fade" id="joinGameModal" tabindex="-1" aria-hidden="true"> <!-- Game Lobby Modal -->
+            <div class="modal fade" id="joinGameModal" tabindex="-1" aria-hidden="true"> <!-- Join Game Modal -->
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -105,24 +105,24 @@
                         </div>
                         <div class="modal-body">
                             <div class="input-group">
-                                <input type="text" class="form-control" placeholder="Game Code">
+                                <input type="text" class="form-control" placeholder="Game Code" id="joinGameCodeField">
                             </div>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#gameLobbyModal">Back</button>
-                            <button type="button" class="btn btn-primary">Join Game</button>
+                            <button type="button" class="btn btn-primary" id="joinGameButton">Join Game</button>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="modal fade" id="hostGameModal" tabindex="-1" aria-hidden="true"> <!-- Game Lobby Modal -->
+            <div class="modal fade" id="hostGameModal" tabindex="-1" aria-hidden="true"> <!-- Host Game Modal -->
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title">Host Game</h5>
                         </div>
                         <div class="modal-body">
-                            <h3 id="gameCode">AAAA</h3>
+                            <h3 id="generatedCode">AAAA</h3>
                             <table class="table table-striped table-hover">
                                 <thead>
                                   <tr class="table-success">
@@ -161,6 +161,8 @@
                 </div>
             </div>
         </main>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+        <script type="module" src="./index.js"></script>
     </body>
 </html>
