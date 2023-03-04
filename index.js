@@ -125,9 +125,16 @@ hostGameModalButton.addEventListener('click', () => {
 });
 
 $(document).ready(function () {
+    let loggedIn = false;
     if (localStorage.getItem("user_data")) {
         let user_data = JSON.parse(localStorage.getItem("user_data"));
-        console.log("Found user data!");
+        if (user_data?.username in users) {
+            if (users[username]?.password == user_data?.password) {
+                loggedIn = true;
+            }
+        }
+    }
+    if (loggedIn) {
         $('.loggedIn').css("display", "block");
         $('.noCredentials').css("display", "none");
         let lobbyTitle = document.getElementById("LobbyTitle");
