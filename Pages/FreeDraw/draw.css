@@ -89,11 +89,18 @@ main {
 
 
 @media (max-device-width: 850px) {
-  #GuessButton, #ClearCanvasButton, #NewPromptButton, #BackButton {
-    font-size: 200%;
+  #GuessButton, #ClearCanvasButton, #NewPromptButton {
+    font-size: 50%;
   }
   #colorPicker {
     height: 50px;
     width: 50px;
+  }
+  #title {
+    display: none;
+  }
+  #Prompt {
+    flex: 1;
+    text-align: right;
   }
 }
