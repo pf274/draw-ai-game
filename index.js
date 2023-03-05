@@ -1,6 +1,35 @@
 import database from "./database.js";
 const {users, games} = database;
 
+function generateCode() {
+    return ((36 ** 3) + Math.floor(Math.random() * (34 * 36**3 + 35 * 36**2 + 35 * 36 + 35))).toString(36).toUpperCase();
+}
+
+// initialization
+$(document).ready(function () {
+    let loggedIn = false;
+    localStorage.removeItem('game');
+    if (localStorage.getItem("user_data")) {
+        let user_data = JSON.parse(localStorage.getItem("user_data"));
+        if (user_data?.username in users) {
+            if (users[user_data?.username]?.password == user_data?.password) {
+                loggedIn = true;
+            }
+        }
+    }
+    if (loggedIn) {
+        let user_data = JSON.parse(localStorage.getItem("user_data"));
+        $('.loggedIn').css("display", "block");
+        $('.noCredentials').css("display", "none");
+        let lobbyTitle = document.getElementById("LobbyTitle");
+        lobbyTitle.innerText = `Welcome, ${user_data?.username}!`;
+    } else {
+        $('.loggedIn').css("display", "none");
+        $('.noCredentials').css("display", "block");
+    }
+});
+
+
 // Start entering credentials
 let startCredentialsButton = document.getElementById("startCredentialsButton");
 startCredentialsButton.addEventListener('click', () => {
@@ -114,32 +143,50 @@ joinGameButton.addEventListener('click', () => {
     }
 })
 
+
+
 // Hosting a game
 let hostGameModalButton = document.getElementById("hostGameModalButton");
 hostGameModalButton.addEventListener('click', () => {
     let generatedCodeElement = document.getElementById("generatedCode");
-    let generatedCode = ((36 ** 3) + Math.floor(Math.random() * (34 * 36**3 + 35 * 36**2 + 35 * 36 + 35))).toString(36).toUpperCase(); // Generates a random game code four characters long, using chars 0-9 and A-Z.
+    let generatedCode = generateCode(); // Generates a random game code four characters long, using chars 0-9 and A-Z.
+    while (generatedCode in games) {
+        generatedCode = generateCode();
+    }
+    let username = JSON.parse(localStorage.getItem("user_data")).username
+    games[generatedCode] = {
+        game_code: generatedCode,
+        host: username,
+        participants: {
+            [username]: {},
+        }, // allow for three more participants maximum
+        game_type: "hosted",
+    }
     generatedCodeElement.innerText = generatedCode;
 });
 
-$(document).ready(function () {
-    let loggedIn = false;
-    if (localStorage.getItem("user_data")) {
-        let user_data = JSON.parse(localStorage.getItem("user_data"));
-        if (user_data?.username in users) {
-            if (users[user_data?.username]?.password == user_data?.password) {
-                loggedIn = true;
-            }
-        }
+// start hosted game
+let startHostedGameButton = document.getElementById("startHostedGameButton");
+startHostedGameButton.addEventListener('click', () => {
+    let generatedCodeElement = document.getElementById("generatedCode");
+    localStorage.setItem("game", JSON.stringify(games[generatedCodeElement.innerText]));
+    // TODO: Tell other players' webpages to start game.
+    window.location.href = "./Pages/PartyDraw/draw.html";
+});
+
+// start free draw
+let freeDrawButton = document.getElementById("freeDrawButton");
+freeDrawButton.addEventListener('click', () => {
+    let generatedCode = generateCode(); // Generates a random game code four characters long, using chars 0-9 and A-Z.
+    let username = JSON.parse(localStorage.getItem("user_data")).username;
+    let local_game = {
+        game_code: generatedCode,
+        host: username,
+        participants: {
+            [username]: {},
+        },
+        game_type: "local",
     }
-    if (loggedIn) {
-        let user_data = JSON.parse(localStorage.getItem("user_data"));
-        $('.loggedIn').css("display", "block");
-        $('.noCredentials').css("display", "none");
-        let lobbyTitle = document.getElementById("LobbyTitle");
-        lobbyTitle.innerText = `Welcome, ${user_data?.username}!`;
-    } else {
-        $('.loggedIn').css("display", "none");
-        $('.noCredentials').css("display", "block");
-    }
+    localStorage.setItem("game", JSON.stringify(local_game));
+    window.location.href = "./Pages/FreeDraw/draw.html";
 });
