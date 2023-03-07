@@ -8,7 +8,7 @@ import {
   startLoading,
   endLoading,
   calculatePoints,
-} from './helper_functions.js';
+} from '../FreeDraw/helper_functions.js';
 
 /**
  * When the page loads up, set up the drawing experience!
@@ -29,8 +29,8 @@ window.onload = function () {
   startLoading();
   let classifier = ml5.imageClassifier('doodlenet', modelReady); // 'mobilenet', 'darknet', 'doodlenet'
   function modelReady() { // loading the AI model
-    console.log('ml5 version:', ml5.version);
-    console.log("Model Ready!");
+    // console.log('ml5 version:', ml5.version);
+    // console.log("Model Ready!");
     endLoading();
   }
 
@@ -190,7 +190,6 @@ window.onload = function () {
   }
 
   async function startPhase(phase) {
-    // debugger;
     if (phase === "get new prompt") {
       clearCanvas();
       $("#guessModal").modal("hide");
@@ -198,6 +197,8 @@ window.onload = function () {
       let promptModalElement = document.getElementById("Prompt");
       let promptReminder = document.getElementById("PromptReminder");
       let new_prompt = await newPrompt();
+      
+      promptReminder.innerText = new_prompt;
       promptModalElement.innerHTML = `Draw ${new_prompt}`;
       promptReminder.innerText = new_prompt;
     } else if (phase === "draw") {

@@ -24,12 +24,16 @@ window.onload = function () {
   startLoading();
   let classifier = ml5.imageClassifier('doodlenet', modelReady); // 'mobilenet', 'darknet', 'doodlenet'
   function modelReady() { // loading the AI model
-    console.log('ml5 version:', ml5.version);
-    console.log("Model Ready!");
+    // console.log('ml5 version:', ml5.version);
+    // console.log("Model Ready!");
     endLoading();
   }
   // prepare prompt
-  newPrompt();
+  let new_prompt_promise = newPrompt();
+  let promptElement = document.getElementById("Prompt");
+  new_prompt_promise.then(result => {
+    promptElement.innerText = `Prompt: ${result}`;
+  })
   
   // prepare canvas
   resizeCanvasToDisplaySize();

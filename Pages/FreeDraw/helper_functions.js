@@ -26,7 +26,6 @@ export function setColor(color) {
  * Redirects to the home page.
  */
 export function goToHome() {
-  console.log("Going to home page...")
   window.location.assign('../../index.html');
 }
 
@@ -35,7 +34,7 @@ export function clearCanvas() {
   let context = canvas.getContext("2d");
   context.fillStyle = "rgba(255, 255, 255, 1)";
   context.clearRect(0, 0, canvas.width, canvas.height);
-  context.fillRect(0, 0, canvas.width, canvas.height);
+  // context.fillRect(0, 0, canvas.width, canvas.height);
   context.beginPath();
 }
 
@@ -72,7 +71,9 @@ export async function cropContent(canvas) { // takes in the drawing canvas and o
     for (let y = 0; y < height; y++) {
       const i = (y * width + x) * 4; // get the beginning of the pixel's data
       const pixelData = imageData.slice(i, i + 4);
-      if (pixelData[0] + pixelData[1] + pixelData[2] < 3 * 255 - tolerance) {
+      
+      if ((pixelData[0] + pixelData[1] + pixelData[2] < 3 * 255 - tolerance) && pixelData[3] > 10) {
+
         bounds.x[0] = Math.min(bounds.x[0], x);
         bounds.x[1] = Math.max(bounds.x[1], x);
         bounds.y[0] = Math.min(bounds.y[0], y);
@@ -100,30 +101,44 @@ export async function cropContent(canvas) { // takes in the drawing canvas and o
 export async function AIGuess(classifier) {
   let canvas = document.getElementById("DrawingCanvas");
   let shouldCrop = true;
-  let image = new Image();
-  image.src = canvas.toDataURL();
-  classifier.classify(shouldCrop ? await cropContent(canvas): canvas, 5, (err, results) => {
-    console.log(results);
-    console.log(Array.isArray(results));
-    for (let i = 0; i < 5; i++) {
-      console.log(results[i]);
+  let numberOfGuesses = 5;
+  // crop the image
+  let croppedCanvas = shouldCrop ? await cropContent(canvas) : canvas;
+  
+  // make a background
+  const context = croppedCanvas.getContext("2d");
+  const width = croppedCanvas.width;
+  const height = croppedCanvas.height;
+  const withBackground = document.createElement('canvas');
+  withBackground.width = width;
+  withBackground.height = height;
+  let bgcontext = withBackground.getContext('2d');
+  bgcontext.fillStyle = "rgba(255, 255, 255, 1)";
+  bgcontext.fillRect(0, 0, withBackground.width, withBackground.height);
+
+  bgcontext.drawImage(croppedCanvas, 0, 0, width, height, 0, 0, width, height);
+
+  return classifier.classify(withBackground, numberOfGuesses, (err, results) => {
+    for (let i = 0; i < results.length; i++) {
+      // console.log(results[i]);
       const {label, confidence} = results[i];
       let guessElement = document.getElementById(`g${i+1}guess`);
       let confElement = document.getElementById(`g${i+1}conf`);
       guessElement.textContent = label.replaceAll('_',' ');
       confElement.textContent = `${Math.floor(confidence * 10000) / 100}%`;
     }
+    withBackground.remove();
+    return results;
   });
 }
 
-export function newPrompt() {
-  let prompt = document.getElementById("Prompt");
+export async function newPrompt() {
   // prepare categories
   let guesses_source = "../../Data/categories.txt";
-  fetch(guesses_source).then(response => response.text()).then(data => {
+  return fetch(guesses_source).then(response => response.text()).then(data => {
     let categories = data.split("\r\n");
     let new_prompt = categories[Math.floor(Math.random() * categories.length)];
-    prompt.innerText = `Draw ${new_prompt}`;
+    return new_prompt;
   });
 }
 export function startLoading() {
@@ -140,4 +155,22 @@ export function endLoading() {
   modal.classList.remove('show');
   modal.setAttribute('aria-modal', 'false');
   modal.setAttribute('aria-hidden', 'true');
+}
+
+export function calculatePoints(guesses, prompt) {
+  let points = 0;
+  for (let guess_index = 0; guess_index < guesses.length; guess_index++) {
+    let guess = guesses[guess_index];
+    let label = guess.label.replaceAll("_", " ");
+    if (label === prompt) {
+      points = (5 - guess_index) * 100;
+    }
+  }
+  return points;
+}
+
+export async function getImageAsData() {
+    let canvas = document.getElementById("DrawingCanvas");
+  const link = document.createElement('a');
+  cropContent(canvas).then(result => console.log(result.toDataURL()));
 }

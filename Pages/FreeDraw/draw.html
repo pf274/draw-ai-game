@@ -112,7 +112,10 @@
         goToHome();
       }
       function newPromptFromButton() {
-        newPrompt();
+        let promptElement = document.getElementById("Prompt");
+        newPrompt().then(new_prompt => {
+          promptElement.innerText = `Prompt: ${new_prompt}`;
+        });
       }
       function setModelFromButton(model) {
         document.getElementById("modelButton").textContent = model;
