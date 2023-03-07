@@ -8,13 +8,14 @@ import {
   startLoading,
   endLoading,
   calculatePoints,
+  getImageAsData,
+  saveDoodle,
 } from '../FreeDraw/helper_functions.js';
 
 /**
  * When the page loads up, set up the drawing experience!
  */
 window.onload = function () {
-
   // get elements
   let canvas = document.getElementById('DrawingCanvas');
   // let guessButton = document.getElementById("GuessButton");
@@ -205,6 +206,9 @@ window.onload = function () {
       $("#promptModal").modal("hide");
     } else if (phase === "done drawing") {
       $("#doneDrawingModal").modal("show");
+      getImageAsData().then(canvasData => {
+        saveDoodle(canvasData);
+      });
     } else if (phase === "review results") {
       $("#doneDrawingModal").modal("hide");
       $("#guessModal").modal("show");

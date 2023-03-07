@@ -170,7 +170,31 @@ export function calculatePoints(guesses, prompt) {
 }
 
 export async function getImageAsData() {
-    let canvas = document.getElementById("DrawingCanvas");
-  const link = document.createElement('a');
-  cropContent(canvas).then(result => console.log(result.toDataURL()));
+  let canvas = document.getElementById("DrawingCanvas");
+  return cropContent(canvas).then(result => result.toDataURL());
+}
+
+export function saveDoodle(image_data) {
+  if (localStorage.getItem("user_data")) {
+    let user_data = JSON.parse(localStorage.getItem("user_data"));
+    let username = user_data.username;
+    if (localStorage.getItem("game")) {
+      let game = JSON.parse(localStorage.getItem("game"));
+      if (!game?.rounds) {
+        game.rounds = [];
+      }
+      if (game.rounds.length > 0) {
+        if (!username in game.rounds[game.rounds.length - 1]) {
+          game.rounds[rounds.length - 1][username] = {image: image_data};
+        } else {
+          game.rounds.push({[username]: {image: image_data}});
+        }
+      } else {
+        game.rounds.push({[username]: {image: image_data}});
+      }
+      localStorage.setItem("game", JSON.stringify(game));
+    }
+  } else {
+    console.error("Not logged in - cannot save drawing!");
+  }
 }
