@@ -39,6 +39,12 @@ Have you ever wanted to pit your drawing abilities against your friends and have
 * Bootstrap class names are often predictable, and are necessary.
 * Bootstrap makes web development very fast!
 
+### What I have learned from the Simon JS assignment:
+* setInterval and setTimeout are very useful for making animations. You can also use clearInterval to end an interval!
+* you can use querySelector to get one item of a specific class.
+* Sounds are created by loading them into an Audio object, so it's nice to initialize all your sounds and save the audio objects in another objects for quick reference.
+* creating elements dynamically isn't too hard, as long as you keep track of the elements and know how to manipulate them. You can use element.appendChild to add a child element.
+
 ### Other notes on html and CSS:
 * Use media queries like this: @media screen and (max-width: 100px) {}
 * Flex is the easiest way that I have found to structure content the way I want.
