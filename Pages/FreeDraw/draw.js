@@ -32,7 +32,7 @@ window.onload = function () {
   let new_prompt_promise = newPrompt();
   let promptElement = document.getElementById("Prompt");
   new_prompt_promise.then(result => {
-    promptElement.innerText = `Prompt: ${result}`;
+    promptElement.innerText = `${window.innerWidth > 650 ? 'Prompt: ' : ''}${result}`;
   })
   
   // prepare canvas
@@ -59,7 +59,7 @@ window.onload = function () {
     if (mouseDown == 1 && (event?.touches || primaryMouseButtonDown)) {
       newCoords = calculateMouseCoords(event, canvas);
       context = canvas.getContext("2d");
-      let thickness = 16 * document.getElementById('thicknessSlider').value;
+      let thickness = 16 * document.getElementById('thicknessSlider').value * (window.innerWidth / 650);
       if (event?.targetTouches) {
         thickness = 0.5 * thickness + 1.5 * thickness * event?.targetTouches[0].force;
       }

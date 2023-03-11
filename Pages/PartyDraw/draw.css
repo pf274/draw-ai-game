@@ -36,6 +36,7 @@ html {
   flex-direction: row;
   justify-content: center;
   align-items: center;
+  flex-wrap: wrap;
 }
 
 #canvasContainerParent {
@@ -93,12 +94,8 @@ main {
   flex: 1;
   text-align: right;
 }
-@media (max-device-width: 850px) {
-  #GuessButton, #ClearCanvasButton, #NewPromptButton, #BackButton {
-    font-size: 200%;
-  }
-  #colorPicker {
-    height: 50px;
-    width: 50px;
+@media (max-device-width: 650px) {
+  #thicknessSlider {
+    width: 100px;
   }
 }
