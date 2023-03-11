@@ -63,7 +63,7 @@ window.onload = function () {
     if (mouseDown == 1 && (event?.touches || primaryMouseButtonDown)) {
       newCoords = calculateMouseCoords(event, canvas);
       context = canvas.getContext("2d");
-      let thickness = 16 * document.getElementById('thicknessSlider').value * (window.innerWidth / 650);
+      let thickness = 16 * document.getElementById('thicknessSlider').value * Math.min((window.innerWidth / 650), (window.innerHeight / 850));
       if (event?.targetTouches) {
         thickness = 0.5 * thickness + 1.5 * thickness * event?.targetTouches[0].force;
       }

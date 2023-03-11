@@ -161,7 +161,6 @@ export function calculatePoints(guesses, prompt) {
   let points = 0;
   let guessTable = document.getElementById("guessTable");
   let rows = guessTable.rows;
-  console.log(rows);
   for (let guess_index = 0; guess_index < guesses.length; guess_index++) {
     let guess = guesses[guess_index];
     let label = guess.label.replaceAll("_", " ");
