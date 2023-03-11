@@ -159,11 +159,18 @@ export function endLoading() {
 
 export function calculatePoints(guesses, prompt) {
   let points = 0;
+  let guessTable = document.getElementById("guessTable");
+  let rows = guessTable.rows;
+  console.log(rows);
   for (let guess_index = 0; guess_index < guesses.length; guess_index++) {
     let guess = guesses[guess_index];
     let label = guess.label.replaceAll("_", " ");
+    let row = rows[guess_index];
     if (label === prompt) {
       points = (5 - guess_index) * 100;
+      row.classList.add("table-primary");
+    } else {
+      row.classList.remove("table-primary");
     }
   }
   return points;

@@ -135,7 +135,9 @@ joinGameButton.addEventListener('click', () => {
     let gameCodeField = document.getElementById("joinGameCodeField");
 
     let gameCode = gameCodeField.value;
-
+    let alert = document.getElementById('joinGameAlert');
+    alert.innerHTML = "Joining unavaliable until networking is programmed.";
+    $("#joinGameAlert").show();
     if (gameCode in games) {
          console.log("Join Game Successful!");
     } else {

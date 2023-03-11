@@ -53,7 +53,7 @@
                   <th scope="col">Confidence</th>
                 </tr>
               </thead>
-              <tbody class="table-light">
+              <tbody class="table-light" id="guessTable">
                 <tr>
                   <th scope="row">1</th>
                   <td id="g1guess">...</td>
@@ -114,7 +114,8 @@
       function newPromptFromButton() {
         let promptElement = document.getElementById("Prompt");
         newPrompt().then(new_prompt => {
-          promptElement.innerText = `Prompt: ${new_prompt}`;
+          
+          promptElement.innerText = `${window.innerWidth > 650 ? 'Prompt: ' : ''}${new_prompt}`;
         });
       }
       function setModelFromButton(model) {
