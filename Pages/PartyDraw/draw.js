@@ -10,6 +10,7 @@ import {
   calculatePoints,
   getImageAsData,
   saveDoodle,
+  doMusic,
 } from '../FreeDraw/helper_functions.js';
 
 /**
@@ -35,6 +36,9 @@ window.onload = function () {
     endLoading();
   }
 
+  // play music
+  doMusic();
+
   // prepare prompt
   newPrompt();
   
@@ -50,16 +54,19 @@ window.onload = function () {
   let primaryMouseButtonDown = false;
 
   // define the drawing functions
+  let tap = false;
 
   function startDraw(event) {
     prevCoords = calculateMouseCoords(event, canvas);
     // canvas.setAttribute("penColor", document.getElementById("colorPicker")?.value);
     canvas.setAttribute("penColor", "#000000");
     mouseDown = 1;
+    tap = true;
   }
 
   function continueDraw(event) {
     primaryMouseButtonDown = setPrimaryButtonState(event);
+    tap = false;
     if (mouseDown == 1 && (event?.touches || primaryMouseButtonDown)) {
       newCoords = calculateMouseCoords(event, canvas);
       context = canvas.getContext("2d");
@@ -80,6 +87,23 @@ window.onload = function () {
   }
   function endDraw(event) {
     mouseDown = 0;
+    if (tap) {
+      newCoords = calculateMouseCoords(event, canvas);
+      tap = false;
+      let thickness = 16 * document.getElementById('thicknessSlider').value * Math.min((window.innerWidth / 650), (window.innerHeight / 850));
+      if (event?.targetTouches) {
+        if (event.targetTouches.length > 0) {
+          thickness = 0.5 * thickness + 1.5 * thickness * event?.targetTouches[0].force;
+        }        
+      }
+      context.lineWidth = thickness;
+      context.lineCap = "round";
+      context.strokeStyle = canvas.getAttribute("penColor");
+      context.moveTo(...newCoords);
+      context.lineTo(newCoords[0], newCoords[1] + 1);
+      context.stroke();
+      context.beginPath();
+    }
   }
 
   function setColor(event) {
@@ -110,37 +134,12 @@ window.onload = function () {
     endDraw(event);
   });
 
-  // other listeners
-  // guessButton.addEventListener('click', function (event) {
-  //   AIGuess(classifier);
-  // })
-  // colorPicker.addEventListener('change', function (event) {
-  //   setColor(event);
-  // });
-
-  // doodlenetSelect.addEventListener('click', function (event) {
-  //   startLoading();
-  //   classifier = ml5.imageClassifier('doodlenet', modelReady);
-  //   modelButton.innerText = "doodlenet";
-  //   AIGuess(classifier);
-  // })
-  // mobilenetSelect.addEventListener('click', function (event) {
-  //   startLoading();
-  //   classifier = ml5.imageClassifier('mobilenet', modelReady);
-  //   modelButton.innerText = "mobilenet";
-  //   AIGuess(classifier);
-  // })
-  // darknetSelect.addEventListener('click', function (event) {
-  //   startLoading();
-  //   classifier = ml5.imageClassifier('darknet', modelReady);
-  //   modelButton.innerText = "darknet";
-  //   AIGuess(classifier);
-  // })
-
   // Timer
   let start_time;
   let timer_interval;
-
+  let bpm = 100;
+  let interval_duration = 1000;
+  console.log(interval_duration);
   function runTimer() {
     clearInterval(timer_interval);
     start_time = new Date().getTime();
@@ -152,7 +151,7 @@ window.onload = function () {
       if (phase_info.elapsed_time == 0) {
         startPhase(phase_info.phase);
       }
-    }, 1000);
+    }, interval_duration);
   }
 
   function getTimer() {
@@ -169,10 +168,10 @@ window.onload = function () {
     let elapsed = getTimer();
     let phases = {
       0: "get new prompt",
-      5: "draw",
-      20: "done drawing",
-      22: "review results",
-      30: "PHASE_END",
+      2: "draw",
+      17: "done drawing",
+      19: "review results",
+      24: "PHASE_END",
     };
     let phase_times = Object.keys(phases).map(time => parseInt(time));
     phase_times.sort((a, b) => a - b);
@@ -197,7 +196,8 @@ window.onload = function () {
       let promptModalElement = document.getElementById("Prompt");
       let promptReminder = document.getElementById("PromptReminder");
       let new_prompt = await newPrompt();
-      
+      let dingSound = new Audio(`../../Sounds/bell${Math.floor(Math.random() * 3 + 1)}.wav`);
+      dingSound.play();
       promptReminder.innerText = new_prompt;
       promptModalElement.innerHTML = `Draw ${new_prompt}`;
       promptReminder.innerText = new_prompt;
@@ -241,4 +241,3 @@ window.onload = function () {
 addEventListener("resize", (event) => {
   resizeCanvasToDisplaySize()
 });
-

@@ -6,6 +6,7 @@ import {
   newPrompt,
   startLoading,
   endLoading,
+  doMusic,
 } from './helper_functions.js';
 
 /**
@@ -35,6 +36,9 @@ window.onload = function () {
     promptElement.innerText = `${window.innerWidth > 650 ? 'Prompt: ' : ''}${result}`;
   })
   
+  // play music
+  doMusic();
+
   // prepare canvas
   resizeCanvasToDisplaySize();
   let context = canvas.getContext("2d");
@@ -47,14 +51,17 @@ window.onload = function () {
   let primaryMouseButtonDown = false;
 
   // define the drawing functions
+  let tap;
 
   function startDraw(event) {
     prevCoords = calculateMouseCoords(event, canvas);
     canvas.setAttribute("penColor", document.getElementById("colorPicker").value);
     mouseDown = 1;
+    tap = true;
   }
 
   function continueDraw(event) {
+    tap = false;
     primaryMouseButtonDown = setPrimaryButtonState(event);
     if (mouseDown == 1 && (event?.touches || primaryMouseButtonDown)) {
       newCoords = calculateMouseCoords(event, canvas);
@@ -76,6 +83,24 @@ window.onload = function () {
   }
   function endDraw(event) {
     mouseDown = 0;
+    console.log(tap);
+    if (tap) {
+      newCoords = calculateMouseCoords(event, canvas);
+      tap = false;
+      let thickness = 16 * document.getElementById('thicknessSlider').value * Math.min((window.innerWidth / 650), (window.innerHeight / 850));
+      if (event?.targetTouches) {
+        if (event.targetTouches.length > 0) {
+          thickness = 0.5 * thickness + 1.5 * thickness * event?.targetTouches[0].force;
+        }        
+      }
+      context.lineWidth = thickness;
+      context.lineCap = "round";
+      context.strokeStyle = canvas.getAttribute("penColor");
+      context.moveTo(...newCoords);
+      context.lineTo(newCoords[0], newCoords[1] + 1);
+      context.stroke();
+      context.beginPath();
+    }
   }
 
   function setColor(event) {

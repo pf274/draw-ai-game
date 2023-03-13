@@ -1,6 +1,6 @@
 export function calculateMouseCoords(event, canvas) {
-  const clientX = event.clientX || event.touches[0].clientX;
-  const clientY = event.clientY || event.touches[0].clientY;
+  const clientX = event?.clientX || event.touches[0]?.clientX;
+  const clientY = event?.clientY || event.touches[0]?.clientY;
   let rect = canvas.getBoundingClientRect();
   // console.log(clientX);
   // console.log(clientY);
@@ -203,4 +203,23 @@ export function saveDoodle(image_data) {
   } else {
     console.error("Not logged in - cannot save drawing!");
   }
+}
+
+export function doMusic() {
+
+  console.log("Music loaded!");
+  let introSong = new Audio('../../Sounds/Intro.wav');
+  let loopSong = new Audio('../../Sounds/Loop.wav');
+  introSong.addEventListener('ended', () => {
+    console.log("Music started!");
+    loopSong.play();
+  });
+  
+  loopSong.addEventListener('ended', () => {
+    loopSong.currentTime = 0;
+    loopSong.play();
+    console.log("restarted loop");
+  });
+  
+  introSong.play();
 }
