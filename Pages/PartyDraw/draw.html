@@ -3,9 +3,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, minimum-scale=1, user-scalable=no" />
     <title>Startup Draw</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
-    <script type="module" src="./draw.js"></script>
-    <script async src="https://unpkg.com/ml5@latest/dist/ml5.min.js"></script>
     <link rel="stylesheet" href="./draw.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   </head>
   <body class="content-wrap bg-body-secondary">
     <div class="card" id="mainCard">
@@ -17,12 +16,6 @@
         <h1 id="Time">...</h1>
       </div>
       <div class="card-body">
-        <header id="options">
-          <!-- <button class="btn btn-light m-1" id="NewPromptButton" onclick="newPromptFromButton()">New Prompt</button> -->
-          <!-- <button class="btn btn-light m-1" id="ClearCanvasButton" onclick="clearCanvasFromButton()">Clear Canvas</button> -->
-          <!-- <button class="btn btn-light m-1" id="GuessButton" data-bs-toggle="modal" data-bs-target="#guessModal">Guess</button> -->
-          <!-- <input type="color" id="colorPicker"> -->
-        </header>
         <main>
           <div id="canvasContainerParent" height="100%">
             <canvas width="100%" height="25%" id="DrawingCanvas">Hmmmm, it appears that your browser does not support
@@ -54,14 +47,6 @@
         <div class="modal-content">
           <div class="modal-header">
             <h1>AI Guesses</h1>
-            <!-- <button id="modelButton" class="btn btn-primary m-1 dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-              doodlenet
-            </button> -->
-            <!-- <ul class="dropdown-menu">
-              <li><button class="dropdown-item" type="button" id="doodlenetSelect">doodlenet</button></li>
-              <li><button class="dropdown-item" type="button" id="mobilenetSelect">mobilenet</button></li>
-              <li><button class="dropdown-item" type="button" id="darknetSelect">darknet</button></li>
-            </ul> -->
           </div>
           <div class="modal-body bg-body-tertiary">
             <h2 id="totalPoints">Total Points: 0</h2>
@@ -121,30 +106,9 @@
         </div>
       </div>
     </div>
-    <script type="module"> // since module functions are not directly accessible in HTML, we have to do this trick
-      import { clearCanvas, setColor, goToHome, newPrompt } from '../FreeDraw/helper_functions.js';
-      function clearCanvasFromButton() { // we're making an HTML-accessible function that calls the normal function
-        clearCanvas();
-      }
-      function setColorFromButton(color) {
-        setColor(color);
-      }
-      function goToHomeFromButton() {
-        goToHome();
-      }
-      function newPromptFromButton() {
-        newPrompt();
-      }
-      function setModelFromButton(model) {
-        document.getElementById("modelButton").textContent = model;
-      }
-      window.goToHomeFromButton = goToHomeFromButton;
-      window.clearCanvasFromButton = clearCanvasFromButton;
-      window.setColorFromButton = setColorFromButton;
-      window.newPromptFromButton = newPromptFromButton;
-      window.setModelFromButton = setModelFromButton;
-    </script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+    <script async src="https://unpkg.com/ml5@latest/dist/ml5.min.js"></script>
+    <script type="module" src="./draw.js"></script>
   </body>
 </html>

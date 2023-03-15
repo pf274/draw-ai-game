@@ -10,14 +10,13 @@
   <body class="content-wrap bg-body-secondary">
     <div class="card" id="mainCard">
       <div class="card-header">
-        <button type="button" class="btn btn-secondary" id="BackButton" onclick="goToHomeFromButton()">Back</button>
         <h1 id="title">Start Drawing!</h1>
         <h4 id="Prompt">Prompt: ...</h4>
       </div>
       <div class="card-body">
         <header id="options">
-          <button class="btn btn-light m-1" id="NewPromptButton" onclick="newPromptFromButton()">New Prompt</button>
-          <button class="btn btn-light m-1" id="ClearCanvasButton" onclick="clearCanvasFromButton()">Clear Canvas</button>
+          <button class="btn btn-light m-1" id="NewPromptButton">New Prompt</button>
+          <button class="btn btn-light m-1" id="ClearCanvasButton">Clear Canvas</button>
           <button class="btn btn-light m-1" id="GuessButton" data-bs-toggle="modal" data-bs-target="#guessModal">Guess</button>
           <input type="range" class="form-range bg-primary-subtle" min="0.5" max="3" step="0.1" value="1" id="thicknessSlider">
           <input type="color" id="colorPicker">
@@ -100,33 +99,6 @@
         </div>
       </div>
     </div>
-    <script type="module"> // since module functions are not directly accessible in HTML, we have to do this trick
-      import { clearCanvas, setColor, goToHome, newPrompt } from './helper_functions.js'
-      function clearCanvasFromButton() { // we're making an HTML-accessible function that calls the normal function
-        clearCanvas();
-      }
-      function setColorFromButton(color) {
-        setColor(color);
-      }
-      function goToHomeFromButton() {
-        goToHome();
-      }
-      function newPromptFromButton() {
-        let promptElement = document.getElementById("Prompt");
-        newPrompt().then(new_prompt => {
-          
-          promptElement.innerText = `${window.innerWidth > 650 ? 'Prompt: ' : ''}${new_prompt}`;
-        });
-      }
-      function setModelFromButton(model) {
-        document.getElementById("modelButton").textContent = model;
-      }
-      window.goToHomeFromButton = goToHomeFromButton;
-      window.clearCanvasFromButton = clearCanvasFromButton;
-      window.setColorFromButton = setColorFromButton;
-      window.newPromptFromButton = newPromptFromButton;
-      window.setModelFromButton = setModelFromButton;
-    </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
   </body>
 </html>
