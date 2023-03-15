@@ -1,3 +1,8 @@
+// import {$,jQuery} from 'jquery';
+// // export for other scripts to use
+// window.$ = $;
+// window.jQuery = jQuery;
+
 export function calculateMouseCoords(event, canvas) {
   const clientX = event?.clientX || event.touches[0]?.clientX;
   const clientY = event?.clientY || event.touches[0]?.clientY;
@@ -386,8 +391,8 @@ export class game {
     if (phase === "get new prompt") {
       this.clear();
       closeModal("guessModal");
-      // openModal("promptModal");
-      $("#promptModal").modal("show");
+      openModal("promptModal");
+      // $("#promptModal").modal("show");
       let dingSound = new Audio(`../../Sounds/bell${Math.floor(Math.random() * 3 + 1)}.wav`);
       dingSound.play();
       getPrompt().then((new_prompt) => {
