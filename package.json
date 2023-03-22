@@ -22,7 +22,6 @@
     "is-glob": "^4.0.3",
     "is-number": "^7.0.0",
     "jquery": "^3.6.4",
-    "ml5": "^0.12.2",
     "mongodb": "^5.1.0",
     "normalize-path": "^3.0.0",
     "picomatch": "^2.3.1",
