@@ -1,9 +1,4 @@
-import {
-  resizeCanvasToDisplaySize,
-  openModal,
-  closeModal,
-  game,
-} from '../../local_modules/helper_functions.js';
+import { resizeCanvasToDisplaySize, openModal, closeModal, game } from '../../local_modules/helper_functions.js';
 
 let gameInstance = new game({multiplayer: false});
 

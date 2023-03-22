@@ -1,8 +1,3 @@
-// import {$,jQuery} from 'jquery';
-// // export for other scripts to use
-// window.$ = $;
-// window.jQuery = jQuery;
-
 export function calculateMouseCoords(event, canvas) {
   const clientX = event?.clientX || event.touches[0]?.clientX;
   const clientY = event?.clientY || event.touches[0]?.clientY;
