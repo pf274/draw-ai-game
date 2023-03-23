@@ -50,6 +50,13 @@ Have you ever wanted to pit your drawing abilities against your friends and have
 * you can specify methods and parameters for an api request by supplying fetch with a url and an object.
 * your request body might need to be stringified to work.
 
+### What I have learned from the Simon DB assignment: 
+* follow the example given in your simon repository to set up mongodb.
+* you can use an empty filter to target all documents
+* selecting an item is as easy as having a filter like this: {id: 'test'}
+* never store credentials in a repository
+
+
 ### Other notes on html and CSS:
 * Use media queries like this: @media screen and (max-width: 100px) {}
 * Flex is the easiest way that I have found to structure content the way I want.
