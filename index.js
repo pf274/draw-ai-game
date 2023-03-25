@@ -1,153 +1,147 @@
 const express = require('express');
-const {MongoClient} = require("mongodb");
+const cookieParser = require('cookie-parser');
+const bcrypt = require('bcrypt');
 const app = express();
+const DB = require('./database.js');
 
-
-// ------------- Express -------------
-
-
-// Static file hosting
+// ----------- Express Settings and Setup -----------
 app.use(express.static('public'));
 app.use(express.json());
-
-// APIs
+app.use(cookieParser());
 const apiRouter = express.Router();
 app.use(`/api`, apiRouter);
 
-apiRouter.get('/games/list', async (req, res) => {
-  let all_games = await getGames();
-  res.send(all_games);
+// ----------- Authorization -----------
+const authCookieName = 'token';
+
+function setAuthCookie(res, authToken) {
+  res.cookie(authCookieName, authToken, {
+    secure: true,
+    httpOnly: true,
+    sameSite: 'strict',
+  });
+}
+
+// CreateAuth token for a new user
+apiRouter.post('/auth/create', async (req, res) => {
+  let userExists = await DB.getUser(req.body.username);
+  if (userExists) {
+    res.status(409).send({ msg: 'Existing user' });
+  } else {
+    const user = await DB.newUser(req.body.username, req.body.password);
+
+    // Set the cookie
+    setAuthCookie(res, user.token);
+
+    res.send({
+      id: user._id,
+    });
+  }
 });
 
-apiRouter.get('/games/:game', async (req, res) => {
-  let game = await getGame(req.params.game);
-  res.send(game);
+// DeleteAuth token if stored in cookie
+apiRouter.delete('/auth/logout', (_req, res) => {
+  res.clearCookie(authCookieName);
+  res.status(204).end();
 });
 
-apiRouter.delete('/games/clear', async (req, res) => {
-  let cleared_all = await clearAllGames();
-  res.send(cleared_all);
-})
-
-apiRouter.post('/games/host', async (req, res) => {
-  let game_info = req.body;
-  let response = await hostGame(game_info);
-  res.send(response);
+// GetUser returns information about a user
+apiRouter.get('/user/:username', async (req, res) => {
+  const user_info = await DB.getUser(req.params.username);
+  if (user_info) {
+    const token = req?.cookies.token;
+    res.send({ username: user_info.username, authenticated: token === user_info.token });
+    return;
+  }
+  res.status(404).send({ msg: 'Unknown' });
 });
 
-apiRouter.post('/games/start/:game_id', async (req, res) => {
-  let response = await startGame(req.params.game_id);
-  res.send(response);
+// secureApiRouter verifies credentials for endpoints
+var secureApiRouter = express.Router();
+apiRouter.use(secureApiRouter);
+
+secureApiRouter.use(async (req, res, next) => {
+  authToken = req.cookies[authCookieName];
+  const user = await DB.getUserByToken(authToken);
+  if (user) {
+    next();
+  } else {
+    res.status(401).send({ msg: 'Unauthorized' });
+  }
 });
 
-apiRouter.get('/users/list', async (req, res) => {
-  let users = await getUsers();
+// ----------- User APIs -----------
+
+secureApiRouter.get('/users/list', async (req, res) => {
+  let users = await DB.getUsers();
   res.send(users);
 });
 
-apiRouter.post('/users/register', async (req, res) => {
-  let user_exists = await getUser(req.body.username);
+secureApiRouter.post('/users/register', async (req, res) => {
+  let user_exists = await DB.getUser(req.body.username);
   if (!user_exists) {
-    await userCollection.insertOne(req.body);
-    return true;
+    await DB.newUser(req.body.username, req.body.password);
+    res.send(true);
   }
-  return false;
+  res.send(false);
 });
 
-apiRouter.get('/users/login/:username/:password', async (req, res) => {
-  let user_info = await getUser(req.params.username);
+secureApiRouter.get('/users/login/:username/:password', async (req, res) => {
+  let user_info = await DB.getUser(req.params.username);
   if (user_info) {
-    let password_matches = (user_info.password == req.params.password);
+    let password_matches = await bcrypt.compare(user_info.password, req.params.password);
     if (password_matches) {
-      res.send({status: "successful"});
+      setAuthCookie(res, user_info.token);
+      res.status(200).send({msg: "successful"});
     } else {
-      res.send({status: "invalid password"});
+      res.status(401).send({msg: "invalid password"});
     }
   } else {
-    res.send({status: "invalid username"});
+    res.status(401).send({msg: "invalid username"});
   }
 });
 
-async function clearAllGames() {
-  try {
-    await gameCollection.deleteMany({});
-    return true;
-  } catch (err) {
-    console.log(err);
-    return false;
-  }
+// ----------- Game APIs -----------
 
-}
+secureApiRouter.get('/games/list', async (req, res) => {
+  let all_games = await DB.getGames();
+  res.send(all_games);
+});
 
-async function startGame(game_id) {
-  try {
-    userCollection.updateOne({id: game_id}, {$set: {status: "started"}});
-    return true;
-  } catch (err) {
-    console.log(err);
-    return false;
-  }
+secureApiRouter.get('/games/:game', async (req, res) => {
+  let game = await DB.getGame(req.params.game);
+  res.send(game);
+});
 
-}
-async function getUser(username) {
-  let cursor = userCollection.find({username: username});
-  return cursor.toArray().then(results => results.length > 0 ? results[0] : false);
-}
+secureApiRouter.delete('/games/clear', async (req, res) => {
+  let cleared_all = await DB.clearAllGames();
+  res.send(cleared_all);
+})
 
-async function getUsers() {
-  let cursor = userCollection.find();
-  return cursor.toArray();
-}
+secureApiRouter.post('/games/host', async (req, res) => {
+  let game_info = req.body;
+  let response = await DB.hostGame(game_info);
+  res.send(response);
+});
 
-async function hostGame(game_info) {
-  let game_exists = await getGame(game_info.id);
-  if (!game_exists) {
-    await gameCollection.insertOne(game_info);
-    return true;
-  }
-  return false;
-}
+secureApiRouter.post('/games/start/:game_id', async (req, res) => {
+  let response = await DB.startGame(req.params.game_id);
+  res.send(response);
+});
 
-async function endGame(game_info) {
-  let game_exists = await getGame(game_info.id);
-  if (game_exists) {
-    await gameCollection.deleteOne({id: game_info});
-    return true;
-  }
-  return false;
-}
+// ----------- Final Setup -----------
 
-async function getGames() {
-  let cursor = gameCollection.find();
-  return cursor.toArray();
-}
+// Default error handler
+app.use(function (err, req, res, next) {
+  res.status(500).send({ type: err.name, message: err.message });
+});
 
-async function getGame(game_id) {
-  let cursor = gameCollection.find({id: game_id});
-  return cursor.toArray().then(results => results.length > 0 ? results[0] : false);
-}
+// Return the application's default page if the path is unknown
+app.use((_req, res) => {
+  res.sendFile('index.html', { root: 'public' });
+});
 
-
-
-// Listening to a network port
-const port = 4000;
+const port = process.argv.length > 2 ? process.argv[2] : 4000;
 app.listen(port, function () {
   console.log(`Listening on port ${port}`);
 });
-
-// ------------- MongoDB -------------
-
-let gameCollection;
-let userCollection;
-const username = process.env.MONGOUSER;
-const password = process.env.MONGOPASSWORD;
-const hostname = process.env.MONGOHOSTNAME;
-
-async function dbSetup() {
-  const url = `mongodb+srv://${username}:${password}@${hostname}`;
-  const client = new MongoClient(url);
-  gameCollection = client.db('startup').collection('games');
-  userCollection = client.db('startup').collection('users');
-}
-
-dbSetup();

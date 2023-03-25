@@ -11,10 +11,10 @@ $(document).ready(async function () {
     if (localStorage.getItem("user_data")) {
         let user_data = JSON.parse(localStorage.getItem("user_data"));
         let verified = await fetch(`/api/users/login/${user_data?.username}/${user_data?.password}`).then(response => response.json());
-        if (verified.status != "successful") {
+        loggedIn = (verified.msg == "successful");
+        if (!loggedIn) {
             localStorage.removeItem("user_data");
         }
-        loggedIn = (verified.status == "successful");
     }
     if (loggedIn) {
         let user_data = JSON.parse(localStorage.getItem("user_data"));
