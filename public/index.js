@@ -2,31 +2,32 @@
 
 
 // initialization
-async function checkCredentials() {
-    let loggedIn = false;
-    if (localStorage.getItem("user_data")) {
-        let user_data = JSON.parse(localStorage.getItem("user_data"));
-        let verified = await fetch(`/api/users/login/${user_data?.username}/${user_data?.password}`);
-        loggedIn = (verified.msg == "successful");
-        if (!loggedIn) {
-            localStorage.removeItem("user_data");
-        }
-    }
-    if (loggedIn) {
-        let user_data = JSON.parse(localStorage.getItem("user_data"));
-        classDisplay("loggedIn", "block");
-        classDisplay("noCredentials", "none");
+// async function checkCredentials() {
+//     let loggedIn = false;
+//     if (localStorage.getItem("user_data")) {
+//         let user_data = JSON.parse(localStorage.getItem("user_data"));
+//         let verified = await fetch(`/api/users/login/${user_data?.username}/${user_data?.password}`);
+//         loggedIn = (verified.msg == "successful");
+//         if (!loggedIn) {
+//             localStorage.removeItem("user_data");
+//         }
+//     }
+//     if (loggedIn) {
+//         let user_data = JSON.parse(localStorage.getItem("user_data"));
+//         classDisplay("loggedIn", "block");
+//         classDisplay("noCredentials", "none");
 
-        let lobbyTitle = document.getElementById("LobbyTitle");
-        lobbyTitle.innerText = `Welcome, ${user_data?.username}!`;
-    } else {
-        classDisplay("loggedIn", "none");
-        classDisplay("noCredentials", "block");
-    }
-}
+//         let lobbyTitle = document.getElementById("LobbyTitle");
+//         lobbyTitle.innerText = `Welcome, ${user_data?.username}!`;
+//     } else {
+//         classDisplay("loggedIn", "none");
+//         classDisplay("noCredentials", "block");
+//     }
+// }
 
-checkCredentials();
-
+// checkCredentials();
+classDisplay("loggedIn", "none");
+classDisplay("noCredentials", "block");
 
 // Start entering credentials
 let startCredentialsButton = document.getElementById("startCredentialsButton");
@@ -52,31 +53,30 @@ loginButton.addEventListener('click', async () => {
 
     let username = usernameField.value;
     let password = passwordField.value;
-    let users = await fetch('/api/users/list').then(response => response.json());
-    let users_map = {};
-    for (const user of users) {
-        users_map[user.username] = user;
-    }
-    if (username in users_map) {
-        if (users_map[username]?.password === password) {
-             console.log("Login Successful!");
-            localStorage.setItem("user_data", JSON.stringify(users_map[username]));
-            modalDisplay("loginModal", false);
-            classDisplay("loggedIn", "block");
-            classDisplay("noCredentials", "none");
-            let lobbyTitle = document.getElementById("LobbyTitle");
-            lobbyTitle.innerText = `Welcome, ${username}!`;
-            elementDisplay("loginCredentialsAlert", "none");
-        } else {
-             console.log("Invalid Password, scrub!");
-            let alert = document.getElementById('loginCredentialsAlert');
-            alert.innerHTML = "Invalid password. Please try again.";
-            elementDisplay("loginCredentialsAlert", "block");
-        }
+
+    let response = await fetch('/api/auth/login', {
+        method: "post",
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+            username: username,
+            password: password,
+        })
+    });
+    let body = await response.json();
+
+    if (response.status == 200) {
+        console.log("Login Successful!");
+        localStorage.setItem("username", username);
+        modalDisplay("loginModal", false);
+        classDisplay("loggedIn", "block");
+        classDisplay("noCredentials", "none");
+        let lobbyTitle = document.getElementById("LobbyTitle");
+        lobbyTitle.innerText = `Welcome, ${username}!`;
+        elementDisplay("loginCredentialsAlert", "none");
     } else {
-        console.log("unrecognized user!");
+        console.log(body.msg);
         let alert = document.getElementById('loginCredentialsAlert');
-        alert.innerHTML = "Invalid username. Please try again.";
+        alert.innerHTML = body.msg;
         elementDisplay("loginCredentialsAlert", "block");
     }
 });
@@ -92,45 +92,40 @@ signupButton.addEventListener('click', async () => {
     let password = passwordField.value;
     let reenteredPassword = reenterPasswordField.value;
 
-    let users = await fetch('/api/users/list').then(response => response.json());
-    let users_map = {};
-    for (const user of users) {
-        users_map[user.username] = user;
-    }
-
-    if (!(username in users_map)) {
-        if (password.length > 0) {
-            if (password === reenteredPassword) {
-                let response = await fetch(`api/users/register`, {
-                    method: "POST",
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({
-                        username: username,
-                        password: password,
-                    })
-                });
-                console.log(response);
-                console.log("Signup successful!");
-                // TODO: SKIP SIGNING IN WHEN REGISTERED
-                modalDisplay("signupModal", false);
-                modalDisplay("loginModal", true);
-                elementDisplay("signupCredentialsAlert", "none");
-            } else {
-                 console.log("Passwords do not match!");
-                let alert = document.getElementById('signupCredentialsAlert');
-                alert.innerHTML = "Passwords do not match. Please try again.";
-                elementDisplay("signupCredentialsAlert", "block");
-            }
-        } else {
-            let alert = document.getElementById('signupCredentialsAlert');
-            alert.innerHTML = "Please provide a password.";
-            elementDisplay("signupCredentialsAlert", "block");
-        }
-
-    } else {
-         // console.log("User already exists!");
+    if (password !== reenteredPassword) {
+        console.log("Passwords do not match!");
         let alert = document.getElementById('signupCredentialsAlert');
-        alert.innerHTML = "Username already in use. Please try again.";
+        alert.innerHTML = "Passwords do not match. Please try again.";
+        elementDisplay("signupCredentialsAlert", "block");
+        return;
+    }
+    if (password.length == 0) {
+        let alert = document.getElementById('signupCredentialsAlert');
+        alert.innerHTML = "Please provide a password.";
+        elementDisplay("signupCredentialsAlert", "block");
+        return;
+    }
+    let response = await fetch('/api/auth/create', {
+        method: "post",
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+            username: username,
+            password: password,
+        })
+    });
+    let body = await response.json();
+
+    if (response.status == 200) {
+        console.log(response);
+        console.log("Signup successful!");
+        // TODO: SKIP SIGNING IN WHEN REGISTERED
+        modalDisplay("signupModal", false);
+        modalDisplay("loginModal", true);
+        elementDisplay("signupCredentialsAlert", "none");
+    } else {
+        console.log("User already exists!");
+        let alert = document.getElementById('signupCredentialsAlert');
+        alert.innerHTML = body.msg;
         elementDisplay("signupCredentialsAlert", "block");
     }
 })
@@ -138,7 +133,7 @@ signupButton.addEventListener('click', async () => {
 // logging out
 let logoutButton = document.getElementById("logoutButton");
 logoutButton.addEventListener('click', () => {
-    localStorage.removeItem("user_data");
+    localStorage.removeItem("username");
     classDisplay("loggedIn", "none");
     classDisplay("noCredentials", "block");
 });
@@ -199,7 +194,7 @@ let startHostedGameButton = document.getElementById("startHostedGameButton");
 startHostedGameButton.addEventListener('click', async () => {
     let generatedCodeElement = document.getElementById("generatedCode");
     let game_id = generatedCodeElement.innerText;
-    // let username = JSON.parse(localStorage.getItem("user_data")).username;
+    // let username = localStorage.getItem("username");
     let started_game = await fetch(`/api/games/start/${game_id}`, {method: "POST"}).then(response => response.json());
     let game_info = await fetch(`api/games/${game_id}`).then(response => response.json());
     localStorage.setItem("game", JSON.stringify(game_info));
@@ -211,7 +206,7 @@ startHostedGameButton.addEventListener('click', async () => {
 let freeDrawButton = document.getElementById("freeDrawButton");
 freeDrawButton.addEventListener('click', () => {
     let generatedCode = generateCode(); // Generates a random game code four characters long, using chars 0-9 and A-Z.
-    let username = JSON.parse(localStorage.getItem("user_data")).username;
+    let username = localStorage.getItem("username");
     let local_game = {
         game_code: generatedCode,
         host: username,

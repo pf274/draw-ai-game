@@ -26,7 +26,7 @@ function setAuthCookie(res, authToken) {
 apiRouter.post('/auth/create', async (req, res) => {
   let userExists = await DB.getUser(req.body.username);
   if (userExists) {
-    res.status(409).send({ msg: 'Existing user' });
+    res.status(409).send({ msg: 'User already exists' });
   } else {
     const user = await DB.newUser(req.body.username, req.body.password);
 
@@ -37,6 +37,19 @@ apiRouter.post('/auth/create', async (req, res) => {
       id: user._id,
     });
   }
+});
+
+// GetAuth token for the provided credentials
+apiRouter.post('/auth/login', async (req, res) => {
+  const user = await DB.getUser(req.body.username);
+  if (user) {
+    if (await bcrypt.compare(req.body.password, user.password)) {
+      setAuthCookie(res, user.token);
+      res.send({ id: user._id });
+      return;
+    }
+  }
+  res.status(401).send({ msg: 'Unauthorized' });
 });
 
 // DeleteAuth token if stored in cookie

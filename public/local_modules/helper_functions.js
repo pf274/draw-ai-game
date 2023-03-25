@@ -40,6 +40,7 @@ function clearCanvas() {
 
 function resizeCanvasToDisplaySize() {
   let canvas = document.getElementById('DrawingCanvas');
+  if (!canvas) return;
   // Look up the size the browser is displaying the canvas in CSS pixels.
   const displayWidth = canvas.clientWidth;
   const displayHeight = canvas.clientHeight;
@@ -204,33 +205,37 @@ function doMusic() {
   introSong.play();
 }
 function modalDisplay(modalName, state = true) {
-  const modal = new bootstrap.Modal(document.getElementById(modalName), {});
-  if (state) {
-    modal.show();
-  } else {
-    modal.hide();
-  }
+  const modal = document.getElementById(modalName);
+  if (!modal) return;
+  modal.setAttribute("aria-hidden", (!state).toString());
+  // if (state) {
+  //   modal.classList.add('show');
+    
+  //   modal.style.display = 'block';
+  // } else {
+  //   modal.classList.remove('show');
+  //   modal.style.display = 'none';
+  // }
 }
 function cardDisplay(cardName, state = true) {
-  const card = new bootstrap.Card(document.getElementById(cardName), {});
+  const card = document.getElementById(cardName);
   if (state) {
-    card.show();
+    card.classList.add('show');
+    card.style.display = 'block';
   } else {
-    card.hide();
+    card.classList.remove('show');
+    card.style.display = 'none';
   }
 }
 function classDisplay(theclassname, state = 'block') {
   const elements = [...document.querySelectorAll(`.${theclassname}`)];
-  if (Array.isArray())
   for (const element of elements) {
     element.style.display = state;
   }
 }
 function elementDisplay(elementName, state = 'block') {
-  const elements = document.getElementById(elementName);
-  for (const element of elements) {
-    element.style.display = state;
-  }
+  const element = document.getElementById(elementName);
+  element.style.display = state;
 }
 
 function generateCode() {
@@ -238,14 +243,14 @@ function generateCode() {
 }
 
 class game {
-  canvas = document.getElementById('DrawingCanvas');
-  guessButton = document.getElementById("GuessButton");
-  colorPicker = document.getElementById("colorPicker");
-  doodlenetSelect = document.getElementById("doodlenetSelect");
-  mobilenetSelect = document.getElementById("mobilenetSelect");
-  darknetSelect = document.getElementById("darknetSelect");
-  modelButton = document.getElementById("modelButton");
-  thicknessSlider = document.getElementById('thicknessSlider');
+  canvas;
+  guessButton;
+  colorPicker;
+  doodlenetSelect;
+  mobilenetSelect;
+  darknetSelect;
+  modelButton;
+  thicknessSlider;
   classifier;
   tap = false;
   mouseDown = 0;
@@ -257,6 +262,14 @@ class game {
   timer_interval;
 
   constructor(properties) {
+    this.canvas = document.getElementById('DrawingCanvas');
+    this.guessButton = document.getElementById("GuessButton");
+    this.colorPicker = document.getElementById("colorPicker");
+    this.doodlenetSelect = document.getElementById("doodlenetSelect");
+    this.mobilenetSelect = document.getElementById("mobilenetSelect");
+    this.darknetSelect = document.getElementById("darknetSelect");
+    this.modelButton = document.getElementById("modelButton");
+    this.thicknessSlider = document.getElementById('thicknessSlider');
     modalDisplay("loadingModal", true);
     let classifierLoadInterval = setInterval(() => {
       if (ml5) {
@@ -270,7 +283,7 @@ class game {
     }, 1000);
     // doMusic();
     resizeCanvasToDisplaySize();
-    this.canvas.setAttribute("penColor", "#000000");
+    if (this.canvas) this.canvas.setAttribute("penColor", "#000000");
     this.newPrompt();
     if (properties.multiplayer == true) this.runTimer();
   }
