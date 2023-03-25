@@ -1,16 +1,12 @@
-import database from "./Data/database.js";
-const {users, games} = database;
+// import { classDisplay, elementDisplay, modalDisplay, generateCode } from "./local_modules/helper_functions";
 
-function generateCode() {
-    return ((36 ** 3) + Math.floor(Math.random() * (34 * 36**3 + 35 * 36**2 + 35 * 36 + 35))).toString(36).toUpperCase();
-}
 
 // initialization
-$(document).ready(async function () {
+async function checkCredentials() {
     let loggedIn = false;
     if (localStorage.getItem("user_data")) {
         let user_data = JSON.parse(localStorage.getItem("user_data"));
-        let verified = await fetch(`/api/users/login/${user_data?.username}/${user_data?.password}`).then(response => response.json());
+        let verified = await fetch(`/api/users/login/${user_data?.username}/${user_data?.password}`);
         loggedIn = (verified.msg == "successful");
         if (!loggedIn) {
             localStorage.removeItem("user_data");
@@ -18,15 +14,18 @@ $(document).ready(async function () {
     }
     if (loggedIn) {
         let user_data = JSON.parse(localStorage.getItem("user_data"));
-        $('.loggedIn').css("display", "block");
-        $('.noCredentials').css("display", "none");
+        classDisplay("loggedIn", "block");
+        classDisplay("noCredentials", "none");
+
         let lobbyTitle = document.getElementById("LobbyTitle");
         lobbyTitle.innerText = `Welcome, ${user_data?.username}!`;
     } else {
-        $('.loggedIn').css("display", "none");
-        $('.noCredentials').css("display", "block");
+        classDisplay("loggedIn", "none");
+        classDisplay("noCredentials", "block");
     }
-});
+}
+
+checkCredentials();
 
 
 // Start entering credentials
@@ -41,8 +40,8 @@ startCredentialsButton.addEventListener('click', () => {
     fields.forEach((field) => {
         field.value = "";
     });
-    $("#loginCredentialsAlert").hide();
-    $("#signupCredentialsAlert").hide();
+    elementDisplay("loginCredentialsAlert", "none");
+    elementDisplay("signupCredentialsAlert", "none");
 })
 
 // logging in
@@ -62,23 +61,23 @@ loginButton.addEventListener('click', async () => {
         if (users_map[username]?.password === password) {
              console.log("Login Successful!");
             localStorage.setItem("user_data", JSON.stringify(users_map[username]));
-            $('#loginModal').modal('hide');
-            $('.loggedIn').css("display", "block");
-            $('.noCredentials').css("display", "none");
+            modalDisplay("loginModal", false);
+            classDisplay("loggedIn", "block");
+            classDisplay("noCredentials", "none");
             let lobbyTitle = document.getElementById("LobbyTitle");
             lobbyTitle.innerText = `Welcome, ${username}!`;
-            $("#loginCredentialsAlert").hide();
+            elementDisplay("loginCredentialsAlert", "none");
         } else {
              console.log("Invalid Password, scrub!");
             let alert = document.getElementById('loginCredentialsAlert');
             alert.innerHTML = "Invalid password. Please try again.";
-            $("#loginCredentialsAlert").show();
+            elementDisplay("loginCredentialsAlert", "block");
         }
     } else {
         console.log("unrecognized user!");
         let alert = document.getElementById('loginCredentialsAlert');
         alert.innerHTML = "Invalid username. Please try again.";
-        $("#loginCredentialsAlert").show();
+        elementDisplay("loginCredentialsAlert", "block");
     }
 });
 
@@ -113,26 +112,26 @@ signupButton.addEventListener('click', async () => {
                 console.log(response);
                 console.log("Signup successful!");
                 // TODO: SKIP SIGNING IN WHEN REGISTERED
-                $("#signupModal").modal("hide");
-                $("#loginModal").modal("show");
-                $("#signupCredentialsAlert").hide();
+                modalDisplay("signupModal", false);
+                modalDisplay("loginModal", true);
+                elementDisplay("signupCredentialsAlert", "none");
             } else {
                  console.log("Passwords do not match!");
                 let alert = document.getElementById('signupCredentialsAlert');
                 alert.innerHTML = "Passwords do not match. Please try again.";
-                $("#signupCredentialsAlert").show();
+                elementDisplay("signupCredentialsAlert", "block");
             }
         } else {
             let alert = document.getElementById('signupCredentialsAlert');
             alert.innerHTML = "Please provide a password.";
-            $("#signupCredentialsAlert").show();
+            elementDisplay("signupCredentialsAlert", "block");
         }
 
     } else {
          // console.log("User already exists!");
         let alert = document.getElementById('signupCredentialsAlert');
         alert.innerHTML = "Username already in use. Please try again.";
-        $("#signupCredentialsAlert").show();
+        elementDisplay("signupCredentialsAlert", "block");
     }
 })
 
@@ -140,8 +139,8 @@ signupButton.addEventListener('click', async () => {
 let logoutButton = document.getElementById("logoutButton");
 logoutButton.addEventListener('click', () => {
     localStorage.removeItem("user_data");
-    $('.loggedIn').css("display", "none");
-    $('.noCredentials').css("display", "block");
+    classDisplay("loggedIn", "none");
+    classDisplay("noCredentials", "block");
 });
 
 // Joining a game
@@ -152,7 +151,7 @@ joinGameButton.addEventListener('click', () => {
     let gameCode = gameCodeField.value;
     let alert = document.getElementById('joinGameAlert');
     alert.innerHTML = "Joining unavaliable until networking is programmed.";
-    $("#joinGameAlert").show();
+    elementDisplay("joinGameAlert", "block");
     if (gameCode in games) {
          console.log("Join Game Successful!");
     } else {

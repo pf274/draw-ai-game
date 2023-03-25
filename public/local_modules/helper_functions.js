@@ -1,4 +1,4 @@
-export function calculateMouseCoords(event, canvas) {
+function calculateMouseCoords(event, canvas) {
   const clientX = event?.clientX || event.touches[0]?.clientX;
   const clientY = event?.clientY || event.touches[0]?.clientY;
   let rect = canvas.getBoundingClientRect();
@@ -11,25 +11,25 @@ export function calculateMouseCoords(event, canvas) {
 /**
  * Returns whether the left mouse button is down
  */
-export function setPrimaryButtonState(event) { // since it's possible to click out of the canvas and still have mouseDown set to more than 0, double check!
+function setPrimaryButtonState(event) { // since it's possible to click out of the canvas and still have mouseDown set to more than 0, double check!
   var flags = event.buttons !== undefined ? event.buttons : event.which;
   return (flags & 1) === 1;
 }
 /**
  * Sets the color of the pen
  */
-export function setColor(color) {
+function setColor(color) {
   let canvas = document.getElementById('DrawingCanvas');
   canvas.setAttribute("penColor", color);
 }
 /**
  * Redirects to the home page.
  */
-export function goToHome() {
+function goToHome() {
   window.location.assign('../../index.html');
 }
 
-export function clearCanvas() {
+function clearCanvas() {
   let canvas = document.getElementById('DrawingCanvas');
   let context = canvas.getContext("2d");
   context.fillStyle = "rgba(255, 255, 255, 1)";
@@ -38,7 +38,7 @@ export function clearCanvas() {
   context.beginPath();
 }
 
-export function resizeCanvasToDisplaySize() {
+function resizeCanvasToDisplaySize() {
   let canvas = document.getElementById('DrawingCanvas');
   // Look up the size the browser is displaying the canvas in CSS pixels.
   const displayWidth = canvas.clientWidth;
@@ -57,7 +57,7 @@ export function resizeCanvasToDisplaySize() {
   }
 }
 
-export async function cropContent(canvas) { // takes in the drawing canvas and outputs a cropped canvas
+async function cropContent(canvas) { // takes in the drawing canvas and outputs a cropped canvas
   const context = canvas.getContext("2d");
   const width = canvas.width;
   const height = canvas.height;
@@ -95,10 +95,7 @@ export async function cropContent(canvas) { // takes in the drawing canvas and o
   return croppedCanvas;
 }
 
-/**
- * Uses free online datasets to classify your drawing
- */
-export async function AIGuess(classifier) {
+async function AIGuess(classifier) {
   let canvas = document.getElementById("DrawingCanvas");
   let shouldCrop = true;
   let numberOfGuesses = 5;
@@ -132,7 +129,7 @@ export async function AIGuess(classifier) {
   });
 }
 
-export async function getPrompt() {
+async function getPrompt() {
   // prepare categories
   let guesses_source = "../../Data/categories.txt";
   return fetch(guesses_source).then(response => response.text()).then(data => {
@@ -142,7 +139,7 @@ export async function getPrompt() {
   });
 }
 
-export function calculatePoints(guesses, prompt) {
+function calculatePoints(guesses, prompt) {
   let points = 0;
   let guessTable = document.getElementById("guessTable");
   let rows = guessTable.rows;
@@ -160,12 +157,12 @@ export function calculatePoints(guesses, prompt) {
   return points;
 }
 
-export async function getImageAsData() {
+async function getImageAsData() {
   let canvas = document.getElementById("DrawingCanvas");
   return cropContent(canvas).then(result => result.toDataURL());
 }
 
-export function saveDoodle(image_data) {
+function saveDoodle(image_data) {
   if (localStorage.getItem("user_data")) {
     let user_data = JSON.parse(localStorage.getItem("user_data"));
     let username = user_data.username;
@@ -190,7 +187,7 @@ export function saveDoodle(image_data) {
   }
 }
 
-export function doMusic() {
+function doMusic() {
 
   console.log("Music loaded!");
   let introSong = new Audio('../../Sounds/Intro.wav');
@@ -206,7 +203,7 @@ export function doMusic() {
   
   introSong.play();
 }
-export function modalDisplay(modalName, state = true) {
+function modalDisplay(modalName, state = true) {
   const modal = new bootstrap.Modal(document.getElementById(modalName), {});
   if (state) {
     modal.show();
@@ -214,9 +211,33 @@ export function modalDisplay(modalName, state = true) {
     modal.hide();
   }
 }
+function cardDisplay(cardName, state = true) {
+  const card = new bootstrap.Card(document.getElementById(cardName), {});
+  if (state) {
+    card.show();
+  } else {
+    card.hide();
+  }
+}
+function classDisplay(theclassname, state = 'block') {
+  const elements = [...document.querySelectorAll(`.${theclassname}`)];
+  if (Array.isArray())
+  for (const element of elements) {
+    element.style.display = state;
+  }
+}
+function elementDisplay(elementName, state = 'block') {
+  const elements = document.getElementById(elementName);
+  for (const element of elements) {
+    element.style.display = state;
+  }
+}
 
+function generateCode() {
+  return ((36 ** 3) + Math.floor(Math.random() * (34 * 36**3 + 35 * 36**2 + 35 * 36 + 35))).toString(36).toUpperCase();
+}
 
-export class game {
+class game {
   canvas = document.getElementById('DrawingCanvas');
   guessButton = document.getElementById("GuessButton");
   colorPicker = document.getElementById("colorPicker");
