@@ -141,21 +141,6 @@ export async function getPrompt() {
     return new_prompt;
   });
 }
-export function openModal(modalName) {
-  const modal = document.getElementById(modalName); // loadingModal
-  modal.style.display = 'block';
-  modal.classList.add('show');
-  modal.setAttribute('aria-modal', 'true');
-  modal.setAttribute('aria-hidden', 'false');
-}
-
-export function closeModal(modalName) {
-  const modal = document.getElementById(modalName); // loadingModal
-  modal.style.display = 'none';
-  modal.classList.remove('show');
-  modal.setAttribute('aria-modal', 'false');
-  modal.setAttribute('aria-hidden', 'true');
-}
 
 export function calculatePoints(guesses, prompt) {
   let points = 0;
@@ -221,6 +206,15 @@ export function doMusic() {
   
   introSong.play();
 }
+export function modalDisplay(modalName, state = true) {
+  const modal = new bootstrap.Modal(document.getElementById(modalName), {});
+  if (state) {
+    modal.show();
+  } else {
+    modal.hide();
+  }
+}
+
 
 export class game {
   canvas = document.getElementById('DrawingCanvas');
@@ -242,11 +236,11 @@ export class game {
   timer_interval;
 
   constructor(properties) {
-    openModal("loadingModal");
+    modalDisplay("loadingModal", true);
     let classifierLoadInterval = setInterval(() => {
       if (ml5) {
         clearInterval(classifierLoadInterval);
-        ml5.imageClassifier('doodlenet', closeModal("loadingModal")).then(result => {
+        ml5.imageClassifier('doodlenet', modalDisplay("loadingModal", false)).then(result => {
           this.classifier = result;
         });
       } else {
@@ -385,9 +379,8 @@ export class game {
   startPhase(phase) {
     if (phase === "get new prompt") {
       this.clear();
-      closeModal("guessModal");
-      openModal("promptModal");
-      // $("#promptModal").modal("show");
+      modalDisplay("guessModal", false);
+      modalDisplay("promptModal", true);
       let dingSound = new Audio(`../../Sounds/bell${Math.floor(Math.random() * 3 + 1)}.wav`);
       dingSound.play();
       getPrompt().then((new_prompt) => {
@@ -401,16 +394,16 @@ export class game {
       });
 
     } else if (phase === "draw") {
-      closeModal("promptModal");
+      modalDisplay("promptModal", false);
       let promptModal = document.getElementById("promptModal");
     } else if (phase === "done drawing") {
-      openModal("doneDrawingModal");
+      modalDisplay("doneDrawingModal", true);
       getImageAsData().then(canvasData => {
         saveDoodle(canvasData);
       });
     } else if (phase === "review results") {
-      closeModal("doneDrawingModal");
-      openModal("guessModal");
+      modalDisplay("doneDrawingModal", false);
+      modalDisplay("guessModal", true);
       AIGuess(this.classifier).then((guesses) => {
         let pointsAwardedElement = document.getElementById("pointsAwarded");
         let totalPointsElement = document.getElementById("totalPoints");
