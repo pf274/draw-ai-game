@@ -4,21 +4,21 @@
 // initialization
 // async function checkCredentials() {
 //     let loggedIn = false;
-//     if (localStorage.getItem("user_data")) {
-//         let user_data = JSON.parse(localStorage.getItem("user_data"));
-//         let verified = await fetch(`/api/users/login/${user_data?.username}/${user_data?.password}`);
+//     if (localStorage.getItem("username")) {
+//         let username = localStorage.getItem("username");
+//         let verified = await fetch(`/api/users/login/${username}/${PASSWORDPASSWORD}`);
 //         loggedIn = (verified.msg == "successful");
 //         if (!loggedIn) {
-//             localStorage.removeItem("user_data");
+//             localStorage.removeItem("username");
 //         }
 //     }
 //     if (loggedIn) {
-//         let user_data = JSON.parse(localStorage.getItem("user_data"));
+//         let username = localStorage.getItem("username");
 //         classDisplay("loggedIn", "block");
 //         classDisplay("noCredentials", "none");
 
 //         let lobbyTitle = document.getElementById("LobbyTitle");
-//         lobbyTitle.innerText = `Welcome, ${user_data?.username}!`;
+//         lobbyTitle.innerText = `Welcome, ${username}!`;
 //     } else {
 //         classDisplay("loggedIn", "none");
 //         classDisplay("noCredentials", "block");
@@ -138,19 +138,39 @@ logoutButton.addEventListener('click', () => {
     classDisplay("noCredentials", "block");
 });
 
+async function pruneGames() {
+    // TODO: get rid of games that don't have their participants or hosts on the network
+}
+
 // Joining a game
 let joinGameButton = document.getElementById("joinGameButton");
-joinGameButton.addEventListener('click', () => {
+joinGameButton.addEventListener('click', async () => {
     let gameCodeField = document.getElementById("joinGameCodeField");
 
     let gameCode = gameCodeField.value;
-    let alert = document.getElementById('joinGameAlert');
-    alert.innerHTML = "Joining unavaliable until networking is programmed.";
-    elementDisplay("joinGameAlert", "block");
-    if (gameCode in games) {
-         console.log("Join Game Successful!");
+
+    let games = await fetch('/api/games/list').then(response => response.json());
+    let gamesMap = {};
+    for (const game of games) {
+        gamesMap[game.id] = game;
+    }
+    if (gameCode in gamesMap) {
+        let limit = 100;
+        if (gamesMap[gameCode].participants.length < limit) {
+            console.log("Join Game Successful!");
+            elementDisplay("joinGameAlert", "none");
+            // TODO: ADD PERSON TO PARTICIPANTS LIST
+        } else {
+            console.log(`Game is limited to ${limit} people`);
+            let alert = document.getElementById('joinGameAlert');
+            alert.innerHTML = `Game is at capacity. (${limit} people)`;
+            elementDisplay("joinGameAlert", "block");
+        }
     } else {
-         console.log("Invalid game code!");
+        console.log("Invalid game code!");
+        let alert = document.getElementById('joinGameAlert');
+        alert.innerHTML = `Invalid Game Code`;
+        elementDisplay("joinGameAlert", "block");
     }
 })
 
@@ -159,12 +179,12 @@ joinGameButton.addEventListener('click', () => {
 // Hosting a game
 let hostGameModalButton = document.getElementById("hostGameModalButton");
 hostGameModalButton.addEventListener('click', async () => {
-    let deleted = await fetch("api/games/clear", {method: "DELETE"}).then(response => response.json());
+    await pruneGames();
     let generatedCodeElement = document.getElementById("generatedCode");
     let generatedCode = generateCode(); // Generates a random game code four characters long, using chars 0-9 and A-Z.
 
     let all_games = await fetch("api/games/list").then(response => response.json());
-    console.log(all_games);
+    // console.log(all_games);
     let games_map = {};
     for (const game of all_games) {
         games_map[game.id] = game;
@@ -172,7 +192,7 @@ hostGameModalButton.addEventListener('click', async () => {
     while (generatedCode in games_map) {
         generatedCode = generateCode();
     }
-    let username = JSON.parse(localStorage.getItem("user_data")).username;
+    let username = localStorage.getItem("username");
     let hosted_game = await fetch("/api/games/host", {
         method: "POST",
         headers: {'Content-Type': 'application/json'},
@@ -180,12 +200,12 @@ hostGameModalButton.addEventListener('click', async () => {
             id: generatedCode,
             host: username,
             participants: [],
-            status: "starting",
+            status: "lobby",
         })
     }).then(response => {
         if (response.ok) return response.json();
     });
-    console.log(hosted_game);
+    // console.log(hosted_game);
     generatedCodeElement.innerText = generatedCode;
 });
 
