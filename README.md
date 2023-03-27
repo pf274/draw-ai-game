@@ -56,6 +56,10 @@ Have you ever wanted to pit your drawing abilities against your friends and have
 * selecting an item is as easy as having a filter like this: {id: 'test'}
 * never store credentials in a repository
 
+### What I have learned from the Simon Login Assignment:
+* I found out the hard way that you need to set your mongodb cluster to be accessible from anywhere.
+* You can have apis that are not secured and some that are!
+* You can also redirect apis into separate files, which can help if you have a lot of apis and you need to group them together.
 
 ### Other notes on html and CSS:
 * Use media queries like this: @media screen and (max-width: 100px) {}
