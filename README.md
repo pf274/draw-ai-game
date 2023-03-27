@@ -61,6 +61,12 @@ Have you ever wanted to pit your drawing abilities against your friends and have
 * You can have apis that are not secured and some that are!
 * You can also redirect apis into separate files, which can help if you have a lot of apis and you need to group them together.
 
+### What I have learned from the Simon Websocket Assignment:
+* Using websockets is pretty easy!
+* Refer to the simon repository to see how it works
+* Instances can ping each other at regular intervals to verify if a connection is still active
+* Websockets are a great way of activating events based on the actions of other users
+
 ### Other notes on html and CSS:
 * Use media queries like this: @media screen and (max-width: 100px) {}
 * Flex is the easiest way that I have found to structure content the way I want.
