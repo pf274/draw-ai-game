@@ -1,0 +1,28 @@
+.card {
+    width: 50%;
+    height: 50%;
+    min-width: 300px;
+    max-width: 600px;
+    max-height: 400px;
+    min-height: 200px;
+}
+.card-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.button {
+    margin: 10px;
+}
+.card-footer {
+    display: flex;
+    flex-direction: row;
+    align-items: left;
+}
+.noCredentials {
+    display: none;
+}
+
+.loggedIn {
+    display: block;
+}
