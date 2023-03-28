@@ -1,0 +1,45 @@
+{
+  "scripts": {
+    "deploy": "./deployFiles.sh -k ~/keys/production.pem -h peterfullmer.net -s startup"
+  },
+  "name": "startup",
+  "description": "CS 260 Start Up Project\r This is where I'll keep notes.\r I have successfully uploaded this to replit and it looks like version control works here too. How cool! It syncs with my github repository just fine.\r I am already really familiar with github. I am a web developer for the BYU Law school and we use it for all our major projects. As for what I learned in the github assignment for this course, it really was just realizing that I can connect an online IDE to github.",
+  "version": "1.0.0",
+  "main": "index.js",
+  "dependencies": {
+    "anymatch": "^3.1.3",
+    "bcrypt": "^5.1.0",
+    "binary-extensions": "^2.2.0",
+    "braces": "^3.0.2",
+    "chokidar": "^3.5.3",
+    "cookie-parser": "^1.4.6",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "fill-range": "^7.0.1",
+    "glob-parent": "^5.1.2",
+    "immutable": "^4.2.4",
+    "is-binary-path": "^2.1.0",
+    "is-extglob": "^2.1.1",
+    "is-glob": "^4.0.3",
+    "is-number": "^7.0.0",
+    "jquery": "^3.6.4",
+    "mongodb": "^5.1.0",
+    "normalize-path": "^3.0.0",
+    "picomatch": "^2.3.1",
+    "readdirp": "^3.6.0",
+    "source-map-js": "^1.0.2",
+    "to-regex-range": "^5.0.1",
+    "uuid": "^9.0.0"
+  },
+  "keywords": [],
+  "author": "pf274",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pf274/startup.git"
+  },
+  "bugs": {
+    "url": "https://github.com/pf274/startup/issues"
+  },
+  "homepage": "https://github.com/pf274/startup#readme"
+}
