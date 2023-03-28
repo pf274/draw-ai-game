@@ -1,7 +1,6 @@
 import './HomePage.css';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
-
 function HomePage() {
     return (
         <Card id="HomePage">
@@ -9,7 +8,7 @@ function HomePage() {
                 <Card.Title className="noCredentials">Draw AI</Card.Title>
                 <Card.Title className="loggedIn" id="LobbyTitle">Lobby</Card.Title>
             </Card.Header>
-            <Card.Body>
+            <Card.Body id="HomePageBody">
                 <div className="noCredentials">
                     <Card.Text>Log In to Play</Card.Text>
                 </div>

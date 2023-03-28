@@ -4,7 +4,7 @@ import DrawPage from './Components/DrawPage.jsx';
 function App() {
   return (
     <div className="App">
-      <HomePage />
+      {/* <HomePage /> */}
       <DrawPage />
     </div>
   );

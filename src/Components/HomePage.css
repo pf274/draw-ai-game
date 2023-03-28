@@ -1,4 +1,4 @@
-.card {
+#HomePage {
     width: 50%;
     height: 50%;
     min-width: 300px;
@@ -6,13 +6,10 @@
     max-height: 400px;
     min-height: 200px;
 }
-.card-body {
+#HomePageBody {
     display: flex;
     flex-direction: column;
     justify-content: center;
-}
-.button {
-    margin: 10px;
 }
 .card-footer {
     display: flex;
@@ -22,7 +19,6 @@
 .noCredentials {
     display: none;
 }
-
 .loggedIn {
     display: block;
 }
