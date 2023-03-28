@@ -1,176 +1,42 @@
+<!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, minimum-scale=1, user-scalable=no" />
-        <title>Startup Home</title>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
-        <link rel="stylesheet" href="./index.css">
-    </head>
-    <body>
-        <main class="content-wrap bg-body-secondary">
-            <div class="card" id="loginCard"> <!-- Main Screen -->
-                <div class="card-header">
-                    <h1 class="card-title noCredentials">Draw AI</h1>
-                    <h1 class="modal-title loggedIn" id="LobbyTitle">Lobby</h1>
-                </div>
-                <div class="card-body">
-                    <div class = "noCredentials">
-                        <h3 class="card-text">Log In to Play</h3>
-                        <form method="get" action="./Pages/Login/login.html" id="cardButtons">
-                            <button type="button" class="btn btn-primary mb-2" data-bs-toggle="modal" data-bs-target="#loginModal" id="startCredentialsButton">Login</button>
-                        </form>
-                    </div>
-                    <div class="loggedIn">
-                        <h2>Multiplayer</h2>
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#joinGameModal">Join Game</button>
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#hostGameModal" id="hostGameModalButton">Host Game</button>
-                        <h2 class="mt-2">Singleplayer</h2>
-                        <button type="button" class="btn btn-primary mb-2" id="freeDrawButton">Free Draw</button>
-                    </div>
-                </div>
-                <div class="card-footer">
-                    <button type="button" class="btn btn-secondary loggedIn" id="logoutButton">Log Out</button>
-                </div>
-            </div>
-            <div class="modal fade" id="loginModal" tabindex="-1" aria-hidden="true"> <!-- Login Modal -->
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">Log In</h5>
-                        </div>
-                        <div class="modal-body">
-                            <form>
-                                <div class="input-group">
-                                    <input type="text" class="form-control" autocomplete="off" placeholder="Username" id="LoginUsernameField">
-                                </div>
-                                <div class="input-group">
-                                    <input type="password" class="form-control" placeholder="Password" autocomplete="current-password" id="LoginPasswordField">
-                                </div>
-                                <div id="loginCredentialsAlert" class="alert alert-danger" role="alert" style="display: none;">
-                                    Default alert message
-                                </div>
-                            </form>
-                        </div>
-                        <div class="modal-footer">
-                            <div class="row" style="justify-content: center; align-items: center;">
-                                <div class="col-md-6 text-center">
-                                    <h6 id="signupLink">Don't have an account? <a href="#" class="link-primary" data-bs-toggle="modal" data-bs-target="#signupModal">Sign Up</a></h6>
-                                </div>
-                                <div class="col-md-6 text-right" style="align-items:center;">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    <button type="button" class="btn btn-primary" id="LoginSubmitButton">Submit</button> <!-- Submit the username and password! -->
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal fade" id="signupModal" tabindex="-1" aria-hidden="true"> <!-- Signup Modal -->
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">Sign Up</h5>
-                        </div>
-                        <div class="modal-body">
-                            <form>
-                                <div class="input-group">
-                                    <input type="text" class="form-control" autocomplete="off" placeholder="Username" id="SignupUsernameField">
-                                </div>
-                                <div class="input-group">
-                                    <input type="password" class="form-control" autocomplete="current-password" placeholder="Password" id="SignupPasswordField">
-                                </div>
-                                <div class="input-group">
-                                    <input type="password" class="form-control" autocomplete="current-password" placeholder="Reenter Password" id="SignupReenterPasswordField">
-                                </div>
-                                <div id="signupCredentialsAlert" class="alert alert-danger" role="alert" style="display: none;">
-                                    Default alert message
-                                </div>
-                            </form>
-                        </div>
-                        <div class="modal-footer">
-                            <div class="row" style="justify-content: center; align-items: center;">
-                                <div class="col-md-6 text-center">
-                                    <h6 id="loginLink">Already have an account? <a href="#" class="link-primary" data-bs-toggle="modal" data-bs-target="#loginModal">Login</a></h6>
-                                </div>
-                                <div class="col-md-6 text-right" style="align-items:center;">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    <button type="button" class="btn btn-primary" id="SignupSubmitButton">Submit</button> <!-- Submit the username and password! -->
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal fade" id="joinGameModal" tabindex="-1" aria-hidden="true"> <!-- Join Game Modal -->
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="joinGameMenu">Join Game</h5>
-                        </div>
-                        <div class="modal-body">
-                            <div class="input-group">
-                                <input type="text" class="form-control" placeholder="Game Code" autocomplete="off" id="joinGameCodeField">
-                            </div>
-                        </div>
-                        <div id="joinGameAlert" class="alert alert-danger" role="alert" style="display: none;">
-                            Default alert message
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Back</button>
-                            <button type="button" class="btn btn-primary" id="joinGameButton">Join Game</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal fade" id="hostGameModal" tabindex="-1" aria-hidden="true"> <!-- Host Game Modal -->
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">Host Game</h5>
-                        </div>
-                        <div class="modal-body">
-                            <h3 id="generatedCode">AAAA</h3>
-                            <table class="table table-striped table-hover">
-                                <thead>
-                                  <tr class="table-success">
-                                    <th scope="col">#</th>
-                                    <th scope="col">Player</th>
-                                  </tr>
-                                </thead>
-                                <tbody class="table-primary">
-                                  <tr>
-                                    <th scope="row">1</th>
-                                    <td id="player1">Host's Name</td>
-                                  </tr>
-                                  <tr>
-                                    <th scope="row">2</th>
-                                    <td id="player2">...</td>
-                                  </tr>
-                                  <tr>
-                                    <th scope="row">3</th>
-                                    <td id="player3">...</td>
-                                  </tr>
-                                  <tr>
-                                    <th scope="row">4</th>
-                                    <td id="player4">...</td>
-                                  </tr>
-                                </tbody>
-                              </table>
-                            <!-- <label for="shareIcon">Invite friends
-                                <i id="shareIcon" class="bi bi-share"></i>
-                            </label> -->
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Back</button>
-                            <button type="button" class="btn btn-primary" id="startHostedGameButton">Start Game</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </main>
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
-        <script src="./local_modules/helper_functions.js"></script>
-        <script src="./index.js"></script>
-    </body>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta
+      name="description"
+      content="Web site created using create-react-app"
+    />
+    <!--
+      manifest.json provides metadata used when your web app is installed on a
+      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
+    -->
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <!--
+      Notice the use of %PUBLIC_URL% in the tags above.
+      It will be replaced with the URL of the `public` folder during the build.
+      Only files inside the `public` folder can be referenced from the HTML.
+
+      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
+      work correctly both with client-side routing and a non-root public URL.
+      Learn how to configure a non-root public URL by running `npm run build`.
+    -->
+    <title>React App</title>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+    <!--
+      This HTML file is a template.
+      If you open it directly in the browser, you will see an empty page.
+
+      You can add webfonts, meta tags, or analytics to this file.
+      The build step will place the bundled scripts into the <body> tag.
+
+      To begin the development, run `npm start` or `yarn start`.
+      To create a production bundle, use `npm run build` or `yarn build`.
+    -->
+  </body>
 </html>
