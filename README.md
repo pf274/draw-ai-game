@@ -1,70 +1,79 @@
-# Getting Started with Create React App
+# startup
+## Github Assignment
+CS 260 Start Up Project
+This is where I'll keep notes.
+I have successfully uploaded this to replit and it looks like version control works here too. How cool! It syncs with my github repository just fine.
+I am already really familiar with github. I am a web developer for the BYU Law school and we use it for all our major projects. As for what I learned in the github assignment for this course, it really was just realizing that I can connect an online IDE to github.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+**[Startup Repository](https://github.com/pf274/startup.git)**
 
-## Available Scripts
+## Elevator Pitch
+Have you ever wanted to pit your drawing abilities against your friends and have an impartial judge? With Draw AI, you can do just that! Draw AI allows you to enter into a fun, fast-paced drawing challenge judged by Artificial Intelligence. To play the game, the website first gives you and your friends the same prompt. Each person playing then draws the prompt to the best of their ability under the time constraint, then the AI looks at each drawing and gives each one a score based on how recognizable it is. These scores are converted to points in the game, and the game continues on until several rounds have passed. This game is quick and quirky, and will leave you and your friends laughing.
 
-In the project directory, you can run:
+### Concept Art
+<img src="./Images/Concept_Art/sketch_1.jpg"  width=33%>
+<img src="./Images/Concept_Art/sketch_2.jpg"  width=33%>
+<img src="./Images/Concept_Art/sketch_3.jpg"  width=33%>
+<img src="./Images/Concept_Art/sketch_4.jpg"  width=33%>
+<img src="./Images/Concept_Art/sketch_5.jpg"  width=33%>
+<img src="./Images/Concept_Art/sketch_6.jpg"  width=33%>
+<img src="./Images/Concept_Art/sketch_7.jpg"  width=33%>
+<img src="./Images/Concept_Art/sketch_8.jpg"  width=33%>
+<img src="./Images/Concept_Art/sketch_9.jpg"  width=33%>
+<img src="./Images/Concept_Art/sketch_10.jpg"  width=33%>
 
-### `npm start`
+### Key Features:
+* Secure sign up / log in
+* Multiplayer support
+* AI picture recognition
+* Real-time updates
+* Player data stored in a database
+* Game lobby creation
+* Game synchronization
+* Responsive drawing board
+* Touch / Stylus support
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### What I have learned from the Simon CSS assignment:
+* When a header or footer is always at the top/bottom of a page, it's called 'sticky'
+* You need to include the bootstrap javascript file at the bottom of your body element so that dropdown menus and other items work as expected.
+* Bootstrap class names are often predictable, and are necessary.
+* Bootstrap makes web development very fast!
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### What I have learned from the Simon JS assignment:
+* setInterval and setTimeout are very useful for making animations. You can also use clearInterval to end an interval!
+* you can use querySelector to get one item of a specific class.
+* Sounds are created by loading them into an Audio object, so it's nice to initialize all your sounds and save the audio objects in another objects for quick reference.
+* creating elements dynamically isn't too hard, as long as you keep track of the elements and know how to manipulate them. You can use element.appendChild to add a child element.
 
-### `npm test`
+### What I have learned from the Simon Service assignment: 
+* follow the example given in your simon repository to set up express.
+* you can specify methods and parameters for an api request by supplying fetch with a url and an object.
+* your request body might need to be stringified to work.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### What I have learned from the Simon DB assignment: 
+* follow the example given in your simon repository to set up mongodb.
+* you can use an empty filter to target all documents
+* selecting an item is as easy as having a filter like this: {id: 'test'}
+* never store credentials in a repository
 
-### `npm run build`
+### What I have learned from the Simon Login Assignment:
+* I found out the hard way that you need to set your mongodb cluster to be accessible from anywhere.
+* You can have apis that are not secured and some that are!
+* You can also redirect apis into separate files, which can help if you have a lot of apis and you need to group them together.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### What I have learned from the Simon Websocket Assignment:
+* Using websockets is pretty easy!
+* Refer to the simon repository to see how it works
+* Instances can ping each other at regular intervals to verify if a connection is still active
+* Websockets are a great way of activating events based on the actions of other users
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+### Other notes on html and CSS:
+* Use media queries like this: @media screen and (max-width: 100px) {}
+* Flex is the easiest way that I have found to structure content the way I want.
+Just use display: flex; and flex-direction: row/column; to initialize it.
+* justify-content aligns things horizontally, while align-items aligns things vertically.
+* In order to use a function from a module in a html file, you need to do the following:
+    * create a script in html
+    * import the functions from the module
+    * create functions that call the imported functions (they cannot be accessed directly)
+    * bind them to the window object, like so: window.setColorFromButton = setColorFromButton;
