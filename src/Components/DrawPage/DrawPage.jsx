@@ -9,6 +9,7 @@ const DrawPage = (props) => {
 
     function goBack() {
         props.setPage(Pages.Home);
+        window.history.back();
     }
 
     useEffect(() => {
@@ -17,7 +18,7 @@ const DrawPage = (props) => {
         return (() => {
             window.removeEventListener("popstate", goBack);
         })
-    }, [])
+    }, []);
     return (
         <Card id="DrawPage">
             <Card.Header id="DrawPageHeader">
