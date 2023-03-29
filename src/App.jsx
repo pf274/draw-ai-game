@@ -16,7 +16,7 @@ function App() {
   return (
     <div className="App">
       {page == Pages.Home ? <HomePage setMode={setMode} setPage={setPage} /> :
-      page = Pages.Draw ? <DrawPage setPage={setPage} /> : <div></div>}
+      page = Pages.Draw ? <DrawPage mode={mode} setPage={setPage} /> : <div></div>}
     </div>
   );
 }

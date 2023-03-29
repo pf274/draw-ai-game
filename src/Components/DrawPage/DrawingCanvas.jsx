@@ -95,7 +95,6 @@ function DrawingCanvas() {
         }
     }
     useEffect(() => {
-        const drawingCanvas = document.getElementById("drawingCanvas");
         // when page loads, set event listeners
         window.addEventListener('resize', startResize);
         window.addEventListener('mousedown', function (event) {startDraw(event);});

@@ -9,6 +9,10 @@ const HomePage = (props) => {
         props.setMode(Modes.Single);
         props.setPage(Pages.Draw);
     }
+    function goToMultiplayerDrawPage() {
+        props.setMode(Modes.Multi);
+        props.setPage(Pages.Draw);
+    }
     return (
         <Card id="HomePage">
             <Card.Header>
@@ -22,7 +26,7 @@ const HomePage = (props) => {
                 <div className="loggedIn">
                     <h2>Multiplayer</h2>
                     <Button variant="primary">Join Game</Button>
-                    <Button variant="primary" id="hostGameModalButton">Host Game</Button>
+                    <Button variant="primary" id="hostGameModalButton" onClick={goToMultiplayerDrawPage}>Host Game</Button>
                     <h2 className="mt-2">Singleplayer</h2>
                     <Button variant="primary" id="freeDrawButton" onClick={goToSingleplayerDrawPage}>Free Draw</Button>
                 </div>

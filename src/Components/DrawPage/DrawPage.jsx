@@ -3,7 +3,7 @@ import Card from 'react-bootstrap/Card';
 import Toolbar from './Toolbar.jsx';
 import DrawingCanvas from './DrawingCanvas.jsx';
 import {useEffect} from 'react';
-import { Pages } from "../../App";
+import { Pages, Modes } from "../../App";
 
 const DrawPage = (props) => {
 
@@ -23,11 +23,11 @@ const DrawPage = (props) => {
         <Card id="DrawPage">
             <Card.Header id="DrawPageHeader">
                 <h1 id="title">Start Drawing!</h1>
-                <h2 id="timer">Timer</h2>
+                <h2 id="timer" className="multiplayer">Timer</h2>
                 <h4 id="Prompt">Prompt: ...</h4>
             </Card.Header>
             <Card.Body id="DrawPageBody">
-                <Toolbar />
+                {props.mode != Modes.Multi && <Toolbar id="toolbar" />}
                 <DrawingCanvas></DrawingCanvas>
             </Card.Body>
             <Card.Footer>
