@@ -2,6 +2,12 @@
     width: 100%;
     height: 100%;
     border-radius: 0;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    overscroll-behavior: contain;
+    box-sizing: border-box;
+    overflow: hidden;
 }
 #DrawPageHeader {
     display: flex;
