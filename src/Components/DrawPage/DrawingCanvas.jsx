@@ -24,67 +24,75 @@ function DrawingCanvas() {
         resizeTimeout = setTimeout(finishResize, 100);
     }
     function startDraw(event) {
-        console.log("start");
-        drawing = true;
         const drawingCanvas = document.getElementById("drawingCanvas");
-        const colorPicker = document.getElementById("colorPicker");
-        prevCoords = calculateMouseCoords(event, drawingCanvas);
-        drawingCanvas.setAttribute("penColor", colorPicker?.value || "#000000");
-        tap = true;
+        if (drawingCanvas) {
+            drawing = true;
+            const colorPicker = document.getElementById("colorPicker");
+            prevCoords = calculateMouseCoords(event, drawingCanvas);
+            drawingCanvas?.setAttribute("penColor", colorPicker?.value || "#000000");
+            tap = true;
+        }
     }
     function continueDraw(event) {
-        if (drawing) {
-            console.log("continue...");
-            tap = false;
-            const drawingCanvas = document.getElementById("drawingCanvas");
-            const thicknessSlider = document.getElementById("thicknessSlider");
-            let newCoords = calculateMouseCoords(event, drawingCanvas);
-            let context = drawingCanvas.getContext("2d");
-            let thickness = 16 * (thicknessSlider?.value || 1) * Math.min((window.innerWidth / 650), (window.innerHeight / 850));
-            if (event?.targetTouches) {
-                if (event.targetTouches.length > 0) {
-                    thickness = 0.5 * thickness + (1.5 * thickness * event?.targetTouches[0].force);
+        const drawingCanvas = document.getElementById("drawingCanvas");
+        if (drawingCanvas) {
+            if (drawing) {
+                tap = false;
+                const thicknessSlider = document.getElementById("thicknessSlider");
+                let newCoords = calculateMouseCoords(event, drawingCanvas);
+                let context = drawingCanvas?.getContext("2d");
+                let thickness = 16 * (thicknessSlider?.value || 1) * Math.min((window.innerWidth / 650), (window.innerHeight / 850));
+                if (event?.targetTouches) {
+                    if (event.targetTouches.length > 0) {
+                        thickness = 0.5 * thickness + (1.5 * thickness * event?.targetTouches[0].force);
+                    }
                 }
+                context.lineWidth = thickness;
+                context.lineCap = "round";
+                context.strokeStyle = drawingCanvas.getAttribute("penColor");
+                context.moveTo(...prevCoords);
+                context.lineTo(...newCoords);
+                context.stroke();
+                context.beginPath();
+                prevCoords = [...newCoords];
             }
-            context.lineWidth = thickness;
-            context.lineCap = "round";
-            context.strokeStyle = drawingCanvas.getAttribute("penColor");
-            context.moveTo(...prevCoords);
-            context.lineTo(...newCoords);
-            context.stroke();
-            context.beginPath();
-            prevCoords = [...newCoords];
         }
     }
     function endDraw(event) {
-        console.log("end");
-        drawing = false;
-        if (tap) {
-            const drawingCanvas = document.getElementById("drawingCanvas");
-            const thicknessSlider = document.getElementById("thicknessSlider");
-            let newCoords = calculateMouseCoords(event, drawingCanvas);
-            tap = false;
-            let thickness = 16 * (thicknessSlider.value || 1) * Math.min((window.innerWidth / 650), (window.innerHeight / 850));
-            if (event?.targetTouches) {
-                if (event.targetTouches.length > 0) {
-                    thickness = 0.5 * thickness + 1.5 * thickness * event?.targetTouches[0].force;
-                }        
+        const drawingCanvas = document.getElementById("drawingCanvas");
+        if (drawingCanvas) {
+            drawing = false;
+            if (tap) {
+                const thicknessSlider = document.getElementById("thicknessSlider");
+                let newCoords = calculateMouseCoords(event, drawingCanvas);
+                tap = false;
+                let thickness = 16 * (thicknessSlider?.value || 1) * Math.min((window.innerWidth / 650), (window.innerHeight / 850));
+                if (event?.targetTouches) {
+                    if (event.targetTouches.length > 0) {
+                        thickness = 0.5 * thickness + 1.5 * thickness * event?.targetTouches[0].force;
+                    }        
+                }
+                let context = drawingCanvas.getContext("2d");
+                context.lineWidth = thickness;
+                context.lineCap = "round";
+                context.strokeStyle = drawingCanvas.getAttribute("penColor");
+                context.moveTo(...newCoords);
+                context.lineTo(newCoords[0], newCoords[1] + 1);
+                context.stroke();
+                context.beginPath();
             }
-            let context = drawingCanvas.getContext("2d");
-            context.lineWidth = thickness;
-            context.lineCap = "round";
-            context.strokeStyle = drawingCanvas.getAttribute("penColor");
-            context.moveTo(...newCoords);
-            context.lineTo(newCoords[0], newCoords[1] + 1);
-            context.stroke();
-            context.beginPath();
         }
     }
     function calculateMouseCoords(event, canvas) {
-        const clientX = event?.clientX || event.touches[0]?.clientX;
-        const clientY = event?.clientY || event.touches[0]?.clientY;
-        let rect = canvas.getBoundingClientRect();
-        return [clientX - rect.left, clientY - rect.top];
+        try {
+            const clientX = event?.clientX || event?.touches?.at(0)?.clientX || 0;
+            const clientY = event?.clientY || event?.touches?.at(0)?.clientY || 0;
+            let rect = canvas?.getBoundingClientRect();
+            return [clientX - rect?.left, clientY - rect?.top];
+        } catch (err) {
+            console.log(err);
+            return [0, 0];
+        }
     }
     useEffect(() => {
         const drawingCanvas = document.getElementById("drawingCanvas");
