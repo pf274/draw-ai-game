@@ -23,7 +23,7 @@
     position: absolute;
     left: 50%;
     top: 1em;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -40%);
 }
 
 @media (max-device-width: 550px) {
