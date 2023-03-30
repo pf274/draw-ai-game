@@ -1,24 +1,11 @@
 #HomePage {
-    width: 50%;
-    height: 50%;
     min-width: 300px;
     max-width: 400px;
     max-height: 400px;
     min-height: 200px;
 }
-#HomePageBody {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
 .card-footer {
     display: flex;
     flex-direction: row;
     align-items: left;
-}
-.noCredentials {
-    display: none;
-}
-.loggedIn {
-    display: block;
 }
