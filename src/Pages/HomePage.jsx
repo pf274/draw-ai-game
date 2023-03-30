@@ -1,17 +1,16 @@
-import './HomePage.css';
+import '../Components/HomePage/HomePage.css';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
-import {Pages, Modes} from '../../App.jsx';
-import {forwardRef} from 'react';
+import { useNavigate } from 'react-router-dom';
 
-const HomePage = (props) => {
+const HomePage = () => {
+    const navigate = useNavigate();
+
     function goToSingleplayerDrawPage() {
-        props.setMode(Modes.Single);
-        props.setPage(Pages.Draw);
+        navigate('/draw/singleplayer');
     }
     function goToMultiplayerDrawPage() {
-        props.setMode(Modes.Multi);
-        props.setPage(Pages.Draw);
+        navigate('/draw/multiplayer');
     }
     return (
         <Card id="HomePage">

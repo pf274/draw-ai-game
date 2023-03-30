@@ -1,12 +1,49 @@
 import './DrawingCanvas.css';
-import {useEffect, useRef} from 'react';
-function DrawingCanvas(props) {
+import {useEffect, useRef, useCallback} from 'react';
+import * as ml5 from "ml5";
+
+function DrawingCanvas() {
+    let classifier = useRef();
     const resizing = useRef(false);
     let drawing = useRef(false);
     let prevCoords = useRef([0, 0]);
     let resizeTimeout = useRef();
     let tap = useRef(false);
-
+    const cleanup = useCallback(() => {
+        console.log("cleaned up");
+        window.removeEventListener('resize', startResize);
+        window.removeEventListener('mousedown', startDraw);
+        window.removeEventListener('touchstart', startDraw);
+        window.removeEventListener('mousemove', continueDraw);
+        window.removeEventListener('touchmove', continueDraw);
+        window.removeEventListener('mouseup', endDraw);
+        window.removeEventListener('touchend', endDraw);
+    });
+    const initialize = useCallback(() => {
+        console.log("intialized");
+        window.addEventListener('resize', startResize);
+        window.addEventListener('mousedown', startDraw);
+        window.addEventListener('touchstart', startDraw);
+        window.addEventListener('mousemove', continueDraw);
+        window.addEventListener('touchmove', continueDraw);
+        window.addEventListener('mouseup', endDraw);
+        window.addEventListener('touchend', endDraw);
+    });
+    useEffect(() => {
+        initialize();
+        finishResize();
+        drawing = false;
+        tap = false;
+        setTimeout(() => {
+            function modelLoaded() {
+                console.log('Model Loaded!');
+            }
+            classifier.current = ml5.imageClassifier('DoodleNet', modelLoaded);
+        }, 1000);
+        return () => {
+            cleanup();
+        }
+    }, [cleanup, initialize]);
     function finishResize() {
         let canvas = document.getElementById("drawingCanvas");
         let canvasContainer = document.getElementById("canvasContainer");
@@ -59,9 +96,11 @@ function DrawingCanvas(props) {
         }
     }
     async function classifyImg(image) {
-        return props.classifier.current.predict(image, 5).then(results => {
-            return results;
-        });
+        if (classifier.current) {
+            return classifier.current.predict(image, 5).then(results => {
+                return results;
+            });
+        }
     }
     function endDraw(event) {
         const drawingCanvas = document.getElementById("drawingCanvas");
@@ -100,30 +139,6 @@ function DrawingCanvas(props) {
             return [0, 0];
         }
     }
-    useEffect(() => {
-        // when page loads, set event listeners
-        window.addEventListener('resize', startResize);
-        window.addEventListener('mousedown', function (event) {startDraw(event);});
-        window.addEventListener('touchstart', function (event) {startDraw(event);});
-        window.addEventListener('mousemove', function (event) {continueDraw(event);});
-        window.addEventListener('touchmove', function (event) {continueDraw(event);});
-        window.addEventListener('mouseup', function (event) {endDraw(event);});
-        window.addEventListener('touchend', function (event) {endDraw(event);});
-        // and initialize the canvas size
-        finishResize();
-        drawing = false;
-        tap = false;
-        return () => {
-            // when the elements are unloaded, remove the event listeners
-            window.removeEventListener('resize', startResize);
-            window.removeEventListener('mousedown', function (event) {startDraw(event);});
-            window.removeEventListener('touchstart', function (event) {startDraw(event);});
-            window.removeEventListener('mousemove', function (event) {continueDraw(event);});
-            window.removeEventListener('touchmove', function (event) {continueDraw(event);});
-            window.removeEventListener('mouseup', function (event) {endDraw(event);});
-            window.removeEventListener('touchend', function (event) {endDraw(event);});
-        }
-    }, []);
     return (
         <div id="canvasContainer">
             <canvas style={{
