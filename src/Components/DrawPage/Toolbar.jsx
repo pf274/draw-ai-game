@@ -3,7 +3,7 @@ import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import FormRange from 'react-bootstrap/FormRange';
 import rawCategoryData from '../../Data/categories.txt';
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 function Toolbar() {
     const [value, setValue] = useState(1);
     function Capitalize(text) {
@@ -27,6 +27,9 @@ function Toolbar() {
     function handleSliderChange(event) {
         setValue(event.target.value);
     }
+    useEffect(() => {
+        newPrompt();
+    }, []);
     return (
         <Card className="toolbarBody">
             <Button onClick={newPrompt}>New Prompt</Button>

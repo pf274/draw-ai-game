@@ -1,6 +1,6 @@
 import './DrawingCanvas.css';
 import {useEffect, useRef} from 'react';
-function DrawingCanvas() {
+function DrawingCanvas(props) {
     const resizing = useRef(false);
     let drawing = useRef(false);
     let prevCoords = useRef([0, 0]);
@@ -58,9 +58,15 @@ function DrawingCanvas() {
             }
         }
     }
+    async function classifyImg(image) {
+        return props.classifier.current.predict(image, 5).then(results => {
+            return results;
+        });
+    }
     function endDraw(event) {
         const drawingCanvas = document.getElementById("drawingCanvas");
         if (drawingCanvas) {
+            if (drawing) classifyImg(drawingCanvas).then(results => console.log(results));
             drawing = false;
             if (tap) {
                 const thicknessSlider = document.getElementById("thicknessSlider");
@@ -117,7 +123,7 @@ function DrawingCanvas() {
             window.removeEventListener('mouseup', function (event) {endDraw(event);});
             window.removeEventListener('touchend', function (event) {endDraw(event);});
         }
-    }, [])
+    }, []);
     return (
         <div id="canvasContainer">
             <canvas style={{

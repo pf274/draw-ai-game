@@ -5,7 +5,7 @@ const app = express();
 const DB = require('./database.js');
 
 // ----------- Express Settings and Setup -----------
-app.use(express.static('public'));
+app.use(express.static('../public'));
 app.use(express.json());
 app.use(cookieParser());
 const apiRouter = express.Router();
@@ -154,7 +154,7 @@ app.use((_req, res) => {
   res.sendFile('index.html', { root: 'public' });
 });
 
-const port = process.argv.length > 2 ? process.argv[2] : 4000;
+const port = process.argv.length > 2 ? process.argv[2] : 3000;
 app.listen(port, function () {
   console.log(`Listening on port ${port}`);
 });
