@@ -12,6 +12,7 @@ function SingleplayerGuessesModal({show, setShow, guesses, prompt}) {
     const [tableRows, setTableRows] = useState([]);
     function compareGuessToPrompt(guess, prompt) {
         return guess == prompt;
+        // TODO: BETTER COMPARISONS
     }
     useEffect(() => {
         if (guesses) {
