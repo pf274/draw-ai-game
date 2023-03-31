@@ -16,13 +16,13 @@ function peerProxy(httpServer) {
     let connections = [];
 
     wss.on('connection', (ws) => {
-        const newConnection = { id: uuid.v4(), alive: true, ws: ws };
-        connections.push(newConnection);
+        const thisConnection = { id: uuid.v4(), alive: true, ws: ws };
+        connections.push(thisConnection);
 
         // Forward messages to everyone except the sender
         ws.on('message', function message(data) {
             connections.forEach((connection) => {
-                if (connection.id !== newConnection.id) {
+                if (connection.id !== thisConnection.id) {
                     connection.ws.send(data);
                 }
             });
@@ -30,9 +30,9 @@ function peerProxy(httpServer) {
 
         // Remove the closed connection so we don't try to forward anymore
         ws.on('close', () => {
-            connections.findIndex((o, i) => {
-                if (o.id === newConnection.id) {
-                    connections.splice(i, 1);
+            connections.findIndex((otherConnection, index) => {
+                if (otherConnection.id === thisConnection.id) {
+                    connections.splice(index, 1);
                     return true;
                 }
                 return false;
@@ -41,11 +41,12 @@ function peerProxy(httpServer) {
 
         // Respond to pong messages by marking the connection alive
         ws.on('pong', () => {
-            newConnection.alive = true;
+            thisConnection.alive = true;
         });
     });
 
     // Keep active connections alive
+    let connection_check_interval = 1000 * 10;
     setInterval(() => {
         connections.forEach((connection) => {
             // Kill any connection that didn't respond to the ping last time
@@ -56,7 +57,7 @@ function peerProxy(httpServer) {
                 connection.ws.ping();
             }
         });
-    }, 1000 * 10);
+    }, connection_check_interval);
 }
 
 module.exports = { peerProxy };

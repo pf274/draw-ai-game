@@ -9,10 +9,12 @@ import {
 } from 'react-router-dom';
 import DrawPage from './Pages/DrawPage.jsx';
 import HomePage from './Pages/HomePage.jsx';
+import HostGamePage from './Pages/HostGamePage.jsx';
 
 export const Pages = {
   Home: "home",
-  Draw: "draw"
+  Draw: "draw",
+  Host: "host",
 }
 export const Modes = {
   Single: "singleplayer",
@@ -31,6 +33,10 @@ const router = createBrowserRouter([
   {
     path: '/draw/singleplayer',
     element: <DrawPage mode={Modes.Single} />
+  },
+  {
+    path: 'draw/host',
+    element: <HostGamePage />
   }
 ]);
 

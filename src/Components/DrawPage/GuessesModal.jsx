@@ -13,7 +13,6 @@ function SingleplayerGuessesModal({show, setShow, guesses, prompt}) {
     function compareGuessToPrompt(guess, prompt) {
         let formattedGuess = Capitalize(guess.replace(/_/g, " "));
         return formattedGuess == prompt;
-        // TODO: BETTER COMPARISONS
     }
     useEffect(() => {
         if (guesses) {
