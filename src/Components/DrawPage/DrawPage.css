@@ -31,7 +31,8 @@
     top: 1em;
     transform: translate(-50%, -40%);
 }
-@media (max-device-width: 550px) {
+@media (max-width: 550px) {
+    /* max-device-width */
     #title {
         display: none;
     }
@@ -41,4 +42,9 @@
         text-align: left;
         flex: 1;
     }
+}
+#CanvasSpinner {
+    position: absolute;
+    left: 50%;
+    top: 50%;
 }

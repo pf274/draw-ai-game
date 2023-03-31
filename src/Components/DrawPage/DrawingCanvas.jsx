@@ -1,8 +1,8 @@
 import './DrawingCanvas.css';
-import {useEffect, useRef, useCallback, forwardRef} from 'react';
+import {useEffect, useRef, useCallback, useState} from 'react';
 import * as ml5 from "ml5";
 
-const DrawingCanvas = ({setGuesses}) => {
+const DrawingCanvas = ({setGuesses, setShowSpinner}) => {
     let classifier = useRef();
     let drawing = useRef(false);
     let prevCoords = useRef([0, 0]);
@@ -10,6 +10,8 @@ const DrawingCanvas = ({setGuesses}) => {
     let guessTimeout = useRef();
     let tap = useRef(false);
     let context = useRef();
+    
+
     async function cropContent(canvas) { // takes in the drawing canvas and outputs a cropped canvas
         context.current = context?.current || canvas.getContext("2d", { willReadFrequently: true });
         const width = canvas.width;
@@ -48,31 +50,36 @@ const DrawingCanvas = ({setGuesses}) => {
         return croppedCanvas;
     }
     const cleanup = useCallback(() => {
-        console.log("cleaned up");
         const drawingCanvas = document.getElementById("drawingCanvas");
         window.removeEventListener('resize', startResize);
-        drawingCanvas.removeEventListener('mousedown', startDraw);
-        drawingCanvas.removeEventListener('touchstart', startDraw);
-        drawingCanvas.removeEventListener('mousemove', continueDraw);
-        drawingCanvas.removeEventListener('touchmove', continueDraw);
-        drawingCanvas.removeEventListener('mouseup', endDraw);
-        drawingCanvas.removeEventListener('touchend', endDraw);
+        if (drawingCanvas) {
+            console.log("cleaned up");
+            drawingCanvas.removeEventListener('mousedown', startDraw);
+            drawingCanvas.removeEventListener('touchstart', startDraw);
+            drawingCanvas.removeEventListener('mousemove', continueDraw);
+            drawingCanvas.removeEventListener('touchmove', continueDraw);
+            drawingCanvas.removeEventListener('mouseup', endDraw);
+            drawingCanvas.removeEventListener('touchend', endDraw);
+        }
+    
     });
     const initialize = useCallback(() => {
         const drawingCanvas = document.getElementById("drawingCanvas");
         console.log("intialized");
         window.addEventListener('resize', startResize);
-        drawingCanvas.addEventListener('mousedown', startDraw);
-        drawingCanvas.addEventListener('touchstart', startDraw);
-        drawingCanvas.addEventListener('mousemove', continueDraw);
-        drawingCanvas.addEventListener('touchmove', continueDraw);
-        drawingCanvas.addEventListener('mouseup', endDraw);
-        drawingCanvas.addEventListener('touchend', endDraw);
+        drawingCanvas.addEventListener('mousedown', startDraw, { passive: true });
+        drawingCanvas.addEventListener('touchstart', startDraw, { passive: true });
+        drawingCanvas.addEventListener('mousemove', continueDraw, { passive: true });
+        drawingCanvas.addEventListener('touchmove', continueDraw, { passive: true });
+        drawingCanvas.addEventListener('mouseup', endDraw, { passive: true });
+        drawingCanvas.addEventListener('touchend', endDraw, { passive: true });
+        setShowSpinner(false);
     });
     async function AIGuess() {
+        let drawingCanvas = document.getElementById("drawingCanvas");
+        if (!drawingCanvas) return;
         console.log("Calculating guesses");
         if (classifier.current) {
-            let drawingCanvas = document.getElementById("drawingCanvas");
             let shouldCrop = true;
             let numberOfGuesses = 5;
             // crop it
@@ -99,13 +106,14 @@ const DrawingCanvas = ({setGuesses}) => {
         }
     }
     useEffect(() => {
-        initialize();
         finishResize();
         drawing = false;
         tap = false;
+        setShowSpinner(true);
         setTimeout(() => {
             function modelLoaded() {
                 console.log('Model Loaded!');
+                initialize();
             }
             classifier.current = ml5.imageClassifier('DoodleNet', modelLoaded);
         }, 1000);
@@ -119,6 +127,7 @@ const DrawingCanvas = ({setGuesses}) => {
         canvas.width = canvasContainer.offsetWidth - 5;
         canvas.height = canvasContainer.offsetHeight - 10;
         canvas.style.border = "1px solid gray";
+        setShowSpinner(false);
     }
     function startResize() {
         let canvas = document.getElementById("drawingCanvas");
@@ -126,6 +135,7 @@ const DrawingCanvas = ({setGuesses}) => {
         canvas.width = canvasContainer.offsetWidth;
         canvas.height = 0;
         canvas.style.border = "0px";
+        setShowSpinner(true);
         clearTimeout(resizeTimeout);
         resizeTimeout = setTimeout(finishResize, 100);
     }

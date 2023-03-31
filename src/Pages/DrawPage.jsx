@@ -5,13 +5,15 @@ import DrawingCanvas from '../Components/DrawPage/DrawingCanvas.jsx';
 import SingleplayerGuessesModal from '../Components/DrawPage/GuessesModal.jsx';
 import {useState, useRef, useMemo, useEffect} from 'react';
 import { Modes } from "../index.js";
+import Spinner from 'react-bootstrap/Spinner';
 
 const DrawPage = ({mode}) => {
     const [showGuessesModal, setShowGuessesModal] = useState(false);
     const [guesses, setGuesses] = useState([]);
     const [prompt, setPrompt] = useState("...");
+    let [showSpinner, setShowSpinner] = useState(true);
     const canvas = useMemo(() => {
-        return <DrawingCanvas setGuesses={setGuesses} />;
+        return <DrawingCanvas setGuesses={setGuesses} setShowSpinner={setShowSpinner} />;
     }, []);
     return (
         <div style={{
@@ -32,6 +34,7 @@ const DrawPage = ({mode}) => {
                 </Card.Body>
             </Card>
             {mode !== Modes.Multi && <SingleplayerGuessesModal show={showGuessesModal} setShow={setShowGuessesModal} guesses={guesses} prompt={prompt}/>}
+            {showSpinner && <Spinner id="CanvasSpinner" role="status" aria-hidden="true" animation="border"/>}
         </div>
 
     );
