@@ -3,7 +3,7 @@ import Card from 'react-bootstrap/Card';
 import Toolbar from '../Components/DrawPage/Toolbar.jsx';
 import DrawingCanvas from '../Components/DrawPage/DrawingCanvas.jsx';
 import SingleplayerGuessesModal from '../Components/DrawPage/GuessesModal.jsx';
-import {useState, useRef, useMemo, useEffect} from 'react';
+import {useState, useMemo} from 'react';
 import { Modes } from "../index.js";
 import Spinner from 'react-bootstrap/Spinner';
 

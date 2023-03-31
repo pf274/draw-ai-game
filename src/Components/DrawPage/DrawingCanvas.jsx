@@ -1,5 +1,5 @@
 import './DrawingCanvas.css';
-import {useEffect, useRef, useCallback, useState} from 'react';
+import {useEffect, useRef, useCallback} from 'react';
 import * as ml5 from "ml5";
 
 const DrawingCanvas = ({setGuesses, setShowSpinner}) => {
@@ -61,8 +61,7 @@ const DrawingCanvas = ({setGuesses, setShowSpinner}) => {
             drawingCanvas.removeEventListener('mouseup', endDraw);
             drawingCanvas.removeEventListener('touchend', endDraw);
         }
-    
-    });
+    }, []);
     const initialize = useCallback(() => {
         const drawingCanvas = document.getElementById("drawingCanvas");
         console.log("intialized");
@@ -74,7 +73,7 @@ const DrawingCanvas = ({setGuesses, setShowSpinner}) => {
         drawingCanvas.addEventListener('mouseup', endDraw, { passive: true });
         drawingCanvas.addEventListener('touchend', endDraw, { passive: true });
         setShowSpinner(false);
-    });
+    }, []);
     async function AIGuess() {
         let drawingCanvas = document.getElementById("drawingCanvas");
         if (!drawingCanvas) return;
@@ -107,8 +106,8 @@ const DrawingCanvas = ({setGuesses, setShowSpinner}) => {
     }
     useEffect(() => {
         finishResize();
-        drawing = false;
-        tap = false;
+        drawing.current = false;
+        tap.current = false;
         setShowSpinner(true);
         setTimeout(() => {
             function modelLoaded() {
@@ -143,19 +142,19 @@ const DrawingCanvas = ({setGuesses, setShowSpinner}) => {
         const drawingCanvas = document.getElementById("drawingCanvas");
         if (drawingCanvas) {
             clearTimeout(guessTimeout);
-            drawing = true;
+            drawing.current = true;
             const colorPicker = document.getElementById("colorPicker");
             prevCoords = calculateMouseCoords(event, drawingCanvas);
             drawingCanvas?.setAttribute("penColor", colorPicker?.value || "#000000");
-            tap = true;
+            tap.current = true;
         }
     }
     function continueDraw(event) {
         const drawingCanvas = document.getElementById("drawingCanvas");
         if (drawingCanvas) {
-            if (drawing) {
+            if (drawing.current) {
                 clearTimeout(guessTimeout);
-                tap = false;
+                tap.current = false;
                 const thicknessSlider = document.getElementById("thicknessSlider");
                 let newCoords = calculateMouseCoords(event, drawingCanvas);
                 context.current = context?.current || drawingCanvas.getContext("2d", { willReadFrequently: true });
@@ -179,15 +178,15 @@ const DrawingCanvas = ({setGuesses, setShowSpinner}) => {
     function endDraw(event) {
         const drawingCanvas = document.getElementById("drawingCanvas");
         clearTimeout(guessTimeout);
-        if (drawing) {
+        if (drawing.current) {
             guessTimeout = setTimeout(AIGuess, 1000);
         }
         if (drawingCanvas) {
-            drawing = false;
-            if (tap) {
+            drawing.current = false;
+            if (tap.current) {
                 const thicknessSlider = document.getElementById("thicknessSlider");
                 let newCoords = calculateMouseCoords(event, drawingCanvas);
-                tap = false;
+                tap.current = false;
                 let thickness = 16 * (thicknessSlider?.value || 1) * Math.min((window.innerWidth / 650), (window.innerHeight / 850));
                 if (event?.targetTouches) {
                     if (event.targetTouches.length > 0) {

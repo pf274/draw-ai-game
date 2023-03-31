@@ -1,11 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './App.jsx';
+// import App from './App.jsx';
 import {
   createBrowserRouter,
   RouterProvider,
-  Route,
+  // Route,
 } from 'react-router-dom';
 import DrawPage from './Pages/DrawPage.jsx';
 import HomePage from './Pages/HomePage.jsx';

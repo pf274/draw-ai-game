@@ -1,4 +1,5 @@
 const express = require('express');
+const path = require('path');
 const cookieParser = require('cookie-parser');
 const bcrypt = require('bcrypt');
 const app = express();
@@ -6,9 +7,13 @@ const DB = require('./database.js');
 const {peerProxy} = require('./peerProxy.js');
 
 // ----------- Express Settings and Setup -----------
-app.use(express.static('../public'));
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 app.use(cookieParser());
+app.use(function(req, res, next) {
+  res.setHeader('Content-Type', 'application/javascript');
+  next();
+});
 const apiRouter = express.Router();
 app.use(`/api`, apiRouter);
 
@@ -156,7 +161,7 @@ app.use((_req, res) => {
   res.sendFile('index.html', { root: 'public' });
 });
 
-const port = process.argv.length > 2 ? process.argv[2] : 3000;
+const port = process.argv.length > 2 ? process.argv[2] : 4000;
 
 const httpService = app.listen(port, () => {
   console.log(`Listening on port ${port}`);

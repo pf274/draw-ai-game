@@ -29,7 +29,8 @@
     "readdirp": "^3.6.0",
     "source-map-js": "^1.0.2",
     "to-regex-range": "^5.0.1",
-    "uuid": "^9.0.0"
+    "uuid": "^9.0.0",
+    "ws": "^8.13.0"
   },
   "keywords": [],
   "author": "pf274",
