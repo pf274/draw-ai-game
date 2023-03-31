@@ -1,34 +1,103 @@
 import './DrawingCanvas.css';
-import {useEffect, useRef, useCallback} from 'react';
+import {useEffect, useRef, useCallback, forwardRef} from 'react';
 import * as ml5 from "ml5";
 
-function DrawingCanvas() {
+const DrawingCanvas = ({setGuesses}) => {
     let classifier = useRef();
-    const resizing = useRef(false);
     let drawing = useRef(false);
     let prevCoords = useRef([0, 0]);
     let resizeTimeout = useRef();
+    let guessTimeout = useRef();
     let tap = useRef(false);
+    let context = useRef();
+    async function cropContent(canvas) { // takes in the drawing canvas and outputs a cropped canvas
+        context.current = context?.current || canvas.getContext("2d", { willReadFrequently: true });
+        const width = canvas.width;
+        const height = canvas.height;
+        const tolerance = 20; // the tolerance to detect the difference between the background and the drawing
+        const imageData = context.current.getImageData(0, 0, width, height).data;
+        const bounds = {
+          x: [width, 0],
+          y: [height, 0]
+        }
+        for (let x = 0; x < width; x++) {
+          for (let y = 0; y < height; y++) {
+            const i = (y * width + x) * 4; // get the beginning of the pixel's data
+            const pixelData = imageData.slice(i, i + 4);
+            
+            if ((pixelData[0] + pixelData[1] + pixelData[2] < 3 * 255 - tolerance) && pixelData[3] > 10) {
+      
+              bounds.x[0] = Math.min(bounds.x[0], x);
+              bounds.x[1] = Math.max(bounds.x[1], x);
+              bounds.y[0] = Math.min(bounds.y[0], y);
+              bounds.y[1] = Math.max(bounds.y[1], y);
+            }
+          }
+        }
+        const croppedCanvas = document.createElement('canvas');
+      
+        const cropWidth = bounds.x[1] - bounds.x[0];
+        const cropHeight = bounds.y[1] - bounds.y[0];
+      
+        croppedCanvas.width = cropWidth;
+        croppedCanvas.height = cropHeight;
+      
+        const croppedContext = croppedCanvas.getContext('2d');
+        croppedContext.drawImage(canvas, bounds.x[0], bounds.y[0], cropWidth, cropHeight, 0, 0, cropWidth, cropHeight);
+      
+        return croppedCanvas;
+    }
     const cleanup = useCallback(() => {
         console.log("cleaned up");
+        const drawingCanvas = document.getElementById("drawingCanvas");
         window.removeEventListener('resize', startResize);
-        window.removeEventListener('mousedown', startDraw);
-        window.removeEventListener('touchstart', startDraw);
-        window.removeEventListener('mousemove', continueDraw);
-        window.removeEventListener('touchmove', continueDraw);
-        window.removeEventListener('mouseup', endDraw);
-        window.removeEventListener('touchend', endDraw);
+        drawingCanvas.removeEventListener('mousedown', startDraw);
+        drawingCanvas.removeEventListener('touchstart', startDraw);
+        drawingCanvas.removeEventListener('mousemove', continueDraw);
+        drawingCanvas.removeEventListener('touchmove', continueDraw);
+        drawingCanvas.removeEventListener('mouseup', endDraw);
+        drawingCanvas.removeEventListener('touchend', endDraw);
     });
     const initialize = useCallback(() => {
+        const drawingCanvas = document.getElementById("drawingCanvas");
         console.log("intialized");
         window.addEventListener('resize', startResize);
-        window.addEventListener('mousedown', startDraw);
-        window.addEventListener('touchstart', startDraw);
-        window.addEventListener('mousemove', continueDraw);
-        window.addEventListener('touchmove', continueDraw);
-        window.addEventListener('mouseup', endDraw);
-        window.addEventListener('touchend', endDraw);
+        drawingCanvas.addEventListener('mousedown', startDraw);
+        drawingCanvas.addEventListener('touchstart', startDraw);
+        drawingCanvas.addEventListener('mousemove', continueDraw);
+        drawingCanvas.addEventListener('touchmove', continueDraw);
+        drawingCanvas.addEventListener('mouseup', endDraw);
+        drawingCanvas.addEventListener('touchend', endDraw);
     });
+    async function AIGuess() {
+        console.log("Calculating guesses");
+        if (classifier.current) {
+            let drawingCanvas = document.getElementById("drawingCanvas");
+            let shouldCrop = true;
+            let numberOfGuesses = 5;
+            // crop it
+            let croppedCanvas = shouldCrop ? await cropContent(drawingCanvas) : drawingCanvas;
+            
+            // create a background
+            const width = croppedCanvas.width;
+            const height = croppedCanvas.height;
+            const withBackground = document.createElement('canvas');
+            withBackground.width = width;
+            withBackground.height = height;
+            
+            let bgcontext = withBackground.getContext('2d');
+            bgcontext.fillStyle = "rgba(255, 255, 255, 1)";
+            bgcontext.fillRect(0, 0, withBackground.width, withBackground.height);
+            
+            // combine background and foreground
+            bgcontext.drawImage(croppedCanvas, 0, 0, width, height, 0, 0, width, height);
+          
+            let results = await classifier.current.classify(withBackground, numberOfGuesses);
+            setGuesses([...results]);
+            console.log("Calculated guesses");
+            withBackground.remove();
+        }
+    }
     useEffect(() => {
         initialize();
         finishResize();
@@ -63,6 +132,7 @@ function DrawingCanvas() {
     function startDraw(event) {
         const drawingCanvas = document.getElementById("drawingCanvas");
         if (drawingCanvas) {
+            clearTimeout(guessTimeout);
             drawing = true;
             const colorPicker = document.getElementById("colorPicker");
             prevCoords = calculateMouseCoords(event, drawingCanvas);
@@ -74,38 +144,35 @@ function DrawingCanvas() {
         const drawingCanvas = document.getElementById("drawingCanvas");
         if (drawingCanvas) {
             if (drawing) {
+                clearTimeout(guessTimeout);
                 tap = false;
                 const thicknessSlider = document.getElementById("thicknessSlider");
                 let newCoords = calculateMouseCoords(event, drawingCanvas);
-                let context = drawingCanvas?.getContext("2d");
+                context.current = context?.current || drawingCanvas.getContext("2d", { willReadFrequently: true });
                 let thickness = 16 * (thicknessSlider?.value || 1) * Math.min((window.innerWidth / 650), (window.innerHeight / 850));
                 if (event?.targetTouches) {
                     if (event.targetTouches.length > 0) {
                         thickness = 0.5 * thickness + (1.5 * thickness * event?.targetTouches[0].force);
                     }
                 }
-                context.lineWidth = thickness;
-                context.lineCap = "round";
-                context.strokeStyle = drawingCanvas.getAttribute("penColor");
-                context.moveTo(...prevCoords);
-                context.lineTo(...newCoords);
-                context.stroke();
-                context.beginPath();
+                context.current.lineWidth = thickness;
+                context.current.lineCap = "round";
+                context.current.strokeStyle = drawingCanvas.getAttribute("penColor");
+                context.current.moveTo(...prevCoords);
+                context.current.lineTo(...newCoords);
+                context.current.stroke();
+                context.current.beginPath();
                 prevCoords = [...newCoords];
             }
         }
     }
-    async function classifyImg(image) {
-        if (classifier.current) {
-            return classifier.current.predict(image, 5).then(results => {
-                return results;
-            });
-        }
-    }
     function endDraw(event) {
         const drawingCanvas = document.getElementById("drawingCanvas");
+        clearTimeout(guessTimeout);
+        if (drawing) {
+            guessTimeout = setTimeout(AIGuess, 1000);
+        }
         if (drawingCanvas) {
-            if (drawing) classifyImg(drawingCanvas).then(results => console.log(results));
             drawing = false;
             if (tap) {
                 const thicknessSlider = document.getElementById("thicknessSlider");
@@ -117,14 +184,14 @@ function DrawingCanvas() {
                         thickness = 0.5 * thickness + 1.5 * thickness * event?.targetTouches[0].force;
                     }        
                 }
-                let context = drawingCanvas.getContext("2d");
-                context.lineWidth = thickness;
-                context.lineCap = "round";
-                context.strokeStyle = drawingCanvas.getAttribute("penColor");
-                context.moveTo(...newCoords);
-                context.lineTo(newCoords[0], newCoords[1] + 1);
-                context.stroke();
-                context.beginPath();
+                context.current = context?.current || drawingCanvas.getContext("2d", { willReadFrequently: true });
+                context.current.lineWidth = thickness;
+                context.current.lineCap = "round";
+                context.current.strokeStyle = drawingCanvas.getAttribute("penColor");
+                context.current.moveTo(...newCoords);
+                context.current.lineTo(newCoords[0], newCoords[1] + 1);
+                context.current.stroke();
+                context.current.beginPath();
             }
         }
     }
@@ -147,6 +214,6 @@ function DrawingCanvas() {
             }} id="drawingCanvas" />
         </div>
     )
-}
+};
 
 export default DrawingCanvas;

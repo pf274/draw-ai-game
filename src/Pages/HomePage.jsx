@@ -54,7 +54,14 @@ const HomePage = () => {
         setLogoutLoading(false);
     }
     return (
-        <div>
+        <div style={{
+            display: "flex",
+            flexDirection: "column",
+            width: "100%",
+            height: "100%",
+            justifyContent: "center",
+            alignItems: "center",
+        }}>
             <Card id="HomePage">
                 <Card.Header>
                     {!loggedIn && <Card.Title>Draw AI</Card.Title>}
@@ -62,7 +69,7 @@ const HomePage = () => {
                 </Card.Header>
                 <Card.Body id="HomePageBody">
                     {!loggedIn && <div>
-                        <Card.Text>Log In to Play</Card.Text>
+                        <h3 className="mb-3">Log In to Play</h3>
                         <Button variant="primary" onClick={handleShowSignup}>Sign Up</Button>
                         <Button variant="primary" onClick={handleShowLogin}>Log In</Button>
                         
