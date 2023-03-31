@@ -11,17 +11,18 @@ function SingleplayerGuessesModal({show, setShow, guesses, prompt}) {
     }
     const [tableRows, setTableRows] = useState([]);
     function compareGuessToPrompt(guess, prompt) {
-        return guess == prompt;
+        let formattedGuess = Capitalize(guess.replace(/_/g, " "));
+        return formattedGuess == prompt;
         // TODO: BETTER COMPARISONS
     }
     useEffect(() => {
         if (guesses) {
             let rows = guesses.map((guessInfo, index) => {
-                let variant = compareGuessToPrompt(guessInfo.label, prompt) ? "primary" : "light";
+                let variant = compareGuessToPrompt(guessInfo.label, prompt) ? "cyan" : "white";
                 return (
-                    <tr style={{textAlign: "center"}} key={index} variant={variant}>
+                    <tr style={{textAlign: "center", borderRadius: 5}} key={index} bgColor={variant}>
                         <td>{index + 1}</td>
-                        <td>{guessInfo.label}</td>
+                        <td>{Capitalize(guessInfo.label.replace(/_/g, " "))}</td>
                         <td>{`${Math.floor(guessInfo.confidence * 10000) / 100}%`}</td>
                     </tr>
                 );

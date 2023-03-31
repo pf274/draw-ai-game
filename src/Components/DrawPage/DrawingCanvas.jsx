@@ -80,7 +80,7 @@ const DrawingCanvas = ({setGuesses, setShowSpinner}) => {
         console.log("Calculating guesses");
         if (classifier.current) {
             let shouldCrop = true;
-            let numberOfGuesses = 5;
+            let numberOfGuesses = 10;
             // crop it
             let croppedCanvas = shouldCrop ? await cropContent(drawingCanvas) : drawingCanvas;
             
