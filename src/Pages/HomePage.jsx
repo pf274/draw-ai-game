@@ -5,11 +5,12 @@ import { useNavigate } from 'react-router-dom';
 import {useEffect, useState} from 'react';
 import LoginModal from '../Components/HomePage/LoginModal.jsx';
 import SignupModal from '../Components/HomePage/SignupModal.jsx';
-
+import Spinner from 'react-bootstrap/Spinner';
 const HomePage = () => {
     const [showLogin, setShowLogin] = useState(false);
     const [showSignup, setShowSignup] = useState(false);
     const [loggedIn, setLoggedIn] = useState(false);
+    const [logoutLoading, setLogoutLoading] = useState(false);
     useEffect(() => {
         if (localStorage.getItem("username")) {
             let response = fetch(`/api/user/${localStorage.getItem("username")}`, {
@@ -36,6 +37,8 @@ const HomePage = () => {
     const handleShowLogin = () => setShowLogin(true);
     const handleShowSignup = () => setShowSignup(true);
     const handleLogout = async () => {
+        if (logoutLoading) {return; };
+        setLogoutLoading(true);
         let response = await fetch('/api/auth/logout', {
             method: "delete",
             headers: {'Content-Type': 'application/json'}
@@ -48,6 +51,7 @@ const HomePage = () => {
         } else {
             console.log(body.msg);
         }
+        setLogoutLoading(false);
     }
     return (
         <div>
@@ -72,7 +76,12 @@ const HomePage = () => {
                     </div>}
                 </Card.Body>
                 <Card.Footer>
-                    {loggedIn && <Button variant="secondary" id="logoutButton" onClick={handleLogout}>Log Out</Button>}
+                    {loggedIn && 
+                        <Button variant="secondary" onClick={handleLogout}>
+                            {!logoutLoading && "Log Out"}
+                            {logoutLoading && <div><Spinner as="span" variant="light" size="sm" role="status" aria-hidden="true" animation="border"/> Loading...</div>}
+                        </Button>
+                    }
                 </Card.Footer>
             </Card>
             <LoginModal show={showLogin} setShow={setShowLogin} setLoggedIn={setLoggedIn} />

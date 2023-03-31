@@ -1,12 +1,21 @@
 import Modal from 'react-bootstrap/Modal'
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
+import Spinner from 'react-bootstrap/Spinner';
+import Alert from 'react-bootstrap/Alert';
+import {useState, useRef, useEffect} from 'react';
 
 function SignupModal({show, setShow, setLoggedIn}) {
-    // const [show, setShow] = useState(false);
-  
+    const [loading, setLoading] = useState(false);
+    const [visibleAlert, setVisibleAlert] = useState(false);
+    let alertText = useRef("Error");
+    useEffect(() => {
+        setVisibleAlert(false);
+    }, [show])
     const handleClose = () => setShow(false);
     const handleSubmit = async () => {
+        if (loading) {return; };
+        setLoading(true);
         let usernameField = document.getElementById("signupUsernameElement");
         let passwordField = document.getElementById("signupPasswordElement");
         let reenterPasswordField = document.getElementById("signupRePasswordElement");
@@ -14,12 +23,16 @@ function SignupModal({show, setShow, setLoggedIn}) {
         let username = usernameField.value;
         let password = passwordField.value;
         let reenteredPassword = reenterPasswordField.value;
-    
-        if (password !== reenteredPassword) {
-            console.log("Passwords do not match!");
+        if (password.length === 0) {
+            alertText.current="Please enter a password";
+            setVisibleAlert(true);
+            setLoading(false);
             return;
         }
-        if (password.length === 0) {
+        if (password !== reenteredPassword) {
+            alertText.current="Passwords do not match";
+            setVisibleAlert(true);
+            setLoading(false);
             return;
         }
         let response = await fetch('/api/auth/create', {
@@ -37,10 +50,18 @@ function SignupModal({show, setShow, setLoggedIn}) {
             localStorage.setItem("username", username);
             setLoggedIn(true);
             setShow(false);
+            setVisibleAlert(false);
         } else {
-            console.log("User already exists!");
-            console.log(body.msg);
+            if (response.status === 409) {
+                alertText.current="User already exists";
+            } else {
+                alertText.current="An Unknown Error occurred";
+                console.log(body.msg);
+            }
+            setVisibleAlert(true);
+
         }
+        setLoading(false);
     }
     return (
     <Modal show={show} onHide={handleClose}>
@@ -59,14 +80,15 @@ function SignupModal({show, setShow, setLoggedIn}) {
                     <Form.Control className="mt-2" type="password" placeholder="Re-enter Password" id="signupRePasswordElement"></Form.Control>
                 </Form.Group>
             </Form>
-            
+            <Alert bsStyle="danger" show={visibleAlert}>{alertText.current}</Alert>
         </Modal.Body>
         <Modal.Footer>
             <Button variant="secondary" onClick={handleClose}>
                 Close
             </Button>
             <Button variant="primary" onClick={handleSubmit}>
-                Sign Up
+            {!loading && "Sign Up"}
+            {loading && <div><Spinner as="span" variant="light" size="sm" role="status" aria-hidden="true" animation="border"/> Loading...</div>}
             </Button>
         </Modal.Footer>
     </Modal>
