@@ -13,15 +13,15 @@ function HostGamePage() {
         return ((36 ** 3) + Math.floor(Math.random() * (34 * 36**3 + 35 * 36**2 + 35 * 36 + 35))).toString(36).toUpperCase();
       }
     useEffect(() => {
+        let newCode = generateCode()
+        setGameID(newCode);
         async function initializeGame() {
-            setGameID(generateCode());
             await game.broadcastEvent(EVENTS.GameHost, {
-                gameCode: gameID,
+                gameCode: newCode,
                 host: game.getUsername()
             });
-            // console.log("Game initiated");
+            // console.log("Game initialized");
         }
-        // TODO: ENSURE THE WEB SOCKET IS DONE
         initializeGame();
     }, []);
     function startGame() {

@@ -43,11 +43,32 @@ export class Game { // this is only necessary for multiplayer
         this.socket.onmessage = async (event) => {
             const msg = JSON.parse(await event.data.text());
             // console.log(msg.type);
+            switch (msg.type) {
+                case EVENTS.GameEnd:
+                    console.log(msg);
+                break;
+                case EVENTS.GameHost:
+                    console.log(msg);
+                break;
+                case EVENTS.GameJoin:
+                    console.log(msg);
+                break;
+                case EVENTS.GameLeave:
+                    console.log(msg);
+                break;
+                case EVENTS.GameStart:
+                    console.log(msg);
+                break;
+                default:
+                    console.log("Some other event was triggered");
+                break;
+            }
+                
             if (msg.type === EVENTS.GameEnd) {
                 // this.displayMsg('player', msg.from, `scored ${msg.value.score}`);
             } else if (msg.type === EVENTS.GameHost) {
                 // this.displayMsg('player', msg.from, `started a new game`);
-                console.log(msg);
+                
             }
         };
     }
