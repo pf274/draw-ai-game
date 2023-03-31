@@ -25,7 +25,7 @@ const DrawPage = ({mode}) => {
             <Card id="DrawPage">
                 <Card.Header id="DrawPageHeader">
                     <h1 id="title">Start Drawing!</h1>
-                    <h2 id="timer" className="multiplayer">Timer</h2>
+                    {mode === Modes.Multi && <h2 id="timer" className="multiplayer">Timer</h2>}
                     <h4 id="Prompt">Prompt: {prompt}</h4>
                 </Card.Header>
                 <Card.Body id="DrawPageBody">
