@@ -27,15 +27,15 @@ const router = createBrowserRouter([
     element: <HomePage />
   },
   {
-    path: '/draw/multiplayer',
+    path: '/game/multiplayer',
     element: <DrawPage mode={Modes.Multi} />
   },
   {
-    path: '/draw/singleplayer',
+    path: '/game/singleplayer',
     element: <DrawPage mode={Modes.Single} />
   },
   {
-    path: 'draw/host',
+    path: 'game/host',
     element: <HostGamePage />
   }
 ]);

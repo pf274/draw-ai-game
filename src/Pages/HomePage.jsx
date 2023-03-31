@@ -28,10 +28,13 @@ const HomePage = () => {
     const navigate = useNavigate();
 
     function goToSingleplayerDrawPage() {
-        navigate('/draw/singleplayer');
+        navigate('/game/singleplayer');
     }
     function goToMultiplayerDrawPage() {
-        navigate('/draw/multiplayer');
+        navigate('/game/multiplayer');
+    }
+    function goToHostGamePage() {
+        navigate('/game/host');
     }
 
     const handleShowLogin = () => setShowLogin(true);
@@ -77,7 +80,7 @@ const HomePage = () => {
                     {loggedIn && <div>
                         <h2>Multiplayer</h2>
                         <Button variant="primary">Join Game</Button>
-                        <Button variant="primary" id="hostGameModalButton" onClick={goToMultiplayerDrawPage}>Host Game</Button>
+                        <Button variant="primary" id="hostGameModalButton" onClick={goToHostGamePage}>Host Game</Button>
                         <h2 className="mt-2">Singleplayer</h2>
                         <Button variant="primary" id="freeDrawButton" onClick={goToSingleplayerDrawPage}>Free Draw</Button>
                     </div>}
