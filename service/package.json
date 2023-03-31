@@ -30,7 +30,7 @@
     "source-map-js": "^1.0.2",
     "to-regex-range": "^5.0.1",
     "uuid": "^9.0.0",
-    "ws": "^8.13.0"
+    "ws": "^8.12.0"
   },
   "keywords": [],
   "author": "pf274",

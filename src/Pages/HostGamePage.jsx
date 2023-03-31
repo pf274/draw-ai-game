@@ -21,6 +21,7 @@ function HostGamePage() {
             });
             // console.log("Game initiated");
         }
+        // TODO: ENSURE THE WEB SOCKET IS DONE
         initializeGame();
     }, []);
     function startGame() {
