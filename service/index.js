@@ -3,6 +3,7 @@ const cookieParser = require('cookie-parser');
 const bcrypt = require('bcrypt');
 const app = express();
 const DB = require('./database.js');
+const {peerProxy} = require('./peerProxy.js');
 
 // ----------- Express Settings and Setup -----------
 app.use(express.static('../public'));
@@ -156,6 +157,9 @@ app.use((_req, res) => {
 });
 
 const port = process.argv.length > 2 ? process.argv[2] : 3000;
-app.listen(port, function () {
+
+const httpService = app.listen(port, () => {
   console.log(`Listening on port ${port}`);
 });
+
+peerProxy(httpService);
