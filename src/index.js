@@ -10,11 +10,13 @@ import {
 import DrawPage from './Pages/DrawPage.jsx';
 import HomePage from './Pages/HomePage.jsx';
 import HostGamePage from './Pages/HostGamePage.jsx';
+import JoinGamePage from './Pages/JoinGamePage.jsx';
 
 export const Pages = {
   Home: "home",
   Draw: "draw",
-  Host: "host",
+  Host: "host", // play game as host
+  Join: "join", // play game as participant
 }
 export const Modes = {
   Single: "singleplayer",
@@ -37,6 +39,10 @@ const router = createBrowserRouter([
   {
     path: 'game/host',
     element: <HostGamePage />
+  },
+  {
+    path: 'game/play',
+    element: <JoinGamePage />
   }
 ]);
 

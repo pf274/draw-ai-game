@@ -16,11 +16,20 @@ function HostGamePage() {
         let newCode = generateCode()
         setGameID(newCode);
         async function initializeGame() {
-            await game.broadcastEvent(EVENTS.GameHost, {
-                gameCode: newCode,
-                host: game.getUsername()
+            // register as a host
+            await game.broadcastEvent(EVENTS.DeclareHost, {
+                gameCode: newCode // the host is recognized by their websocket connection, so no need to specify the host here.
             });
             // console.log("Game initialized");
+            // save it using dynamodb
+            // let response = await fetch('/api/game/host', {
+            //     method: "post",
+            //     headers: {'Content-Type': 'application/json'},
+            //     body: JSON.stringify({
+            //         host: game.getUsername(),
+            //         id: newCode,
+            //     })
+            // });
         }
         initializeGame();
     }, []);
@@ -51,8 +60,6 @@ function HostGamePage() {
                         <tr>
                             <td>1</td>
                             <td>{game.getUsername()} (Host) </td>
-
-                            {/* <Button variant="warning">Test</Button> */}
                         </tr>
                     </tbody>
                 </Table>

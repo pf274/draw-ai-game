@@ -4,7 +4,7 @@ const cookieParser = require('cookie-parser');
 const bcrypt = require('bcrypt');
 const app = express();
 const DB = require('./database.js');
-const {peerProxy} = require('./peerProxy.js');
+const {peerProxy} = require('./peerProxyTest.js');
 
 // ----------- Express Settings and Setup -----------
 app.use(express.static(path.join(__dirname, 'public')));

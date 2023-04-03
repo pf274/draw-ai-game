@@ -1,8 +1,8 @@
 export const EVENTS = {
     GameEnd: "game_end",        // the host disconnects or ends the game
     GameStart: "game_start",    // the host starts the game
-    GameJoin: "join_game",      // a user joins a game
-    GameHost: "host_game",      // a user hosts a game
+    DeclareJoin: "declare_join",      // a user joins a game
+    DeclareHost: "declare_host",      // a user declares themselves as host
     GameLeave: "leave_game",    // a user leaves a game (not the host)
 }
 export const ROLES = {
@@ -47,10 +47,10 @@ export class Game { // this is only necessary for multiplayer
                 case EVENTS.GameEnd:
                     console.log(msg);
                 break;
-                case EVENTS.GameHost:
+                case EVENTS.DeclareHost:
                     console.log(msg);
                 break;
-                case EVENTS.GameJoin:
+                case EVENTS.DeclareJoin:
                     console.log(msg);
                 break;
                 case EVENTS.GameLeave:
@@ -62,13 +62,6 @@ export class Game { // this is only necessary for multiplayer
                 default:
                     console.log("Some other event was triggered");
                 break;
-            }
-                
-            if (msg.type === EVENTS.GameEnd) {
-                // this.displayMsg('player', msg.from, `scored ${msg.value.score}`);
-            } else if (msg.type === EVENTS.GameHost) {
-                // this.displayMsg('player', msg.from, `started a new game`);
-                
             }
         };
     }
