@@ -46,7 +46,7 @@ function SignupModal({show, setShow, setLoggedIn}) {
         let body = await response.json();
         if (response.status === 200) {
             console.log("Signup successful!");
-            console.log(response);
+            // console.log(response);
             localStorage.setItem("username", username);
             setLoggedIn(true);
             setShow(false);

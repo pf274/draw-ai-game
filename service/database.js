@@ -70,13 +70,30 @@ async function hostGame(game_info) {
     }
     return false;
 }
-async function endGame(game_info) {
-    let game_exists = await getGame(game_info.id);
+
+async function joinGame(id, connection) {
+    await gameCollection.updateOne({id: id}, {$push: {participants: connection}});
+}
+async function leaveGame(id, connection) {
+    await gameCollection.updateOne({id: id}, {$pull: {participants: connection}});
+}
+async function endGame(game_id) {
+    let game_exists = await getGame(game_id);
     if (game_exists) {
-        await gameCollection.deleteOne({id: game_info});
+        await gameCollection.deleteOne({id: game_id});
         return true;
     }
     return false;
+}
+async function updateGame(game_data) {
+    await gameCollection.updateOne({id: game_data.id}, game_data);
+}
+
+async function keepConnectionAlive(game_id, connection) {
+    await gameCollection.updateOne(
+        { id: game_id, 'participants.id': connection.id },
+        { $set: { 'participants.$.alive': true } }
+    );
 }
 
 module.exports = {
@@ -90,4 +107,8 @@ module.exports = {
     endGame,
     newUser,
     getUserByToken,
+    joinGame,
+    leaveGame,
+    updateGame,
+    keepConnectionAlive,
 }

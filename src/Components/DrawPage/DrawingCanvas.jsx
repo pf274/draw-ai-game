@@ -206,8 +206,8 @@ const DrawingCanvas = ({setGuesses, setShowSpinner}) => {
     }
     function calculateMouseCoords(event, canvas) {
         try {
-            const clientX = event?.clientX || event?.touches?.at(0)?.clientX || 0;
-            const clientY = event?.clientY || event?.touches?.at(0)?.clientY || 0;
+            const clientX = event?.clientX || event?.touches[0]?.clientX || 0;
+            const clientY = event?.clientY || event?.touches[0]?.clientY || 0;
             let rect = canvas?.getBoundingClientRect();
             return [clientX - rect?.left, clientY - rect?.top];
         } catch (err) {

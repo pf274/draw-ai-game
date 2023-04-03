@@ -6,10 +6,10 @@ import Form from 'react-bootstrap/Form';
 import "../Components/JoinGamePage/JoinGamePage.css";
 import {useState, useEffect} from 'react';
 function JoinGamePage() {
-    const game = new Game(ROLES.Participant);
     const [inLobby, setInLobby] = useState(false);
     const [inGame, setInGame] = useState(false);
-
+    const [rows, setRows] = useState([]);
+    const game = new Game(ROLES.Participant, undefined, setRows);
     const [gameID, setGameID] = useState("");
     async function initializeGame() {
         // register as a host
@@ -32,6 +32,12 @@ function JoinGamePage() {
     function handleGameCodeInputChange(event) {
         setGameID(event.target.value.toUpperCase().slice(0, 4));
     }
+    function handleJoinGame() {
+        game.broadcastEvent(EVENTS.DeclareJoin, {
+            gameCode: gameID,
+        }).then((response) => {console.log(response)});
+        setInLobby(true);
+    }
     return (<div style={{
         display: "flex",
         flexDirection: "column",
@@ -52,8 +58,7 @@ function JoinGamePage() {
                             <th>Username</th>
                         </tr>
                     </thead>
-                    <tbody>
-                    </tbody>
+                    <tbody>{rows}</tbody>
                 </Table>
             </Card.Body>
             <Card.Footer>
@@ -72,7 +77,7 @@ function JoinGamePage() {
                 
             </Card.Body>
             <Card.Footer>
-                <Button disabled={gameID.length !== 4}>Join Game</Button>
+                <Button disabled={gameID.length !== 4} onClick={handleJoinGame}>Join Game</Button>
             </Card.Footer>
             </Card>}
     </div>)

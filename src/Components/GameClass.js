@@ -14,8 +14,11 @@ export class Game { // this is only necessary for multiplayer
     role; // either host or participant
     username;
     socketInitialized;
+    participants;
+    host;
+    setRows;
 
-    constructor(myRole, myUsername = undefined) {
+    constructor(myRole, myUsername = undefined, setRows = undefined) {
         this.socketInitialized = false;
         this.configureWebSocket();
         this.socket.addEventListener('open', () => {
@@ -25,6 +28,7 @@ export class Game { // this is only necessary for multiplayer
             this.socketInitialized = false;
         })
         this.role = myRole;
+        this.setRows = setRows;
         this.username = myUsername || localStorage.getItem("username");
     }
     configureWebSocket() {
@@ -41,26 +45,53 @@ export class Game { // this is only necessary for multiplayer
             //   this.displayMsg('system', 'game', 'disconnected');
         };
         this.socket.onmessage = async (event) => {
-            const msg = JSON.parse(await event.data.text());
-            // console.log(msg.type);
-            switch (msg.type) {
+            let data;
+            if (event.data instanceof Blob) {
+                data = JSON.parse(await event.data.text());
+            } else {
+                data = JSON.parse(event.data);
+            }
+            switch (data.type) {
                 case EVENTS.GameEnd:
-                    console.log(msg);
+                    // console.log(data);
                 break;
                 case EVENTS.DeclareHost:
-                    console.log(msg);
+                    // console.log(data);
                 break;
                 case EVENTS.DeclareJoin:
-                    console.log(msg);
+                    // console.log(data);
                 break;
                 case EVENTS.GameLeave:
-                    console.log(msg);
+                    // console.log(data);
                 break;
                 case EVENTS.GameStart:
-                    console.log(msg);
+                    // console.log(data);
                 break;
                 default:
                     console.log("Some other event was triggered");
+                    console.log(data);
+                    console.log(`data.msg was this: ${data.msg}`)
+                    if (data.msg === "joined game") {
+                        debugger;
+                        if (this.setRows) {
+                            let newRows = [];
+                            newRows.push(
+                                <tr>
+                                    <td>1</td>
+                                    <td>{`${JSON.parse(data?.host || "{}")?.id || ""} (host)`}</td>
+                                </tr>
+                            );
+                            for (const participant of Object.values(JSON.parse(data?.participants || "{}"))) {
+                                newRows.push(
+                                    <tr>
+                                        <td>{newRows.length + 1}</td>
+                                        <td>{participant?.id  || "anonymous"}</td>
+                                    </tr>
+                                );
+                            }
+                            this.setRows(newRows);
+                        }
+                    }
                 break;
             }
         };
