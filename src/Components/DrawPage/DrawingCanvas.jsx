@@ -101,6 +101,7 @@ const DrawingCanvas = ({setGuesses, setShowSpinner}) => {
             let results = await classifier.current.classify(withBackground, numberOfGuesses);
             setGuesses([...results]);
             console.log("Calculated guesses");
+            console.log(`Guesses: ${JSON.stringify([...results], 0, 2)}`)
             withBackground.remove();
         }
     }

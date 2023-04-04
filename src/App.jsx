@@ -1,6 +1,6 @@
 import './App.css';
 import HomePage from './Pages/HomePage.jsx';
-import DrawPage from './Pages/DrawPage.jsx';
+import SingleplayerDrawPage from './Pages/SingleplayerDrawPage.jsx';
 import { useState} from 'react';
 import {Pages, Modes} from './index.js';
 
@@ -11,7 +11,7 @@ function App() {
   return (
     <div className="App">
       {page == Pages.Home && <HomePage />}
-      {page == Pages.Draw && <DrawPage mode={mode}/>}
+      {page == Pages.Draw && <SingleplayerDrawPage />}
     </div>
   );
 }

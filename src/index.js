@@ -7,7 +7,8 @@ import {
   RouterProvider,
   // Route,
 } from 'react-router-dom';
-import DrawPage from './Pages/DrawPage.jsx';
+import SingleplayerDrawPage from './Pages/SingleplayerDrawPage.jsx';
+import MultiplayerDrawPage from './Pages/MultiplayerDrawPage.jsx';
 import HomePage from './Pages/HomePage.jsx';
 import HostGamePage from './Pages/HostGamePage.jsx';
 import JoinGamePage from './Pages/JoinGamePage.jsx';
@@ -30,11 +31,11 @@ const router = createBrowserRouter([
   },
   {
     path: '/game/multiplayer',
-    element: <DrawPage mode={Modes.Multi} />
+    element: <MultiplayerDrawPage />
   },
   {
     path: '/game/singleplayer',
-    element: <DrawPage mode={Modes.Single} />
+    element: <SingleplayerDrawPage />
   },
   {
     path: 'game/host',
