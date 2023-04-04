@@ -7,7 +7,8 @@ import {useState, useEffect, useMemo} from 'react';
 import io from 'socket.io-client';
 
 import Participants from '../Components/JoinGamePage/Participants.jsx';
-
+import DrawPage from './DrawPage.jsx';
+import {Modes} from '../index.js';
 function JoinGamePage() {
     const [socket, setSocket] = useState(null);
     const [inRoom, setInRoom] = useState(false);
@@ -125,8 +126,15 @@ function JoinGamePage() {
             </Card>
         }
         {(inRoom && inGame) &&
-            <div>
-                Test
+            <div style={{
+                display: "flex",
+                flexDirection: "column",
+                width: "100%",
+                height: "100%",
+                justifyContent: "center",
+                alignItems: "center",
+            }}>
+                <DrawPage mode={Modes.Multi} />
             </div>
         }
 

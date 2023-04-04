@@ -6,7 +6,8 @@ import "../Components/HostGamePage/HostGamePage.css";
 import {useState, useEffect, useMemo} from 'react';
 import io from 'socket.io-client';
 import Participants from '../Components/JoinGamePage/Participants.jsx';
-
+import DrawPage from './DrawPage.jsx';
+import {Modes} from '../index.js';
 function HostGamePage() {
     const [inGame, setInGame] = useState(false);
     const [gameID, setGameID] = useState("...");
@@ -104,7 +105,18 @@ function HostGamePage() {
                 <Button disabled={rows.length < 2} style={{display: "inline"}} onClick={startGame}>Start Game</Button>
             </Card.Footer>
         </Card>}
-        {inGame && <div>Test</div>}
+        {inGame &&
+            <div style={{
+                display: "flex",
+                flexDirection: "column",
+                width: "100%",
+                height: "100%",
+                justifyContent: "center",
+                alignItems: "center",
+            }}>
+                <DrawPage mode={Modes.Multi} />
+            </div>
+            }
     </div>)
 }
 
