@@ -1,9 +1,8 @@
 import Card from 'react-bootstrap/Card';
-import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import "../Components/JoinGamePage/JoinGamePage.css";
-import {useState, useEffect, useMemo} from 'react';
+import {useState, useEffect} from 'react';
 import io from 'socket.io-client';
 
 import Participants from '../Components/JoinGamePage/Participants.jsx';
@@ -22,9 +21,6 @@ function JoinGamePage() {
             setRows([...rows, data]);
         }
     }
-    function getGameID() {
-        return gameID;
-    }
     function handleGameCodeInputChange(event) {
         setGameID(event.target.value.toUpperCase().slice(0, 4));
     }
@@ -37,13 +33,6 @@ function JoinGamePage() {
             username: localStorage.getItem("username")
         });
     }
-    // function sendMessage() {
-    //     socket.emit("send_message", {
-    //         message: "hello",
-    //         room: gameID,
-    //         username: localStorage.getItem("username")
-    //     });
-    // }
     useEffect(() => {
         if (socket) {
             socket.on("receive_message", (data) => {
@@ -88,7 +77,9 @@ function JoinGamePage() {
             isHost: true,
         });
     }
-    // -------------------------------
+
+
+    
     return (<div style={{
         display: "flex",
         flexDirection: "column",

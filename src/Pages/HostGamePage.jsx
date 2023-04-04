@@ -1,9 +1,8 @@
 import Card from 'react-bootstrap/Card';
-import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import "../Components/HostGamePage/HostGamePage.css";
-import {useState, useEffect, useMemo} from 'react';
+import {useState, useEffect} from 'react';
 import io from 'socket.io-client';
 import Participants from '../Components/JoinGamePage/Participants.jsx';
 import DrawPage from './DrawPage.jsx';
@@ -15,7 +14,7 @@ function HostGamePage() {
     const [isPublic, setIsPublic] = useState(false);
     const [rows, setRows] = useState([{username: localStorage.getItem("username"), isHost: false}]);
     function addRow(data) {
-        if (rows.map(row => row.username).includes(data.username) == false) {
+        if (rows.map(row => row.username).includes(data.username) === false) {
             setRows([...rows, data]);
         }
     }
@@ -31,9 +30,6 @@ function HostGamePage() {
     function generateCode() {
         return ((36 ** 3) + Math.floor(Math.random() * (34 * 36**3 + 35 * 36**2 + 35 * 36 + 35))).toString(36).toUpperCase();
       }
-    useEffect(() => {
-    }, []);
-    // ---------- socket.io ----------
     useEffect(() => {
         if (socket) {
             socket.on("receive_message", (data) => {
@@ -62,14 +58,6 @@ function HostGamePage() {
             isHost: true,
         });
     }
-    // function sendMessage() {
-    //     socket.emit("send_message", {
-    //         message: "hello",
-    //         room: gameID,
-    //         username: localStorage.getItem("username")
-    //     });
-    // };
-    // -------------------------------
     return (
         <div style={{
             display: "flex",
