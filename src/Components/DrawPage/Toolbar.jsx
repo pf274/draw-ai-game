@@ -3,8 +3,14 @@ import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import FormRange from 'react-bootstrap/FormRange';
 import rawCategoryData from '../../Data/categories.txt';
-import {useState, useEffect} from 'react';
-function Toolbar({setShowGuessesModal, setPrompt}) {
+import {useState, useEffect, useRef} from 'react';
+
+import * as ml5 from "ml5";
+import {AIGuess} from '../GameClass.js';
+
+
+function Toolbar({setShowGuessesModal, setPrompt, setGuesses}) {
+    let classifier = useRef();
     const [sliderValue, setSliderValue] = useState(1);
     function Capitalize(text) {
         return text.toLowerCase().split(' ')
@@ -27,10 +33,19 @@ function Toolbar({setShowGuessesModal, setPrompt}) {
         setSliderValue(event.target.value);
     }
     function handleOpenGuessModal() {
-        setShowGuessesModal(true);
+        AIGuess(classifier).then(results => {
+            setGuesses(results);
+            setShowGuessesModal(true);
+        });
     }
     useEffect(() => {
         newPrompt();
+        setTimeout(() => {
+            function modelLoaded() {
+                console.log('Model Loaded!');
+            }
+            classifier.current = ml5.imageClassifier('DoodleNet', modelLoaded);
+        }, 1000);
     }, []);
     return (
         <Card className="toolbarBody">

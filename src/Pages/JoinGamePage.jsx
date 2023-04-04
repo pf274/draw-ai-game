@@ -2,15 +2,18 @@ import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import "../Components/JoinGamePage/JoinGamePage.css";
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useRef} from 'react';
 import io from 'socket.io-client';
 
 import Participants from '../Components/JoinGamePage/Participants.jsx';
 import MultiplayerDrawPage from './MultiplayerDrawPage.jsx';
 import {Modes} from '../index.js';
 import rawCategoryData from '../Data/categories.txt';
+import * as ml5 from "ml5";
+import {AIGuess} from '../Components/GameClass.js';
 
 function JoinGamePage() {
+    let classifier = useRef();
     const [socket, setSocket] = useState(null);
     const [inRoom, setInRoom] = useState(false);
     const [inGame, setInGame] = useState(false);
@@ -55,6 +58,15 @@ function JoinGamePage() {
         allCategories = allCategories.split("\n").map((item) => Capitalize(item.trim()));
         return allCategories.length;
     }
+    function sendResults(results) {
+        socket.emit("send_message", {
+            message: "my results",
+            room: gameID,
+            username: localStorage.getItem("username"),
+            isHost: true,
+            results: results
+        });
+    }
     useEffect(() => {
         if (socket) {
             socket.on("receive_message", (data) => {
@@ -89,6 +101,7 @@ function JoinGamePage() {
                         break;
                         case "done drawing":
                             setCanDraw(false);
+                            AIGuess(classifier).then(results => sendResults(results));
                             console.log("done drawing!");
                         break;
                         case "review results":
@@ -96,6 +109,8 @@ function JoinGamePage() {
                             console.log("review results!");
                         break;
                     }
+                } else if (data.message == "my results") {
+                    // TODO: handle incoming results
                 } else {
                     // alert(data.message);
                 }
@@ -106,6 +121,12 @@ function JoinGamePage() {
     useEffect(() => {
         setSocket(io.connect("http://localhost:4000")); // the url to the backend server
         numberOfCategories().then(result => setCategoriesLength(result));
+        setTimeout(() => {
+            function modelLoaded() {
+                console.log('Model Loaded!');
+            }
+            classifier.current = ml5.imageClassifier('DoodleNet', modelLoaded);
+        }, 1000);
     }, [])
 
     function socketWhoIsHere() {

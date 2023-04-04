@@ -3,7 +3,7 @@ import Card from 'react-bootstrap/Card';
 import Toolbar from '../Components/DrawPage/Toolbar.jsx';
 import DrawingCanvas from '../Components/DrawPage/DrawingCanvas.jsx';
 import SingleplayerGuessesModal from '../Components/DrawPage/SingleplayerGuessesModal.jsx';
-import {useState, useMemo, useEffect} from 'react';
+import {useState, useMemo, useEffect, useRef} from 'react';
 import { Modes } from "../index.js";
 import Spinner from 'react-bootstrap/Spinner';
 
@@ -42,11 +42,11 @@ const SingleplayerDrawPage = ({mode, time, providedPrompt}) => {
                     <h4 id="Prompt">Prompt: {prompt}</h4>
                 </Card.Header>
                 <Card.Body id="DrawPageBody">
-                    {mode !== Modes.Multi && <Toolbar id="toolbar" setShowGuessesModal={setShowGuessesModal} setPrompt={setPrompt} />}
+                    <Toolbar id="toolbar" setShowGuessesModal={setShowGuessesModal} setPrompt={setPrompt} setGuesses={setGuesses} />
                     {canvas}
                 </Card.Body>
             </Card>
-            {mode !== Modes.Multi && <SingleplayerGuessesModal show={showGuessesModal} setShow={setShowGuessesModal} guesses={guesses} prompt={prompt}/>}
+            <SingleplayerGuessesModal show={showGuessesModal} setShow={setShowGuessesModal} guesses={guesses} prompt={prompt}/>
             {showSpinner && <Spinner id="CanvasSpinner" role="status" aria-hidden="true" animation="border"/>}
         </div>
 

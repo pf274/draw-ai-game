@@ -7,10 +7,6 @@ const DB = require('./database.js');
 const http = require('http');
 const {socketio} = require('./socketio.js');
 const cors = require("cors");
-// const {peerProxy} = require('./peerProxyTest.js');
-
-
-
 
 // ----------- Express Settings and Setup -----------
 app.use(express.static(path.join(__dirname, 'public')));
@@ -174,9 +170,3 @@ httpService.listen(port, () => {
   console.log(`Listening on port ${port}`);
 });
 socketio(httpService);
-
-// const httpService = app.listen(port, () => {
-//   console.log(`Listening on port ${port}`);
-// });
-
-// peerProxy(httpService);

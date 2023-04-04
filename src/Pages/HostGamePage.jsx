@@ -2,13 +2,17 @@ import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import "../Components/HostGamePage/HostGamePage.css";
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useRef} from 'react';
 import io from 'socket.io-client';
 import Participants from '../Components/JoinGamePage/Participants.jsx';
 import MultiplayerDrawPage from './MultiplayerDrawPage.jsx';
-import {Modes} from '../index.js';
 import rawCategoryData from '../Data/categories.txt';
+
+import * as ml5 from "ml5";
+import {AIGuess} from '../Components/GameClass.js';
+
 function HostGamePage() {
+    let classifier = useRef();
     const [inGame, setInGame] = useState(false);
     const [gameID, setGameID] = useState("...");
     const [socket, setSocket] = useState(null);
@@ -51,6 +55,15 @@ function HostGamePage() {
             isHost: true,
         });
         runCycle({rounds: 5});
+    }
+    function sendResults(results) {
+        socket.emit("send_message", {
+            message: "my results",
+            room: gameID,
+            username: localStorage.getItem("username"),
+            isHost: true,
+            results: results
+        });
     }
     function generateCode() {
         return ((36 ** 3) + Math.floor(Math.random() * (34 * 36**3 + 35 * 36**2 + 35 * 36 + 35))).toString(36).toUpperCase();
@@ -113,6 +126,9 @@ function HostGamePage() {
             } else {
                 setCanDraw(false);
             }
+            if (phaseName == "done drawing") {
+                AIGuess(classifier).then(results => sendResults(results));
+            }
             newPhase(phaseName, duration, prompt_index);
             
             console.log("Starting phase:", phaseName);
@@ -138,6 +154,8 @@ function HostGamePage() {
                     // alert("new player joined");
                     addRow(data);
                     socketIAmHere();
+                } else if (data.message == "my results") {
+                    // TODO: handle incoming results
                 } else {
                     // alert(data.message);
                 }
@@ -149,6 +167,12 @@ function HostGamePage() {
         let newCode = generateCode();
         setGameID(newCode);
         numberOfCategories().then(result => setCategoriesLength(result));
+        setTimeout(() => {
+            function modelLoaded() {
+                console.log('Model Loaded!');
+            }
+            classifier.current = ml5.imageClassifier('DoodleNet', modelLoaded);
+        }, 1000);
     }, [])
     function socketIAmHere() {
         socket.emit("send_message", {
