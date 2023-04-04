@@ -1,41 +1,59 @@
-import {Game, ROLES, EVENTS} from '../Components/GameClass.js';
 import Card from 'react-bootstrap/Card';
 import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import "../Components/HostGamePage/HostGamePage.css";
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useMemo} from 'react';
+import io from 'socket.io-client';
+
 function HostGamePage() {
-    const game = new Game(ROLES.Host);
-    const [inLobby, setInLobby] = useState(true);
+    const [inGame, setInGame] = useState(false);
     const [gameID, setGameID] = useState("...");
+    const [socket, setSocket] = useState(null);
+    const [isPublic, setIsPublic] = useState(false);
+    function getGameID() {
+        return gameID;
+    }
     function generateCode() {
         return ((36 ** 3) + Math.floor(Math.random() * (34 * 36**3 + 35 * 36**2 + 35 * 36 + 35))).toString(36).toUpperCase();
       }
     useEffect(() => {
-        let newCode = generateCode()
-        setGameID(newCode);
-        async function initializeGame() {
-            // register as a host
-            await game.broadcastEvent(EVENTS.DeclareHost, {
-                gameCode: newCode // the host is recognized by their websocket connection, so no need to specify the host here.
-            });
-            // console.log("Game initialized");
-            // save it using dynamodb
-            // let response = await fetch('/api/game/host', {
-            //     method: "post",
-            //     headers: {'Content-Type': 'application/json'},
-            //     body: JSON.stringify({
-            //         host: game.getUsername(),
-            //         id: newCode,
-            //     })
-            // });
-        }
-        initializeGame();
     }, []);
-    function startGame() {
-        game.broadcastEvent(EVENTS.GameStart, {});
+    // ---------- socket.io ----------
+    useEffect(() => {
+        if (socket) {
+            socket.on("receive_message", (data) => {
+                if (data.message === "joined room") {
+                    
+                } else if (data.message === "who is here?") {
+                    alert("new player joined");
+                    socketIAmHere();
+                } else {
+                    alert(data.message);
+                }
+            });
+        }
+    }, [socket]);
+    useEffect(() => {
+        setSocket(io.connect("http://localhost:4000")); // the url to the backend server
+        let newCode = generateCode();
+        setGameID(newCode);
+    }, [])
+    function socketIAmHere() {
+        socket.emit("send_message", {
+            message: "I am here",
+            room: getGameID(),
+            username: localStorage.getItem("username")
+        });
     }
+    // function sendMessage() {
+    //     socket.emit("send_message", {
+    //         message: "hello",
+    //         room: gameID,
+    //         username: localStorage.getItem("username")
+    //     });
+    // };
+    // -------------------------------
     return (<div style={{
         display: "flex",
         flexDirection: "column",
@@ -47,6 +65,13 @@ function HostGamePage() {
         <Card id="HostGameCard">
             <Card.Header>
                 <h3>{gameID}</h3>
+                <Button disabled={isPublic} onClick={() => {
+                    socket.emit("join_room", {
+                        room: gameID,
+                        asHost: true
+                    });
+                    setIsPublic(true);
+                }}>Post</Button>
             </Card.Header>
             <Card.Body>
                 <Table>
@@ -57,10 +82,6 @@ function HostGamePage() {
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>{game.getUsername()} (Host) </td>
-                        </tr>
                     </tbody>
                 </Table>
             </Card.Body>
@@ -73,7 +94,7 @@ function HostGamePage() {
                 }}>
                     <Form.Check type="switch" id="theSwitch" label="I am Participating" />
                 </Form>
-                <Button disabled={true} style={{display: "inline"}}>Start Game</Button>
+                <Button disabled={false} style={{display: "inline"}}>Start Game</Button>
             </Card.Footer>
         </Card>
     </div>)

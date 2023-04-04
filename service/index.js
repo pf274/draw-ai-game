@@ -4,12 +4,19 @@ const cookieParser = require('cookie-parser');
 const bcrypt = require('bcrypt');
 const app = express();
 const DB = require('./database.js');
-const {peerProxy} = require('./peerProxyTest.js');
+const http = require('http');
+const {socketio} = require('./socketio.js');
+const cors = require("cors");
+// const {peerProxy} = require('./peerProxyTest.js');
+
+
+
 
 // ----------- Express Settings and Setup -----------
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 app.use(cookieParser());
+app.use(cors());
 app.use(function(req, res, next) {
   res.setHeader('Content-Type', 'application/javascript');
   next();
@@ -162,9 +169,14 @@ app.use((_req, res) => {
 });
 
 const port = process.argv.length > 2 ? process.argv[2] : 4000;
-
-const httpService = app.listen(port, () => {
+const httpService = http.createServer(app);
+httpService.listen(port, () => {
   console.log(`Listening on port ${port}`);
 });
+socketio(httpService);
 
-peerProxy(httpService);
+// const httpService = app.listen(port, () => {
+//   console.log(`Listening on port ${port}`);
+// });
+
+// peerProxy(httpService);

@@ -178,37 +178,42 @@ function peerProxy(httpServer) {
 
   // Keep active connections alive
   setInterval(async () => {
-    Object.values(unregisteredConnections).forEach((c) => {
-      // Kill any connection that didn't respond to the ping last time
-      if (!c.alive) {
-        c.ws.terminate();
-      } else {
-        c.alive = false;
-        c.ws.ping();
-      }
-    });
-    let allGames = await getAllGames();
-    for (const game of Object.values(allGames)) {
-      let newGameData = JSON.parse(JSON.stringify(game));
-      if (!game.host.alive) {
-        DB.endGame(game.id);
-        game.host.ws.terminate();
-      } else {
-        game.host.alive = false;
-        game.host.ws.ping();
-      }
-      for (const participant of game.participants) {
-        if (!participant.alive) {
-          DB.leaveGame(game.id, participant);
-          participant.ws.terminate();
+    try {
+      Object.values(unregisteredConnections).forEach((c) => {
+        // Kill any connection that didn't respond to the ping last time
+        if (!c.alive) {
+          c.ws.terminate();
         } else {
-          participant.alive = false;
-          participant.ws.ping();
+          c.alive = false;
+          c.ws.ping();
+        }
+      });
+      let allGames = await getAllGames();
+      for (const game of Object.values(allGames)) {
+        let newGameData = JSON.parse(JSON.stringify(game));
+        if (!game.host.alive) {
+          DB.endGame(game.id);
+          game.host.ws.terminate();
+        } else {
+          game.host.alive = false;
+          game.host.ws.ping();
+        }
+        for (const participant of game.participants) {
+          if (!participant.alive) {
+            DB.leaveGame(game.id, participant);
+            participant.ws.terminate();
+          } else {
+            participant.alive = false;
+            participant.ws.ping();
+          }
+        }
+        if (JSON.stringify(game) !== JSON.stringify(newGameData)) {
+          DB.updateGame(newGameData);
         }
       }
-      if (JSON.stringify(game) !== JSON.stringify(newGameData)) {
-        DB.updateGame(newGameData);
-      }
+    
+    } catch (err) {
+      console.log(err);
     }
   }, 10000);
 }
