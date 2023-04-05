@@ -39,7 +39,9 @@ const HomePage = () => {
     function goToJoinGamePage() {
         navigate('/game/play');
     }
-
+    function goToAboutPage() {
+        navigate('/about');
+    }
     const handleShowLogin = () => setShowLogin(true);
     const handleShowSignup = () => setShowSignup(true);
     function handleGithubNavigate() {
@@ -98,6 +100,7 @@ const HomePage = () => {
                             {logoutLoading && <div><Spinner as="span" variant="light" size="sm" role="status" aria-hidden="true" animation="border"/> Loading...</div>}
                         </Button>
                     }
+                    <Button variant="secondary" onClick={goToAboutPage}>About</Button>
                 </Card.Footer>
             </Card>
             <LoginModal show={showLogin} setShow={setShowLogin} setLoggedIn={setLoggedIn} />

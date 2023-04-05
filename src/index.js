@@ -8,10 +8,10 @@ import {
   // Route,
 } from 'react-router-dom';
 import SingleplayerDrawPage from './Pages/SingleplayerDrawPage.jsx';
-import MultiplayerDrawPage from './Pages/MultiplayerDrawPage.jsx';
 import HomePage from './Pages/HomePage.jsx';
 import HostGamePage from './Pages/HostGamePage.jsx';
 import JoinGamePage from './Pages/JoinGamePage.jsx';
+import AboutPage from './Pages/AboutPage';
 
 export const Pages = {
   Home: "home",
@@ -30,20 +30,20 @@ const router = createBrowserRouter([
     element: <HomePage />
   },
   {
-    path: '/game/multiplayer',
-    element: <MultiplayerDrawPage />
-  },
-  {
     path: '/game/singleplayer',
     element: <SingleplayerDrawPage />
   },
   {
-    path: 'game/host',
+    path: '/game/host',
     element: <HostGamePage />
   },
   {
-    path: 'game/play',
+    path: '/game/play',
     element: <JoinGamePage />
+  },
+  {
+    path: '/about',
+    element: <AboutPage />
   }
 ]);
 
