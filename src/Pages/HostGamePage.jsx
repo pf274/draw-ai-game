@@ -16,8 +16,8 @@ function HostGamePage() {
     let classifier = useRef();
     const [inGame, setInGame] = useState(false);
     const [gameID, setGameID] = useState("...");
-    const [socket, setSocket] = useState(null);
     const [isPublic, setIsPublic] = useState(false);
+    const [socket, setSocket] = useState(null);
     const [participating, setParticipating] = useState(false);
     const [participantRows, setParticipantRows] = useState([{username: localStorage.getItem("username"), isHost: false}]);
     const [roundEndTime, setRoundEndTime] = useState(0);
@@ -79,14 +79,16 @@ function HostGamePage() {
         }
     }
     function startGame() {
-        setInGame(true);
-        socket.emit("send_message", {
-            message: "starting game",
-            room: gameID,
-            username: localStorage.getItem("username"),
-            isHost: true,
-        });
-        runCycle({rounds: 5});
+        if (socket) {
+            setInGame(true);
+            socket.emit("send_message", {
+                message: "starting game",
+                room: gameID,
+                username: localStorage.getItem("username"),
+                isHost: true,
+            });
+            runCycle({rounds: 5});
+        }
     }
     function sendResults(stuff) {
         socket.emit("send_message", {
@@ -202,39 +204,45 @@ function HostGamePage() {
         };
     }
     useEffect(() => {
-        if (socket) {
-            socket.off("receive_message");
-            socket.on("receive_message", (data) => {
-                if (data.message === "joined room") {
-                    
-                } else if (data.message === "who is here?") {
-                    addParticipantRow(data);
-                    socketIAmHere();
-                } else if (data.message === "I am here") {
-                    addParticipantRow(data);
-                } else if (data.message == "my results") {
-                    // TODO: handle incoming results
-                    addResultsRow(data);
-                } else {
-                    // alert(data.message);
-                }
-            });
-        }
-    }, [socket, resultsRows, setResultsRows, addResultsRow]);
-    useEffect(() => {
-        let socketAddress = process.env.NODE_ENV === 'development' ? "http://localhost:4000" : "https://startup.peterfullmer.net";
-        setSocket(io.connect(socketAddress)); // the url to the backend server.
         let newCode = generateCode();
         setGameID(newCode);
         numberOfCategories().then(result => setCategoriesLength(result));
+        // --------- Socket ---------
+        let socketAddress = process.env.NODE_ENV === 'development' ? "http://localhost:4000" : "https://startup.peterfullmer.net";
+        let socket = io.connect(socketAddress); // the url to the backend server.
+        setSocket(socket);
+        console.log("socket connected");
+        socket.on("receive_message", (data) => {
+            if (data.message === "joined room") {
+                
+            } else if (data.message === "who is here?") {
+                addParticipantRow(data);
+                socketIAmHere(socket);
+            } else if (data.message === "I am here") {
+                addParticipantRow(data);
+            } else if (data.message == "my results") {
+                // TODO: handle incoming results
+                addResultsRow(data);
+            } else {
+                // alert(data.message);
+            }
+        });
+        // --------- AI Model ---------
         setTimeout(() => {
             function modelLoaded() {
                 console.log('Model Loaded!');
             }
             classifier.current = ml5.imageClassifier('DoodleNet', modelLoaded);
         }, 1000);
+
+        return (() => {
+            // --------- Socket ---------
+            socket.off("receive_message");
+            socket.disconnect();
+            console.log("socket disconnected");
+        });
     }, [])
-    function socketIAmHere() {
+    function socketIAmHere(socket) {
         socket.emit("send_message", {
             message: "I am here",
             room: gameID,
@@ -258,11 +266,13 @@ function HostGamePage() {
             <Card.Header>
                 <h3>{gameID}</h3>
                 <Button disabled={isPublic} onClick={() => {
-                    socket.emit("join_room", {
-                        room: gameID,
-                        asHost: true
-                    });
-                    setIsPublic(true);
+                    if (socket) {
+                        socket.emit("join_room", {
+                            room: gameID,
+                            asHost: true
+                        });
+                        setIsPublic(true);
+                    }
                 }}>Post</Button>
             </Card.Header>
             <Card.Body>
