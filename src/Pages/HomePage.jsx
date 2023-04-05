@@ -106,6 +106,7 @@ const HomePage = () => {
             </Card>
             <LoginModal show={showLogin} setShow={setShowLogin} setLoggedIn={setLoggedIn} />
             <SignupModal show={showSignup} setShow={setShowSignup} setLoggedIn={setLoggedIn}/>
+            <p id="Author">Peter Fullmer</p>
         </div>
     );
 };
