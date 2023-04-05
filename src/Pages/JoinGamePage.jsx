@@ -174,13 +174,20 @@ function JoinGamePage() {
 
     useEffect(() => {
         let socketAddress = process.env.NODE_ENV === 'development' ? "http://localhost:4000" : "https://startup.peterfullmer.net";
-        setSocket(io.connect(socketAddress)); // the url to the backend server.
+        let socket = io.connect(socketAddress);
+        console.log("socket connected");
+        setSocket(socket); // the url to the backend server.
         setTimeout(() => {
             function modelLoaded() {
                 console.log('Model Loaded!');
             }
             classifier.current = ml5.imageClassifier('DoodleNet', modelLoaded);
         }, 1000);
+        return (() => {
+            socket.off("receive_message");
+            socket.disconnect();
+            console.log("socket disconnected");
+        })
     }, []);
 
     function socketWhoIsHere() {
