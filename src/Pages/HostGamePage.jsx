@@ -19,7 +19,7 @@ function HostGamePage() {
     const [isPublic, setIsPublic] = useState(false);
     const [socket, setSocket] = useState(null);
     const [participating, setParticipating] = useState(false);
-    const [participantRows, setParticipantRows] = useState([{username: localStorage.getItem("username"), isHost: false}]);
+    const [participantRows, setParticipantRows] = useState([]);
     const [roundEndTime, setRoundEndTime] = useState(0);
     const [prompt, setPrompt] = useState('...');
     const [categoriesLength, setCategoriesLength] = useState(0);
@@ -60,9 +60,15 @@ function HostGamePage() {
         let newCategory = allCategories[index];
         return newCategory;
     }
-    function addParticipantRow(data) {
-        if (participantRows.map(row => row.username).includes(data.username) === false) {
-            setParticipantRows([...participantRows, data]);
+    function addParticipantRow(myParticipants, data) {
+        if (myParticipants.map(row => row.username).includes(data.username) === false) {
+            return [...myParticipants, data];
+        }
+    }
+    function removeParticipantRow(myParticipants, data) {
+        if (myParticipants.map(row => row.username).includes(data.username) === true) {
+            console.log(myParticipants.filter((row) => row.username !== data.username));
+            return myParticipants.filter((row) => row.username !== data.username);
         }
     }
     function addResultsRow(data) {
@@ -207,6 +213,7 @@ function HostGamePage() {
         let newCode = generateCode();
         setGameID(newCode);
         numberOfCategories().then(result => setCategoriesLength(result));
+        let myParticipants = [];
         // --------- Socket ---------
         let socketAddress = process.env.NODE_ENV === 'development' ? "http://localhost:4000" : "https://startup.peterfullmer.net";
         let socket = io.connect(socketAddress); // the url to the backend server.
@@ -214,15 +221,22 @@ function HostGamePage() {
         console.log("socket connected");
         socket.on("receive_message", (data) => {
             if (data.message === "joined room") {
-                
+                myParticipants = addParticipantRow(myParticipants, {username: localStorage.getItem("username")});
+                setParticipantRows(myParticipants);
             } else if (data.message === "who is here?") {
-                addParticipantRow(data);
+                myParticipants = addParticipantRow(myParticipants, data);
+                setParticipantRows(myParticipants);
                 socketIAmHere(socket);
             } else if (data.message === "I am here") {
-                addParticipantRow(data);
+                myParticipants = addParticipantRow(myParticipants, data);
+                setParticipantRows(myParticipants);
             } else if (data.message == "my results") {
-                // TODO: handle incoming results
                 addResultsRow(data);
+            } else if (data.message == "I am leaving") {
+                myParticipants = removeParticipantRow(myParticipants, data);
+                setParticipantRows(myParticipants);
+                console.log(`${data.username} has left.`);
+                // TODO: remove the person
             } else {
                 // alert(data.message);
             }
@@ -238,6 +252,11 @@ function HostGamePage() {
         return (() => {
             // --------- Socket ---------
             socket.off("receive_message");
+            socket.emit("send_message", {
+                message: "I am leaving",
+                username: localStorage.getItem("username"),
+                isHost: false,
+            });
             socket.disconnect();
             console.log("socket disconnected");
         });

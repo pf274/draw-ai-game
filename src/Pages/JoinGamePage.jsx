@@ -19,7 +19,7 @@ function JoinGamePage() {
     const [socket, setSocket] = useState(null);
     const [inRoom, setInRoom] = useState(false);
     const [inGame, setInGame] = useState(false);
-    const [participantRows, setParticipantRows] = useState([{username: localStorage.getItem("username"), isHost: false}]);
+    const [participantRows, setParticipantRows] = useState([]);
     const [gameID, setGameID] = useState("");
     const [loading, setLoading] = useState(false);
     const [phase, setPhase] = useState("");
@@ -29,9 +29,15 @@ function JoinGamePage() {
     const [resultsRows, setResultsRows] = useState([]);
     const [totalPoints, setTotalPoints] = useState(0);
     const [showDoneDrawingModal, setShowDoneDrawingModal] = useState(false);
-    function addParticipantRow(data) {
-        if (participantRows.map(row => row.username).includes(data.username) == false) {
-            setParticipantRows([...participantRows, data]);
+    function addParticipantRow(myParticipants, data) {
+        if (myParticipants.map(row => row.username).includes(data.username) === false) {
+            return [...myParticipants, data];
+        }
+    }
+    function removeParticipantRow(myParticipants, data) {
+        if (myParticipants.map(row => row.username).includes(data.username) === true) {
+            console.log(myParticipants.filter((row) => row.username !== data.username));
+            return myParticipants.filter((row) => row.username !== data.username);
         }
     }
     function clearCanvas() {
@@ -102,6 +108,7 @@ function JoinGamePage() {
         });
     }
     useEffect(() => {
+        let myParticipants = [];
         if (socket) {
             socket.off("receive_message");
             socket.on("receive_message", (data) => {
@@ -109,14 +116,18 @@ function JoinGamePage() {
                     socketWhoIsHere();
                     setInRoom(true);
                     setLoading(false);
+                    myParticipants = addParticipantRow(myParticipants, {username: localStorage.getItem("username")});
+                    setParticipantRows(myParticipants);
                 } else if (data.message == "failed to join room") {
                     alert("The room you entered does not exist.");
                     setLoading(false);
                 } else if (data.message == "who is here?") {
-                    addParticipantRow(data);
+                    myParticipants = addParticipantRow(myParticipants, data);
+                    setParticipantRows(myParticipants);
                     socketIAmHere();
                 } else if (data.message == "I am here") {
-                    addParticipantRow(data);
+                    myParticipants = addParticipantRow(myParticipants, data);
+                    setParticipantRows(myParticipants);
                 } else if (data.message == "starting game") {
                     setInGame(true);
                 } else if (data.message == "new phase") {
@@ -164,7 +175,11 @@ function JoinGamePage() {
                     }
                 } else if (data.message == "my results") {
                     addResultsRow(data);
-                    // TODO: handle incoming results
+                } else if (data.message == "I am leaving") {
+                    myParticipants = removeParticipantRow(myParticipants, data);
+                    setParticipantRows(myParticipants);
+                    console.log(`${data.username} has left.`);
+                    // TODO: remove the person
                 } else {
                     // alert(data.message);
                 }
@@ -185,6 +200,11 @@ function JoinGamePage() {
         }, 1000);
         return (() => {
             socket.off("receive_message");
+            socket.emit("send_message", {
+                message: "I am leaving",
+                username: localStorage.getItem("username"),
+                isHost: false,
+            });
             socket.disconnect();
             console.log("socket disconnected");
         })

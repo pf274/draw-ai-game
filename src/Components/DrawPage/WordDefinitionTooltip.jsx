@@ -25,7 +25,6 @@ function WordDefinitionTooltip({word}, show) {
             console.log(err);
         }
         });
-        // TODO: SET THE DEFINITION BASED ON THE WORD. Use overlay triggers to get the word's definition
     }, [word]);
     return(
         <Popover style={{position: "absolute", right: "0%", top: "50px"}} id="DefinitionPopover">
