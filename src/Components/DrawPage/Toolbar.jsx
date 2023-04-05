@@ -34,7 +34,7 @@ function Toolbar({setShowGuessesModal, setPrompt, setGuesses}) {
     }
     function handleOpenGuessModal() {
         AIGuess(classifier).then(results => {
-            setGuesses(results);
+            setGuesses(results.results);
             setShowGuessesModal(true);
         });
     }
