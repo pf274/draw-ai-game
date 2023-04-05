@@ -98,15 +98,11 @@ const HomePage = () => {
                             {logoutLoading && <div><Spinner as="span" variant="light" size="sm" role="status" aria-hidden="true" animation="border"/> Loading...</div>}
                         </Button>
                     }
-                    <a href="https://github.com/pf274/startup" target="_blank" rel="noopener noreferrer">
-                    <Button variant="info">Github Repository</Button>
-                    </a>
-
                 </Card.Footer>
             </Card>
             <LoginModal show={showLogin} setShow={setShowLogin} setLoggedIn={setLoggedIn} />
             <SignupModal show={showSignup} setShow={setShowSignup} setLoggedIn={setLoggedIn}/>
-            <p id="Author">Peter Fullmer</p>
+            <p id="Author"><a href="https://github.com/pf274/startup" target="_blank" rel="noopener noreferrer">Github Repository</a>  -  Peter Fullmer</p>
         </div>
     );
 };
