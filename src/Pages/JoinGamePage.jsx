@@ -181,7 +181,7 @@ function JoinGamePage() {
             }
             classifier.current = ml5.imageClassifier('DoodleNet', modelLoaded);
         }, 1000);
-    }, [])
+    }, []);
 
     function socketWhoIsHere() {
         socket.emit("send_message", {

@@ -43,6 +43,10 @@
         text-align: left;
         flex: 1;
     }
+    #DefinitionPopover {
+        right: auto;
+        left: 0%;
+    }
 }
 #CanvasSpinner {
     position: absolute;

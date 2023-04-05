@@ -3,31 +3,23 @@ import Card from 'react-bootstrap/Card';
 import Toolbar from '../Components/DrawPage/Toolbar.jsx';
 import DrawingCanvas from '../Components/DrawPage/DrawingCanvas.jsx';
 import SingleplayerGuessesModal from '../Components/DrawPage/SingleplayerGuessesModal.jsx';
-import {useState, useMemo, useEffect, useRef} from 'react';
-import { Modes } from "../index.js";
+import {useState, useMemo} from 'react';
 import Spinner from 'react-bootstrap/Spinner';
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
+import WordDefinitionTooltip from "../Components/DrawPage/WordDefinitionTooltip";
 
-const SingleplayerDrawPage = ({mode, time, providedPrompt}) => {
+const SingleplayerDrawPage = ({providedPrompt}) => {
     const [showGuessesModal, setShowGuessesModal] = useState(false);
+    const [showTooltip, setShowTooltip] = useState(false);
     const [guesses, setGuesses] = useState([]);
     const [prompt, setPrompt] = useState(providedPrompt || "...");
     let [showSpinner, setShowSpinner] = useState(true);
-    const [remainingTime, setRemainingTime] = useState(0);
     const canvas = useMemo(() => {
-        return <DrawingCanvas setGuesses={setGuesses} setShowSpinner={setShowSpinner} />;
+        return <DrawingCanvas setShowSpinner={setShowSpinner} />;
     }, []);
-    function getRemainingTime(end_time) {
-        const new_time = new Date().getTime();
-        const seconds = Math.floor(((end_time - new_time) % (1000 * 60)) / 1000);
-        return seconds;
+    function handleShowTooltip() {
+        setShowTooltip(!showTooltip);
     }
-    useEffect(() => {
-        let interval = setInterval(() => {
-            setRemainingTime(Math.max(getRemainingTime(time), 0));
-        }, 1000);
-        return () => clearInterval(interval);
-    }, [time, getRemainingTime]);
-
     return (
         <div style={{
             display: "flex",
@@ -38,8 +30,14 @@ const SingleplayerDrawPage = ({mode, time, providedPrompt}) => {
             <Card id="DrawPage">
                 <Card.Header id="DrawPageHeader">
                     <h1 id="title">Start Drawing!</h1>
-                    {mode === Modes.Multi && <h2 id="timer" className="multiplayer">{remainingTime}</h2>}
-                    <h4 id="Prompt">Prompt: {prompt}</h4>
+                    <OverlayTrigger
+                        placement="right"
+                        trigger={['hover', 'click']}
+                        onToggle={handleShowTooltip}
+                        overlay={<WordDefinitionTooltip word={prompt} show={showTooltip} />}
+                    >
+                        <h4 id="Prompt">Prompt: {prompt}</h4>
+                    </OverlayTrigger>
                 </Card.Header>
                 <Card.Body id="DrawPageBody">
                     <Toolbar id="toolbar" setShowGuessesModal={setShowGuessesModal} setPrompt={setPrompt} setGuesses={setGuesses} />

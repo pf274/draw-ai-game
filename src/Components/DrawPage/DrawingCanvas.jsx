@@ -1,16 +1,13 @@
 import './DrawingCanvas.css';
 import {useEffect, useRef, useCallback} from 'react';
 
-const DrawingCanvas = ({setShowSpinner, modifyDraw = false}) => {
+const DrawingCanvas = ({setShowSpinner}) => {
     let drawing = useRef(false);
     let prevCoords = useRef([0, 0]);
     let resizeTimeout = useRef();
     let tap = useRef(false);
     let context = useRef();
     let drawTimeout = useRef();
-    useEffect(() => {
-        drawing.current = modifyDraw;
-    }, [modifyDraw])
     
     const cleanup = useCallback(() => {
         const drawingCanvas = document.getElementById("drawingCanvas");

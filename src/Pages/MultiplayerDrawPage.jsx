@@ -1,18 +1,17 @@
 import "../Components/DrawPage/DrawPage.css";
 import Card from 'react-bootstrap/Card';
-import Toolbar from '../Components/DrawPage/Toolbar.jsx';
 import DrawingCanvas from '../Components/DrawPage/DrawingCanvas.jsx';
-import SingleplayerGuessesModal from '../Components/DrawPage/SingleplayerGuessesModal.jsx';
-import {useState, useMemo, useEffect, useRef} from 'react';
+import {useState, useMemo, useEffect} from 'react';
 import Spinner from 'react-bootstrap/Spinner';
+import WordDefinitionTooltip from '../Components/DrawPage/WordDefinitionTooltip.jsx';
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 
 const MultiplayerDrawPage = ({time, prompt}) => {
-    const [showGuessesModal, setShowGuessesModal] = useState(false);
-    const [guesses, setGuesses] = useState([]);
+    const [showTooltip, setShowTooltip] = useState(false);
     let [showSpinner, setShowSpinner] = useState(true);
     const [remainingTime, setRemainingTime] = useState(0);
     const canvas = useMemo(() => {
-        return <DrawingCanvas setGuesses={setGuesses} setShowSpinner={setShowSpinner} />;
+        return <DrawingCanvas setShowSpinner={setShowSpinner} />;
     }, []);
     function getRemainingTime(end_time) {
         const new_time = new Date().getTime();
@@ -25,7 +24,9 @@ const MultiplayerDrawPage = ({time, prompt}) => {
         }, 1000);
         return () => clearInterval(interval);
     }, [time, getRemainingTime]);
-
+    function handleShowTooltip() {
+        setShowTooltip(!showTooltip);
+    }
     return (
         <div style={{
             display: "flex",
@@ -37,7 +38,14 @@ const MultiplayerDrawPage = ({time, prompt}) => {
                 <Card.Header id="DrawPageHeader">
                     <h1 id="title">Start Drawing!</h1>
                     <h2 id="timer" className="multiplayer">{remainingTime}</h2>
-                    <h4 id="Prompt">Prompt: {prompt}</h4>
+                    <OverlayTrigger
+                        placement="top"
+                        trigger={['hover', 'click']}
+                        onToggle={handleShowTooltip}
+                        overlay={<WordDefinitionTooltip word={prompt} show={showTooltip} />}
+                    >
+                        <h4 id="Prompt">Prompt: {prompt}</h4>
+                    </OverlayTrigger>                
                 </Card.Header>
                 <Card.Body id="DrawPageBody">
                     {canvas}
