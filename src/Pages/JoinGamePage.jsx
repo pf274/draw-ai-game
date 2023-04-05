@@ -12,6 +12,7 @@ import rawCategoryData from '../Data/categories.txt';
 import * as ml5 from "ml5";
 import {AIGuess} from '../Components/GameClass.js';
 import MultiplayerModal from '../Components/MultiplayerModal.jsx';
+import DoneDrawingModal from '../Components/DoneDrawingModal.jsx';
 
 function JoinGamePage() {
     let classifier = useRef();
@@ -27,7 +28,7 @@ function JoinGamePage() {
     const [showResults, setShowResults] = useState(false);
     const [resultsRows, setResultsRows] = useState([]);
     const [totalPoints, setTotalPoints] = useState(0);
-
+    const [showDoneDrawingModal, setShowDoneDrawingModal] = useState(false);
     function addParticipantRow(data) {
         if (participantRows.map(row => row.username).includes(data.username) == false) {
             setParticipantRows([...participantRows, data]);
@@ -68,8 +69,6 @@ function JoinGamePage() {
         function compareGuessToPrompt(guess, thePrompt) {
             let formattedGuess = Capitalize(guess.replace(/_/g, " "));
             let formattedPrompt = Capitalize(thePrompt.replace(/_/g, " "));
-            console.log(`Formatted Guess: ${formattedGuess}`);
-            console.log(`Formatted Prompt: ${formattedPrompt}`);
             return formattedGuess === formattedPrompt;
         }
         for (let index = 0; index < guesses.length; index++) {
@@ -130,15 +129,16 @@ function JoinGamePage() {
                         case "get new prompt":
                             setResultsRows([]);
                             setShowResults(false);
-                            console.log("get new prompt!");
+                            // console.log("get new prompt!");
                             clearCanvas();
                         break;
                         case "draw":
                             setShowResults(false);
-                            console.log("time to draw!");
+                            // console.log("time to draw!");
                         break;
                         case "done drawing":
                             setShowResults(false);
+                            setShowDoneDrawingModal(true);
                             AIGuess(classifier).then(stuff => {
                                 let points = calculatePoints(stuff.results, prompt);
                                 sendResults({...stuff, points: points, totalPoints: totalPoints + points});
@@ -154,11 +154,12 @@ function JoinGamePage() {
                                 });
                                 addPoints(points);
                             });
-                            console.log("done drawing!");
+                            // console.log("done drawing!");
                         break;
                         case "review results":
+                            setShowDoneDrawingModal(false);
                             setShowResults(true);
-                            console.log("review results!");
+                            // console.log("review results!");
                         break;
                     }
                 } else if (data.message == "my results") {
@@ -247,6 +248,7 @@ function JoinGamePage() {
             }}>
                 <MultiplayerDrawPage mode={Modes.Multi} time={roundEndTime} prompt={prompt} />
                 <MultiplayerModal show={showResults} setShow={setShowResults} rows={resultsRows} />
+                <DoneDrawingModal show={showDoneDrawingModal} setShow={setShowDoneDrawingModal} />
             </div>
         }
 

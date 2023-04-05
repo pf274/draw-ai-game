@@ -51,7 +51,7 @@ async function cropContent(canvas) { // takes in the drawing canvas and outputs 
 export async function AIGuess(classifier) {
     let drawingCanvas = document.getElementById("drawingCanvas");
     if (!drawingCanvas) return;
-    console.log("Calculating guesses");
+    // console.log("Calculating guesses");
     if (classifier.current) {
         let shouldCrop = true;
         let numberOfGuesses = 10;
@@ -74,8 +74,8 @@ export async function AIGuess(classifier) {
       
         let results = await classifier.current.classify(withBackground, numberOfGuesses);
         // setGuesses([...results]);
-        console.log("Calculated guesses");
-        console.log(`Guesses: ${JSON.stringify([...results], 0, 2)}`);
+        // console.log("Calculated guesses");
+        // console.log(`Guesses: ${JSON.stringify([...results], 0, 2)}`);
         let pictureData = withBackground.toDataURL();
         withBackground.remove();
         croppedCanvas.remove();

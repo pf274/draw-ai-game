@@ -7,7 +7,7 @@ import io from 'socket.io-client';
 import Participants from '../Components/Participants.jsx';
 import MultiplayerDrawPage from './MultiplayerDrawPage.jsx';
 import rawCategoryData from '../Data/categories.txt';
-
+import DoneDrawingModal from '../Components/DoneDrawingModal.jsx';
 import MultiplayerModal from '../Components/MultiplayerModal.jsx';
 import * as ml5 from "ml5";
 import {AIGuess} from '../Components/GameClass.js';
@@ -25,6 +25,7 @@ function HostGamePage() {
     const [categoriesLength, setCategoriesLength] = useState(0);
     const [showResults, setShowResults] = useState(false);
     const [resultsRows, setResultsRows] = useState([]);
+    const [showDoneDrawingModal, setShowDoneDrawingModal] = useState(false);
     function Capitalize(text) {
         return text.toLowerCase().split(' ')
             .map((s) => s.charAt(0).toUpperCase() + s.substring(1))
@@ -35,8 +36,8 @@ function HostGamePage() {
         function compareGuessToPrompt(guess, thePrompt) {
             let formattedGuess = Capitalize(guess.replace(/_/g, " "));
             let formattedPrompt = Capitalize(thePrompt.replace(/_/g, " "));
-            console.log(`Formatted Guess: ${formattedGuess}`);
-            console.log(`Formatted Prompt: ${formattedPrompt}`);
+            // console.log(`Formatted Guess: ${formattedGuess}`);
+            // console.log(`Formatted Prompt: ${formattedPrompt}`);
             return formattedGuess === formattedPrompt;
         }
         for (let index = 0; index < guesses.length; index++) {
@@ -159,6 +160,7 @@ function HostGamePage() {
                 setShowResults(false);
             }
             if (phaseName == "done drawing") {
+                setShowDoneDrawingModal(true);
                 setShowResults(false);
                 AIGuess(classifier).then(stuff => {
                     points = calculatePoints(stuff.results, currentPrompt);
@@ -178,6 +180,7 @@ function HostGamePage() {
             }
             if (phaseName == "review results") {
                 setShowResults(true);
+                setShowDoneDrawingModal(false);
             }
             newPhase(phaseName, duration, prompt_index);
             
@@ -288,6 +291,7 @@ function HostGamePage() {
             }}>
                 <MultiplayerDrawPage time={roundEndTime} prompt={prompt} />
                 <MultiplayerModal show={showResults} setShow={setShowResults} rows={resultsRows} />
+                <DoneDrawingModal show={showDoneDrawingModal} setShow={setShowDoneDrawingModal} />
             </div>
             }
     </div>)

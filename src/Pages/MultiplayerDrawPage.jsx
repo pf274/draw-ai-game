@@ -3,7 +3,7 @@ import Card from 'react-bootstrap/Card';
 import Toolbar from '../Components/DrawPage/Toolbar.jsx';
 import DrawingCanvas from '../Components/DrawPage/DrawingCanvas.jsx';
 import SingleplayerGuessesModal from '../Components/DrawPage/SingleplayerGuessesModal.jsx';
-import {useState, useMemo, useEffect} from 'react';
+import {useState, useMemo, useEffect, useRef} from 'react';
 import Spinner from 'react-bootstrap/Spinner';
 
 const MultiplayerDrawPage = ({time, prompt}) => {
@@ -11,7 +11,6 @@ const MultiplayerDrawPage = ({time, prompt}) => {
     const [guesses, setGuesses] = useState([]);
     let [showSpinner, setShowSpinner] = useState(true);
     const [remainingTime, setRemainingTime] = useState(0);
-
     const canvas = useMemo(() => {
         return <DrawingCanvas setGuesses={setGuesses} setShowSpinner={setShowSpinner} />;
     }, []);

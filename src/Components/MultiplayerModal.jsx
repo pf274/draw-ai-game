@@ -11,7 +11,7 @@ function MultiplayerModal({show, setShow, rows}) {
         }
     }
     return (
-        <Modal show={show} onHide={handleClose} id="MultiplayerModal">
+        <Modal show={show} onHide={handleClose} id="MultiplayerModal" backdrop="static" keyboard={false}>
             <Modal.Header>
                 <Table>
                     <thead>
@@ -25,7 +25,7 @@ function MultiplayerModal({show, setShow, rows}) {
                     <tbody>
                         {uniqueRows.map((row) => {
                             return (
-                                <tr>
+                                <tr key={row.username}>
                                     <td>{row.username}</td>
                                     <td>
                                         <img

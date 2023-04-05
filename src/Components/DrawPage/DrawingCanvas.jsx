@@ -1,36 +1,40 @@
 import './DrawingCanvas.css';
 import {useEffect, useRef, useCallback} from 'react';
 
-const DrawingCanvas = ({setShowSpinner}) => {
+const DrawingCanvas = ({setShowSpinner, modifyDraw = false}) => {
     let drawing = useRef(false);
     let prevCoords = useRef([0, 0]);
     let resizeTimeout = useRef();
     let tap = useRef(false);
     let context = useRef();
+    let drawTimeout = useRef();
+    useEffect(() => {
+        drawing.current = modifyDraw;
+    }, [modifyDraw])
     
     const cleanup = useCallback(() => {
         const drawingCanvas = document.getElementById("drawingCanvas");
         window.removeEventListener('resize', startResize);
         if (drawingCanvas) {
             console.log("cleaned up");
-            drawingCanvas.removeEventListener('mousedown', startDraw);
-            drawingCanvas.removeEventListener('touchstart', startDraw);
-            drawingCanvas.removeEventListener('mousemove', continueDraw);
-            drawingCanvas.removeEventListener('touchmove', continueDraw);
-            drawingCanvas.removeEventListener('mouseup', endDraw);
-            drawingCanvas.removeEventListener('touchend', endDraw);
+            window.removeEventListener('mousedown', startDraw);
+            window.removeEventListener('touchstart', startDraw);
+            window.removeEventListener('mousemove', continueDraw);
+            window.removeEventListener('touchmove', continueDraw);
+            window.removeEventListener('mouseup', endDraw);
+            window.removeEventListener('touchend', endDraw);
         }
     }, []);
     const initialize = useCallback(() => {
         const drawingCanvas = document.getElementById("drawingCanvas");
         console.log("intialized");
         window.addEventListener('resize', startResize);
-        drawingCanvas.addEventListener('mousedown', startDraw, { passive: true });
-        drawingCanvas.addEventListener('touchstart', startDraw, { passive: true });
-        drawingCanvas.addEventListener('mousemove', continueDraw, { passive: true });
-        drawingCanvas.addEventListener('touchmove', continueDraw, { passive: true });
-        drawingCanvas.addEventListener('mouseup', endDraw, { passive: true });
-        drawingCanvas.addEventListener('touchend', endDraw, { passive: true });
+        window.addEventListener('mousedown', startDraw, { passive: true });
+        window.addEventListener('touchstart', startDraw, { passive: true });
+        window.addEventListener('mousemove', continueDraw, { passive: true });
+        window.addEventListener('touchmove', continueDraw, { passive: true });
+        window.addEventListener('mouseup', endDraw, { passive: true });
+        window.addEventListener('touchend', endDraw, { passive: true });
     }, []);
     useEffect(() => {
         finishResize();
