@@ -71,7 +71,7 @@ const HomePage = () => {
             <Card id="HomePage">
                 <Card.Header>
                     {!loggedIn && <Card.Title>Draw AI</Card.Title>}
-                    {loggedIn && <Card.Title id="LobbyTitle">Lobby</Card.Title>}
+                    {loggedIn && <Card.Title id="LobbyTitle">{`Welcome, ${localStorage.getItem("username")}!`}</Card.Title>}
                 </Card.Header>
                 <Card.Body id="HomePageBody">
                     {!loggedIn && <div>

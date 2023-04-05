@@ -5,29 +5,48 @@ import "../Components/JoinGamePage/JoinGamePage.css";
 import {useState, useEffect, useRef} from 'react';
 import io from 'socket.io-client';
 
-import Participants from '../Components/JoinGamePage/Participants.jsx';
+import Participants from '../Components/Participants.jsx';
 import MultiplayerDrawPage from './MultiplayerDrawPage.jsx';
 import {Modes} from '../index.js';
 import rawCategoryData from '../Data/categories.txt';
 import * as ml5 from "ml5";
 import {AIGuess} from '../Components/GameClass.js';
+import MultiplayerModal from '../Components/MultiplayerModal.jsx';
 
 function JoinGamePage() {
     let classifier = useRef();
     const [socket, setSocket] = useState(null);
     const [inRoom, setInRoom] = useState(false);
     const [inGame, setInGame] = useState(false);
-    const [rows, setRows] = useState([{username: localStorage.getItem("username"), isHost: false}]);
+    const [participantRows, setParticipantRows] = useState([{username: localStorage.getItem("username"), isHost: false}]);
     const [gameID, setGameID] = useState("");
     const [loading, setLoading] = useState(false);
     const [phase, setPhase] = useState("");
     const [roundEndTime, setRoundEndTime] = useState(0);
-    const [categoriesLength, setCategoriesLength] = useState(0);
     const [prompt, setPrompt] = useState("...");
-    const [canDraw, setCanDraw] = useState(false);
-    function addRow(data) {
-        if (rows.map(row => row.username).includes(data.username) == false) {
-            setRows([...rows, data]);
+    const [showResults, setShowResults] = useState(false);
+    const [resultsRows, setResultsRows] = useState([]);
+    const [totalPoints, setTotalPoints] = useState(0);
+
+    function addParticipantRow(data) {
+        if (participantRows.map(row => row.username).includes(data.username) == false) {
+            setParticipantRows([...participantRows, data]);
+        }
+    }
+    function clearCanvas() {
+        const drawingCanvas = document.getElementById("drawingCanvas");
+        if (drawingCanvas) {
+            let context = drawingCanvas.getContext("2d");
+            context.fillStyle = "rgba(255, 255, 255, 1)";
+            context.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);
+        }
+    }
+    function addPoints(points) {
+        setTotalPoints(totalPoints => totalPoints + points);
+    }
+    function addResultsRow(data) {
+        if (resultsRows.map(row => row.username).includes(data.username) === false) {
+            setResultsRows(resultsRows => [...resultsRows, data]);
         }
     }
     async function newPrompt(index) {
@@ -44,6 +63,24 @@ function JoinGamePage() {
     function handleGameCodeInputChange(event) {
         setGameID(event.target.value.toUpperCase().slice(0, 4));
     }
+    function calculatePoints(guesses, thePrompt) {
+        let matchingIndex = 10;
+        function compareGuessToPrompt(guess, thePrompt) {
+            let formattedGuess = Capitalize(guess.replace(/_/g, " "));
+            let formattedPrompt = Capitalize(thePrompt.replace(/_/g, " "));
+            console.log(`Formatted Guess: ${formattedGuess}`);
+            console.log(`Formatted Prompt: ${formattedPrompt}`);
+            return formattedGuess === formattedPrompt;
+        }
+        for (let index = 0; index < guesses.length; index++) {
+            let guess = guesses[index];
+            if (compareGuessToPrompt(guess.label, thePrompt)) {
+                matchingIndex = index;
+            }
+        }
+        let points = (10 - matchingIndex) * 100;
+        return points;
+    }
     // ---------- socket.io ----------
     function handleJoinRoom() {
         setLoading(true);
@@ -53,22 +90,21 @@ function JoinGamePage() {
             username: localStorage.getItem("username")
         });
     }
-    async function numberOfCategories() {
-        let allCategories = await fetch(rawCategoryData).then(result => result.text());
-        allCategories = allCategories.split("\n").map((item) => Capitalize(item.trim()));
-        return allCategories.length;
-    }
-    function sendResults(results) {
+    function sendResults(stuff) {
         socket.emit("send_message", {
             message: "my results",
             room: gameID,
             username: localStorage.getItem("username"),
-            isHost: true,
-            results: results
+            isHost: false,
+            results: stuff.results,
+            picture: stuff.picture,
+            points: stuff.points,
+            totalPoints: stuff.totalPoints
         });
     }
     useEffect(() => {
         if (socket) {
+            socket.off("receive_message");
             socket.on("receive_message", (data) => {
                 if (data.message == "joined room") {
                     socketWhoIsHere();
@@ -78,10 +114,10 @@ function JoinGamePage() {
                     alert("The room you entered does not exist.");
                     setLoading(false);
                 } else if (data.message == "who is here?") {
+                    addParticipantRow(data);
                     socketIAmHere();
                 } else if (data.message == "I am here") {
-                    addRow(data);
-                    // alert(data.message);
+                    addParticipantRow(data);
                 } else if (data.message == "starting game") {
                     setInGame(true);
                 } else if (data.message == "new phase") {
@@ -92,35 +128,52 @@ function JoinGamePage() {
                     newPrompt(data.phaseInfo.prompt_index).then(result => setPrompt(result));
                     switch (data.phaseInfo.phase) {
                         case "get new prompt":
-                            setCanDraw(false);
+                            setResultsRows([]);
+                            setShowResults(false);
                             console.log("get new prompt!");
+                            clearCanvas();
                         break;
                         case "draw":
-                            setCanDraw(true);
+                            setShowResults(false);
                             console.log("time to draw!");
                         break;
                         case "done drawing":
-                            setCanDraw(false);
-                            AIGuess(classifier).then(results => sendResults(results));
+                            setShowResults(false);
+                            AIGuess(classifier).then(stuff => {
+                                let points = calculatePoints(stuff.results, prompt);
+                                sendResults({...stuff, points: points, totalPoints: totalPoints + points});
+                                addResultsRow({
+                                    message: "my results",
+                                    room: gameID,
+                                    username: localStorage.getItem("username"),
+                                    isHost: false,
+                                    results: stuff.results,
+                                    picture: stuff.picture,
+                                    points: points,
+                                    totalPoints: totalPoints + points
+                                });
+                                addPoints(points);
+                            });
                             console.log("done drawing!");
                         break;
                         case "review results":
-                            setCanDraw(false);
+                            setShowResults(true);
                             console.log("review results!");
                         break;
                     }
                 } else if (data.message == "my results") {
+                    addResultsRow(data);
                     // TODO: handle incoming results
                 } else {
                     // alert(data.message);
                 }
             });
         }
-    }, [socket]);
+    }, [socket, resultsRows, setResultsRows, addResultsRow, prompt]);
 
     useEffect(() => {
-        setSocket(io.connect("http://localhost:4000")); // the url to the backend server
-        numberOfCategories().then(result => setCategoriesLength(result));
+        let socketAddress = process.env.NODE_ENV === 'development' ? "http://localhost:4000" : "https://startup.peterfullmer.net";
+        setSocket(io.connect(socketAddress)); // the url to the backend server.
         setTimeout(() => {
             function modelLoaded() {
                 console.log('Model Loaded!');
@@ -141,7 +194,7 @@ function JoinGamePage() {
             message: "I am here",
             room: gameID,
             username: localStorage.getItem("username"),
-            isHost: true,
+            isHost: false,
         });
     }
 
@@ -179,7 +232,7 @@ function JoinGamePage() {
                     <h3>{gameID}</h3>
                 </Card.Header>
                 <Card.Body>
-                    <Participants rows={rows} />
+                    <Participants rows={participantRows} />
                 </Card.Body>
             </Card>
         }
@@ -193,6 +246,7 @@ function JoinGamePage() {
                 alignItems: "center",
             }}>
                 <MultiplayerDrawPage mode={Modes.Multi} time={roundEndTime} prompt={prompt} />
+                <MultiplayerModal show={showResults} setShow={setShowResults} rows={resultsRows} />
             </div>
         }
 
