@@ -42,6 +42,9 @@ const HomePage = () => {
 
     const handleShowLogin = () => setShowLogin(true);
     const handleShowSignup = () => setShowSignup(true);
+    function handleGithubNavigate() {
+        window.location.href = "https://github.com/pf274/startup";
+    }
     const handleLogout = async () => {
         if (logoutLoading) {return; };
         setLogoutLoading(true);
@@ -88,13 +91,17 @@ const HomePage = () => {
                         <Button variant="primary" id="freeDrawButton" onClick={goToSingleplayerDrawPage}>Free Draw</Button>
                     </div>}
                 </Card.Body>
-                <Card.Footer>
+                <Card.Footer className="d-flex justify-content-between">
                     {loggedIn && 
                         <Button variant="secondary" onClick={handleLogout}>
                             {!logoutLoading && "Log Out"}
                             {logoutLoading && <div><Spinner as="span" variant="light" size="sm" role="status" aria-hidden="true" animation="border"/> Loading...</div>}
                         </Button>
                     }
+                    <a href="https://github.com/pf274/startup" target="_blank" rel="noopener noreferrer">
+                    <Button variant="info">Github Repository</Button>
+                    </a>
+
                 </Card.Footer>
             </Card>
             <LoginModal show={showLogin} setShow={setShowLogin} setLoggedIn={setLoggedIn} />
