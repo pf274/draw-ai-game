@@ -226,7 +226,7 @@ function HostGamePage() {
             } else if (data.message === "who is here?") {
                 myParticipants = addParticipantRow(myParticipants, data);
                 setParticipantRows(myParticipants);
-                socketIAmHere(socket);
+                socketIAmHere(socket, newCode);
             } else if (data.message === "I am here") {
                 myParticipants = addParticipantRow(myParticipants, data);
                 setParticipantRows(myParticipants);
@@ -261,10 +261,10 @@ function HostGamePage() {
             console.log("socket disconnected");
         });
     }, [])
-    function socketIAmHere(socket) {
+    function socketIAmHere(socket, gameCode = gameID) {
         socket.emit("send_message", {
             message: "I am here",
-            room: gameID,
+            room: gameCode,
             username: localStorage.getItem("username"),
             isHost: true,
         });

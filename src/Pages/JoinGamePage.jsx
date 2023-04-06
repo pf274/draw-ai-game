@@ -109,6 +109,8 @@ function JoinGamePage() {
     }
     useEffect(() => {
         let myParticipants = [];
+        let myPrompt = "";
+        let myTotalPoints = 0;
         if (socket) {
             socket.off("receive_message");
             socket.on("receive_message", (data) => {
@@ -135,7 +137,10 @@ function JoinGamePage() {
                     let endTime = new Date();
                     endTime.setSeconds(endTime.getSeconds() + (data.phaseInfo.time));
                     setRoundEndTime(endTime);
-                    newPrompt(data.phaseInfo.prompt_index).then(result => setPrompt(result));
+                    newPrompt(data.phaseInfo.prompt_index).then(result => {
+                        myPrompt = result;
+                        setPrompt(result);
+                    });
                     switch (data.phaseInfo.phase) {
                         case "get new prompt":
                             setResultsRows([]);
@@ -151,8 +156,10 @@ function JoinGamePage() {
                             setShowResults(false);
                             setShowDoneDrawingModal(true);
                             AIGuess(classifier).then(stuff => {
-                                let points = calculatePoints(stuff.results, prompt);
-                                sendResults({...stuff, points: points, totalPoints: totalPoints + points});
+                                console.log(stuff.results);
+                                let points = calculatePoints(stuff.results, myPrompt);
+                                myTotalPoints += points;
+                                sendResults({...stuff, points: points, totalPoints: myTotalPoints});
                                 addResultsRow({
                                     message: "my results",
                                     room: gameID,
@@ -161,9 +168,9 @@ function JoinGamePage() {
                                     results: stuff.results,
                                     picture: stuff.picture,
                                     points: points,
-                                    totalPoints: totalPoints + points
+                                    totalPoints: myTotalPoints
                                 });
-                                addPoints(points);
+                                setTotalPoints(myTotalPoints);
                             });
                             // console.log("done drawing!");
                         break;
@@ -185,7 +192,7 @@ function JoinGamePage() {
                 }
             });
         }
-    }, [socket, resultsRows, setResultsRows, addResultsRow, prompt]);
+    }, [socket]);
 
     useEffect(() => {
         let socketAddress = process.env.NODE_ENV === 'development' ? "http://localhost:4000" : "https://startup.peterfullmer.net";
