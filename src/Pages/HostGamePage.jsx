@@ -174,7 +174,7 @@ function HostGamePage() {
                         message: "my results",
                         room: gameID,
                         username: localStorage.getItem("username"),
-                        isHost: false,
+                        isHost: true,
                         results: stuff.results,
                         picture: stuff.picture,
                         points: points,
@@ -215,6 +215,13 @@ function HostGamePage() {
         let socket = io.connect(socketAddress); // the url to the backend server.
         setSocket(socket);
         console.log("socket connected");
+        socket.on("connect", () => {
+            socket.emit("join_room", {
+                room: newCode,
+                asHost: true
+            });
+            setIsPublic(true);
+        });
         socket.on("receive_message", (data) => {
             if (data.message === "joined room") {
                 myParticipants = addParticipantRow(myParticipants, {username: localStorage.getItem("username")});
@@ -248,10 +255,11 @@ function HostGamePage() {
         return (() => {
             // --------- Socket ---------
             socket.off("receive_message");
+            socket.off("connect");
             socket.emit("send_message", {
                 message: "I am leaving",
                 username: localStorage.getItem("username"),
-                isHost: false,
+                isHost: true,
             });
             socket.disconnect();
             console.log("socket disconnected");
@@ -280,15 +288,6 @@ function HostGamePage() {
         {!inGame && <Card id="HostGameCard">
             <Card.Header>
                 <h3>{gameID}</h3>
-                <Button disabled={isPublic} onClick={() => {
-                    if (socket) {
-                        socket.emit("join_room", {
-                            room: gameID,
-                            asHost: true
-                        });
-                        setIsPublic(true);
-                    }
-                }}>Post</Button>
             </Card.Header>
             <Card.Body>
                 <Participants rows={participantRows} />

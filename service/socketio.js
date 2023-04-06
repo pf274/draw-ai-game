@@ -40,6 +40,9 @@ function socketio(httpService) {
             if (getAllRoomMembers(io, room).length == 0 && asHost == false) {
                 socket.emit("receive_message", {message: "failed to join room"});
             } else{
+                if (getAllRoomMembers(io, room).length == 0) {
+                    console.log(`Started room ${room}`);
+                }
                 socket.join(room);
                 socket.emit("receive_message", {message: "joined room"});
             }
