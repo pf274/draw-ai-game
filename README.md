@@ -67,6 +67,13 @@ Have you ever wanted to pit your drawing abilities against your friends and have
 * Instances can ping each other at regular intervals to verify if a connection is still active
 * Websockets are a great way of activating events based on the actions of other users
 
+### What I have learned from the Simon React Assignment:
+* Both backend and frontend have separate package.json and node_modules configurations, which is nice because you don't need to have unnecessary dependencies of a package is used strictly for frontend or backend use.
+* .gitignore needs to ignore both node_modules folders.
+* If there is something running on the port and you have no idea why, you can use npx kill-port 3001 (for example).
+* When using routers, you can use 'exact' to specify that it shouldn't navigate to the page unless the page path is exactly what is specified.
+* You can also create a default route that will catch everything uncaught and redirect them to the home page, which is very helpful.
+
 ### Other notes on html and CSS:
 * Use media queries like this: @media screen and (max-width: 100px) {}
 * Flex is the easiest way that I have found to structure content the way I want.
