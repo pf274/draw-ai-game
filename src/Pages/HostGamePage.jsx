@@ -61,11 +61,15 @@ function HostGamePage() {
     function addParticipantRow(myParticipants, data) {
         if (myParticipants.map(row => row.username).includes(data.username) === false) {
             return [...myParticipants, data];
+        } else {
+            return myParticipants;
         }
     }
     function removeParticipantRow(myParticipants, data) {
         if (myParticipants.map(row => row.username).includes(data.username) === true) {
             return myParticipants.filter((row) => row.username !== data.username);
+        } else {
+            return myParticipants;
         }
     }
     function addResultsRow(data) {
