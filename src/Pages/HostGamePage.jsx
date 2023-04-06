@@ -18,7 +18,7 @@ function HostGamePage() {
     const [gameID, setGameID] = useState("...");
     const [isPublic, setIsPublic] = useState(false);
     const [socket, setSocket] = useState(null);
-    const [participating, setParticipating] = useState(false);
+    const [participating, setParticipating] = useState(true);
     const [participantRows, setParticipantRows] = useState([]);
     const [roundEndTime, setRoundEndTime] = useState(0);
     const [prompt, setPrompt] = useState('...');
@@ -194,9 +194,13 @@ function HostGamePage() {
                     // trigger event for end of round
                     console.log("Round ended:", round);
                     round++;
-                    phase = 0;
-                    let new_prompt_index = Math.floor(Math.random() * categoriesLength);
-                    newPrompt(new_prompt_index).then(result => {setPrompt(result); runPhase(result, new_prompt_index, totalPoints + points);});
+                    if (round <= 5) {
+                        phase = 0;
+                        let new_prompt_index = Math.floor(Math.random() * categoriesLength);
+                        newPrompt(new_prompt_index).then(result => {setPrompt(result); runPhase(result, new_prompt_index, totalPoints + points);});
+                    } else {
+                        alert("Game over! There's still some details that need to be added, like announcing the round number, the prompt, and the winner at the end.");
+                    }
                 } else {
                     phase++;
                     runPhase(currentPrompt, prompt_index, totalPoints + points);
@@ -299,7 +303,7 @@ function HostGamePage() {
                     flex: 1,
                     alignItems: "center"
                 }}>
-                    <Form.Check type="switch" id="theSwitch" checked={participating} label="I am Participating" onChange={toggleParticipate} />
+                    <Form.Check type="switch" id="theSwitch" disabled checked={participating} label="I am Participating" onChange={toggleParticipate} />
                 </Form>
                 <Button disabled={participantRows.length < 2} style={{display: "inline"}} onClick={startGame}>Start Game</Button>
             </Card.Footer>
