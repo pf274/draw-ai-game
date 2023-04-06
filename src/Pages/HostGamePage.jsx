@@ -2,7 +2,7 @@ import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import "../Components/HostGamePage/HostGamePage.css";
-import {useState, useEffect, useRef, useCallback} from 'react';
+import {useState, useEffect, useRef} from 'react';
 import io from 'socket.io-client';
 import Participants from '../Components/Participants.jsx';
 import MultiplayerDrawPage from './MultiplayerDrawPage.jsx';
@@ -36,8 +36,6 @@ function HostGamePage() {
         function compareGuessToPrompt(guess, thePrompt) {
             let formattedGuess = Capitalize(guess.replace(/_/g, " "));
             let formattedPrompt = Capitalize(thePrompt.replace(/_/g, " "));
-            // console.log(`Formatted Guess: ${formattedGuess}`);
-            // console.log(`Formatted Prompt: ${formattedPrompt}`);
             return formattedGuess === formattedPrompt;
         }
         for (let index = 0; index < guesses.length; index++) {
@@ -67,7 +65,6 @@ function HostGamePage() {
     }
     function removeParticipantRow(myParticipants, data) {
         if (myParticipants.map(row => row.username).includes(data.username) === true) {
-            console.log(myParticipants.filter((row) => row.username !== data.username));
             return myParticipants.filter((row) => row.username !== data.username);
         }
     }
@@ -127,7 +124,6 @@ function HostGamePage() {
     }
     function runCycle(parameters) {
         const {rounds, currentPrompt} = parameters;
-        let start_time = new Date().getTime();
         let phases = [
             {
                 time: 2,
@@ -158,16 +154,16 @@ function HostGamePage() {
             let endTime = new Date();
             endTime.setSeconds(endTime.getSeconds() + duration);
             setRoundEndTime(endTime);
-            if (phaseName == "get new prompt") {
+            if (phaseName === "get new prompt") {
                 setShowResults(false);
                 setResultsRows([]);
                 clearCanvas();
-            } else if (phaseName == "draw") {
+            } else if (phaseName === "draw") {
                 setShowResults(false);
             } else {
                 setShowResults(false);
             }
-            if (phaseName == "done drawing") {
+            if (phaseName === "done drawing") {
                 setShowDoneDrawingModal(true);
                 setShowResults(false);
                 AIGuess(classifier).then(stuff => {
@@ -186,7 +182,7 @@ function HostGamePage() {
                     });
                 });
             }
-            if (phaseName == "review results") {
+            if (phaseName === "review results") {
                 setShowResults(true);
                 setShowDoneDrawingModal(false);
             }
@@ -194,7 +190,7 @@ function HostGamePage() {
             
             console.log("Starting phase:", phaseName);
             setTimeout(() => {
-                if (phase + 1 == phases.length) {
+                if (phase + 1 === phases.length) {
                     // trigger event for end of round
                     console.log("Round ended:", round);
                     round++;
@@ -230,9 +226,9 @@ function HostGamePage() {
             } else if (data.message === "I am here") {
                 myParticipants = addParticipantRow(myParticipants, data);
                 setParticipantRows(myParticipants);
-            } else if (data.message == "my results") {
+            } else if (data.message === "my results") {
                 addResultsRow(data);
-            } else if (data.message == "I am leaving") {
+            } else if (data.message === "I am leaving") {
                 myParticipants = removeParticipantRow(myParticipants, data);
                 setParticipantRows(myParticipants);
                 console.log(`${data.username} has left.`);
@@ -244,7 +240,7 @@ function HostGamePage() {
         // --------- AI Model ---------
         setTimeout(() => {
             function modelLoaded() {
-                console.log('Model Loaded!');
+                console.log('AI Model Loaded!');
             }
             classifier.current = ml5.imageClassifier('DoodleNet', modelLoaded);
         }, 1000);

@@ -21,13 +21,10 @@ function JoinGamePage() {
     const [inGame, setInGame] = useState(false);
     const [participantRows, setParticipantRows] = useState([]);
     const [gameID, setGameID] = useState("");
-    const [loading, setLoading] = useState(false);
-    const [phase, setPhase] = useState("");
     const [roundEndTime, setRoundEndTime] = useState(0);
     const [prompt, setPrompt] = useState("...");
     const [showResults, setShowResults] = useState(false);
     const [resultsRows, setResultsRows] = useState([]);
-    const [totalPoints, setTotalPoints] = useState(0);
     const [showDoneDrawingModal, setShowDoneDrawingModal] = useState(false);
     function addParticipantRow(myParticipants, data) {
         if (myParticipants.map(row => row.username).includes(data.username) === false) {
@@ -36,7 +33,6 @@ function JoinGamePage() {
     }
     function removeParticipantRow(myParticipants, data) {
         if (myParticipants.map(row => row.username).includes(data.username) === true) {
-            console.log(myParticipants.filter((row) => row.username !== data.username));
             return myParticipants.filter((row) => row.username !== data.username);
         }
     }
@@ -47,9 +43,6 @@ function JoinGamePage() {
             context.fillStyle = "rgba(255, 255, 255, 1)";
             context.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);
         }
-    }
-    function addPoints(points) {
-        setTotalPoints(totalPoints => totalPoints + points);
     }
     function addResultsRow(data) {
         if (resultsRows.map(row => row.username).includes(data.username) === false) {
@@ -88,7 +81,6 @@ function JoinGamePage() {
     }
     // ---------- socket.io ----------
     function handleJoinRoom() {
-        setLoading(true);
         socket.emit("join_room", {
             room: gameID,
             asHost: false,
@@ -114,26 +106,23 @@ function JoinGamePage() {
         if (socket) {
             socket.off("receive_message");
             socket.on("receive_message", (data) => {
-                if (data.message == "joined room") {
+                if (data.message === "joined room") {
                     socketWhoIsHere();
                     setInRoom(true);
-                    setLoading(false);
                     myParticipants = addParticipantRow(myParticipants, {username: localStorage.getItem("username")});
                     setParticipantRows(myParticipants);
-                } else if (data.message == "failed to join room") {
+                } else if (data.message === "failed to join room") {
                     alert("The room you entered does not exist.");
-                    setLoading(false);
-                } else if (data.message == "who is here?") {
+                } else if (data.message === "who is here?") {
                     myParticipants = addParticipantRow(myParticipants, data);
                     setParticipantRows(myParticipants);
                     socketIAmHere();
-                } else if (data.message == "I am here") {
+                } else if (data.message === "I am here") {
                     myParticipants = addParticipantRow(myParticipants, data);
                     setParticipantRows(myParticipants);
-                } else if (data.message == "starting game") {
+                } else if (data.message === "starting game") {
                     setInGame(true);
-                } else if (data.message == "new phase") {
-                    setPhase(data.phaseInfo.phase);
+                } else if (data.message === "new phase") {
                     let endTime = new Date();
                     endTime.setSeconds(endTime.getSeconds() + (data.phaseInfo.time));
                     setRoundEndTime(endTime);
@@ -156,7 +145,6 @@ function JoinGamePage() {
                             setShowResults(false);
                             setShowDoneDrawingModal(true);
                             AIGuess(classifier).then(stuff => {
-                                console.log(stuff.results);
                                 let points = calculatePoints(stuff.results, myPrompt);
                                 myTotalPoints += points;
                                 sendResults({...stuff, points: points, totalPoints: myTotalPoints});
@@ -170,7 +158,6 @@ function JoinGamePage() {
                                     points: points,
                                     totalPoints: myTotalPoints
                                 });
-                                setTotalPoints(myTotalPoints);
                             });
                             // console.log("done drawing!");
                         break;
@@ -179,10 +166,13 @@ function JoinGamePage() {
                             setShowResults(true);
                             // console.log("review results!");
                         break;
+                        default:
+                            console.log("Unrecognized phase!");
+                        break;
                     }
-                } else if (data.message == "my results") {
+                } else if (data.message === "my results") {
                     addResultsRow(data);
-                } else if (data.message == "I am leaving") {
+                } else if (data.message === "I am leaving") {
                     myParticipants = removeParticipantRow(myParticipants, data);
                     setParticipantRows(myParticipants);
                     console.log(`${data.username} has left.`);
@@ -201,7 +191,7 @@ function JoinGamePage() {
         setSocket(socket); // the url to the backend server.
         setTimeout(() => {
             function modelLoaded() {
-                console.log('Model Loaded!');
+                console.log('AI Model Loaded!');
             }
             classifier.current = ml5.imageClassifier('DoodleNet', modelLoaded);
         }, 1000);

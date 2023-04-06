@@ -42,7 +42,7 @@ function Toolbar({setShowGuessesModal, setPrompt, setGuesses}) {
         newPrompt();
         setTimeout(() => {
             function modelLoaded() {
-                console.log('Model Loaded!');
+                console.log('AI Model Loaded!');
             }
             classifier.current = ml5.imageClassifier('DoodleNet', modelLoaded);
         }, 1000);
