@@ -1,9 +1,9 @@
 import "../Components/DrawPage/DrawPage.css";
 import Card from 'react-bootstrap/Card';
-import DrawingCanvas from '../Components/DrawPage/DrawingCanvas.jsx';
+import DrawingCanvas from '../../Components/DrawPage/DrawingCanvas.jsx';
 import {useState, useMemo, useEffect} from 'react';
 import Spinner from 'react-bootstrap/Spinner';
-import WordDefinitionTooltip from '../Components/DrawPage/WordDefinitionTooltip.jsx';
+import WordDefinitionTooltip from '../../Components/DrawPage/WordDefinitionTooltip.jsx';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 
 const MultiplayerDrawPage = ({time, prompt, showTimer}) => {

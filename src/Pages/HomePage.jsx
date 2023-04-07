@@ -3,8 +3,8 @@ import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import { useNavigate } from 'react-router-dom';
 import {useEffect, useState} from 'react';
-import LoginModal from '../Components/HomePage/LoginModal.jsx';
-import SignupModal from '../Components/HomePage/SignupModal.jsx';
+import LoginModal from '../Components/Modals/LoginModal.jsx';
+import SignupModal from '../Components/Modals/SignupModal.jsx';
 import Spinner from 'react-bootstrap/Spinner';
 const HomePage = () => {
     const [showLogin, setShowLogin] = useState(false);

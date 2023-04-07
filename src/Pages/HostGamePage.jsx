@@ -4,10 +4,10 @@ import Form from 'react-bootstrap/Form';
 import "../Components/HostGamePage/HostGamePage.css";
 import io from 'socket.io-client';
 import Participants from '../Components/Participants.jsx';
-import MultiplayerDrawPage from './MultiplayerDrawPage.jsx';
-import DoneDrawingModal from '../Components/DoneDrawingModal.jsx';
-import MultiplayerResultsModal from '../Components/MultiplayerResultsModal.jsx';
-import NewPromptModal from '../Components/NewPromptModal';
+import MultiplayerDrawPage from './SubPages/MultiplayerDrawPage.jsx';
+import DoneDrawingModal from '../Components/Modals/DoneDrawingModal.jsx';
+import MultiplayerResultsModal from '../Components/Modals/MultiplayerResultsModal.jsx';
+import NewPromptModal from '../Components/Modals/NewPromptModal';
 import * as ml5 from "ml5";
 
 import {useState, useEffect, useRef} from 'react';
@@ -21,7 +21,7 @@ import {
     numberOfCategories,
     phases,
     removeParticipantRow,
-} from '../Components/GameClass.js';
+} from '../Components/GameParts.js';
 import {
     socketStartGame,
     socketSendResults,
@@ -31,7 +31,7 @@ import {
     socketIAmLeaving
 } from '../Components/SocketCommands';
 import { useInterval } from "react-use";
-import WinnerModal from '../Components/WinnerModal';
+import WinnerModal from '../Components/Modals/WinnerModal';
 
 function HostGamePage() {
     const [showDoneDrawingModal, setShowDoneDrawingModal] = useState(false);
@@ -77,7 +77,7 @@ function HostGamePage() {
             if (phase >= phases.length) {
                 if (round >= totalRounds - 1) {
                     // Game over
-                    console.log("Game over!");
+                    // console.log("Game over!");
                     setGameRunning(false);
                 } else {
                     setPhase(0);
@@ -100,7 +100,7 @@ function HostGamePage() {
         let phaseName = phases[phase].name;
         let thePrompt = prompt;
         let thePromptIndex = promptIndex;
-        console.log(`Starting phase '${phaseName}'`);
+        // console.log(`Starting phase '${phaseName}'`);
         switch (phaseName) {
             case "get new prompt":
                 // get new prompt

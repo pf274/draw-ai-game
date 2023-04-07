@@ -38,7 +38,7 @@ function LoginModal({show, setShow, setLoggedIn}) {
         } else {
             alertText.current = "Log In failed";
             setVisibleAlert(true);
-            console.log(body.msg);
+            // console.log(body.msg);
         }
         setLoading(false);
     }

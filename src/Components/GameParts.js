@@ -76,9 +76,6 @@ export async function AIGuess(classifier) {
         bgcontext.drawImage(croppedCanvas, 0, 0, width, height, 0, 0, width, height);
       
         let results = await classifier.current.classify(withBackground, numberOfGuesses);
-        // setGuesses([...results]);
-        // console.log("Calculated guesses");
-        // console.log(`Guesses: ${JSON.stringify([...results], 0, 2)}`);
         let pictureData = withBackground.toDataURL();
         withBackground.remove();
         croppedCanvas.remove();

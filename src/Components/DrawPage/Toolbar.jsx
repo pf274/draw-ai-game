@@ -6,7 +6,7 @@ import rawCategoryData from '../../Data/categories.txt';
 import {useState, useEffect, useRef} from 'react';
 
 import * as ml5 from "ml5";
-import {AIGuess} from '../GameClass.js';
+import {AIGuess} from '../GameParts.js';
 
 
 function Toolbar({setShowGuessesModal, setPrompt, setGuesses}) {

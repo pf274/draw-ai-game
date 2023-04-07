@@ -1,9 +1,9 @@
 import "../Components/JoinGamePage/JoinGamePage.css";
-import MultiplayerResultsModal from '../Components/MultiplayerResultsModal.jsx';
-import MultiplayerDrawPage from './MultiplayerDrawPage.jsx';
-import DoneDrawingModal from '../Components/DoneDrawingModal.jsx';
+import MultiplayerResultsModal from '../Components/Modals/MultiplayerResultsModal.jsx';
+import MultiplayerDrawPage from './SubPages/MultiplayerDrawPage.jsx';
+import DoneDrawingModal from '../Components/Modals/DoneDrawingModal.jsx';
 import Participants from '../Components/Participants.jsx';
-import WinnerModal from '../Components/WinnerModal';
+import WinnerModal from '../Components/Modals/WinnerModal';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import Form from 'react-bootstrap/Form';
@@ -18,7 +18,7 @@ import {
     clearCanvas,
     newPrompt,
     removeParticipantRow,
-} from '../Components/GameClass.js';
+} from '../Components/GameParts.js';
 import {
     socketSendResults,
     socketIAmHere,
@@ -27,7 +27,7 @@ import {
     socketWhoIsHere
 } from '../Components/SocketCommands';
 import { useInterval } from "react-use";
-import NewPromptModal from '../Components/NewPromptModal';
+import NewPromptModal from '../Components/Modals/NewPromptModal';
 
 function JoinGamePage() {
     const [showDoneDrawingModal, setShowDoneDrawingModal] = useState(false);

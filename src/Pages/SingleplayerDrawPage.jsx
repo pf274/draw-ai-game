@@ -2,7 +2,7 @@ import "../Components/DrawPage/DrawPage.css";
 import Card from 'react-bootstrap/Card';
 import Toolbar from '../Components/DrawPage/Toolbar.jsx';
 import DrawingCanvas from '../Components/DrawPage/DrawingCanvas.jsx';
-import SingleplayerGuessesModal from '../Components/DrawPage/SingleplayerGuessesModal.jsx';
+import SingleplayerGuessesModal from '../Components/Modals/SingleplayerGuessesModal.jsx';
 import {useState, useMemo} from 'react';
 import Spinner from 'react-bootstrap/Spinner';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
