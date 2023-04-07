@@ -1,16 +1,16 @@
-import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
+import Card from 'react-bootstrap/Card';
 import Form from 'react-bootstrap/Form';
 import "../Components/HostGamePage/HostGamePage.css";
-import {useState, useEffect, useRef} from 'react';
 import io from 'socket.io-client';
 import Participants from '../Components/Participants.jsx';
 import MultiplayerDrawPage from './MultiplayerDrawPage.jsx';
 import DoneDrawingModal from '../Components/DoneDrawingModal.jsx';
 import MultiplayerResultsModal from '../Components/MultiplayerResultsModal.jsx';
 import NewPromptModal from '../Components/NewPromptModal';
-
 import * as ml5 from "ml5";
+
+import {useState, useEffect, useRef} from 'react';
 import {
     AIGuess,
     addParticipantRow,
@@ -34,29 +34,27 @@ import { useInterval } from "react-use";
 import WinnerModal from '../Components/WinnerModal';
 
 function HostGamePage() {
-    let classifier = useRef();
-    const [inGame, setInGame] = useState(false);
-    const [gameID, setGameID] = useState("...");
-    const [isPublic, setIsPublic] = useState(false);
-    const [socket, setSocket] = useState(null);
-    const [participating, setParticipating] = useState(true);
-    const [participantRows, setParticipantRows] = useState([]);
-    const [roundEndTime, setRoundEndTime] = useState(0);
-    const [prompt, setPrompt] = useState('...');
-    const [categoriesLength, setCategoriesLength] = useState(0);
-    const [showResults, setShowResults] = useState(false);
-    const [showNewPrompt, setShowNewPrompt] = useState(false);
-    const [resultsRows, setResultsRows] = useState([]);
     const [showDoneDrawingModal, setShowDoneDrawingModal] = useState(false);
+    const [categoriesLength, setCategoriesLength] = useState(0);
+    const [showWinnerModal, setShowWinnerModal] = useState(false);
+    const [participantRows, setParticipantRows] = useState([]);
+    const [participating, setParticipating] = useState(true);
+    const [showNewPrompt, setShowNewPrompt] = useState(false);
     const [timeRemaining, setTimeRemaining] = useState(0);
+    const [showResults, setShowResults] = useState(false);
+    const [resultsRows, setResultsRows] = useState([]);
     const [gameRunning, setGameRunning] = useState(false);
-    const [round, setRound] = useState(0);
-    const [phase, setPhase] = useState(0);
+    const [totalRounds, setTotalRounds] = useState(4);
     const [promptIndex, setPromptIndex] = useState(0);
     const [totalPoints, setTotalPoints] = useState(0);
-    const [gameOver, setGameOver] = useState(false);
-    const [totalRounds, setTotalRounds] = useState(4);
-    const [showWinnerModal, setShowWinnerModal] = useState(false);
+    const [inGame, setInGame] = useState(false);
+    const [gameID, setGameID] = useState("...");
+    const [socket, setSocket] = useState(null);
+    const [prompt, setPrompt] = useState('...');
+    const [round, setRound] = useState(0);
+    const [phase, setPhase] = useState(0);
+
+    let classifier = useRef();
     function handleTotalRoundNumberChange(event) {
         setTotalRounds(event.target.value.split('').filter((character) => /^\d+$/.test(character)).join(''));
     }
@@ -80,7 +78,6 @@ function HostGamePage() {
                     // Game over
                     console.log("Game over!");
                     setGameRunning(false);
-                    setGameOver(true);
                 } else {
                     setPhase(0);
                     setTimeRemaining(0);
@@ -163,7 +160,6 @@ function HostGamePage() {
         console.log("socket connected");
         socket.on("connect", () => {
             socketJoinRoom(socket, newCode, true);
-            setIsPublic(true);
         });
         socket.on("receive_message", (data) => {
             if (data.message === "joined room") {
@@ -235,7 +231,7 @@ function HostGamePage() {
                     justifyContent: "center"
                 }}>
                     <div className="mb-3">
-                        <Form.Check type="switch" id="theSwitch" disabled checked={participating} label="I am Participating" onChange={toggleParticipate} />
+                        <Form.Check type="switch" checked={participating} label="I am Participating" onChange={toggleParticipate} />
                     </div>
                     <div>
                         <label style={{marginRight: "1em"}}>{`Rounds:`}</label>

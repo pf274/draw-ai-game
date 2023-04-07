@@ -1,16 +1,16 @@
-import Card from 'react-bootstrap/Card';
-import Button from 'react-bootstrap/Button';
-import Form from 'react-bootstrap/Form';
 import "../Components/JoinGamePage/JoinGamePage.css";
-import {useState, useEffect, useRef} from 'react';
-import io from 'socket.io-client';
-import WinnerModal from '../Components/WinnerModal';
-import Participants from '../Components/Participants.jsx';
+import MultiplayerResultsModal from '../Components/MultiplayerResultsModal.jsx';
 import MultiplayerDrawPage from './MultiplayerDrawPage.jsx';
+import DoneDrawingModal from '../Components/DoneDrawingModal.jsx';
+import Participants from '../Components/Participants.jsx';
+import WinnerModal from '../Components/WinnerModal';
+import Button from 'react-bootstrap/Button';
+import Card from 'react-bootstrap/Card';
+import Form from 'react-bootstrap/Form';
+import io from 'socket.io-client';
+import {useState, useEffect, useRef} from 'react';
 import {Modes} from '../index.js';
 import * as ml5 from "ml5";
-import MultiplayerResultsModal from '../Components/MultiplayerResultsModal.jsx';
-import DoneDrawingModal from '../Components/DoneDrawingModal.jsx';
 import {
     AIGuess,
     addParticipantRow,
@@ -30,23 +30,22 @@ import { useInterval } from "react-use";
 import NewPromptModal from '../Components/NewPromptModal';
 
 function JoinGamePage() {
-    let classifier = useRef();
+    const [showDoneDrawingModal, setShowDoneDrawingModal] = useState(false);
+    const [showWinnerModal, setShowWinnerModal] = useState(false);
+    const [participantRows, setParticipantRows] = useState([]);
+    const [timeRemaining, setTimeRemaining] = useState(0);
+    const [showNewPrompt, setShowNewPrompt] = useState(false);
+    const [showResults, setShowResults] = useState(false);
+    const [totalRounds, setTotalRounds] = useState(4);
+    const [resultsRows, setResultsRows] = useState([]);
     const [socket, setSocket] = useState(null);
     const [inRoom, setInRoom] = useState(false);
     const [inGame, setInGame] = useState(false);
-    const [participantRows, setParticipantRows] = useState([]);
     const [gameID, setGameID] = useState("");
-    const [roundEndTime, setRoundEndTime] = useState(0);
     const [prompt, setPrompt] = useState("...");
-    const [showResults, setShowResults] = useState(false);
-    const [resultsRows, setResultsRows] = useState([]);
-    const [showDoneDrawingModal, setShowDoneDrawingModal] = useState(false);
-    const [timeRemaining, setTimeRemaining] = useState(0);
     const [round, setRound] = useState(-1);
-    const [showNewPrompt, setShowNewPrompt] = useState(false);
-    const [totalRounds, setTotalRounds] = useState(4);
-    const [showWinnerModal, setShowWinnerModal] = useState(false);
-
+    
+    let classifier = useRef();
     function addResultsRow(data) {
         if (resultsRows.map(row => row.username).includes(data.username) === false) {
             setResultsRows(resultsRows => [...resultsRows, data]);
