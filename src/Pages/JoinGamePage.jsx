@@ -9,7 +9,7 @@ import Participants from '../Components/Participants.jsx';
 import MultiplayerDrawPage from './MultiplayerDrawPage.jsx';
 import {Modes} from '../index.js';
 import * as ml5 from "ml5";
-import MultiplayerModal from '../Components/MultiplayerModal.jsx';
+import MultiplayerResultsModal from '../Components/MultiplayerResultsModal.jsx';
 import DoneDrawingModal from '../Components/DoneDrawingModal.jsx';
 import {
     AIGuess,
@@ -17,7 +17,8 @@ import {
     calculatePoints,
     clearCanvas,
     newPrompt,
-    removeParticipantRow
+    removeParticipantRow,
+    totalRounds
 } from '../Components/GameClass.js';
 import {
     socketSendResults,
@@ -27,6 +28,7 @@ import {
     socketWhoIsHere
 } from '../Components/SocketCommands';
 import { useInterval } from "react-use";
+import NewPromptModal from '../Components/NewPromptModal';
 
 function JoinGamePage() {
     let classifier = useRef();
@@ -41,6 +43,8 @@ function JoinGamePage() {
     const [resultsRows, setResultsRows] = useState([]);
     const [showDoneDrawingModal, setShowDoneDrawingModal] = useState(false);
     const [timeRemaining, setTimeRemaining] = useState(0);
+    const [round, setRound] = useState(-1);
+    const [showNewPrompt, setShowNewPrompt] = useState(false);
 
     function addResultsRow(data) {
         if (resultsRows.map(row => row.username).includes(data.username) === false) {
@@ -90,17 +94,23 @@ function JoinGamePage() {
                     });
                     switch (data.phaseInfo.phase) {
                         case "get new prompt":
+                            setRound(round => round + 1);
                             setResultsRows([]);
                             setShowResults(false);
+                            setShowNewPrompt(true);
+                            setShowDoneDrawingModal(false);
                             // console.log("get new prompt!");
                             clearCanvas();
                         break;
                         case "draw":
                             setShowResults(false);
+                            setShowNewPrompt(false);
+                            setShowDoneDrawingModal(false);
                             // console.log("time to draw!");
                         break;
                         case "done drawing":
                             setShowResults(false);
+                            setShowNewPrompt(false);
                             setShowDoneDrawingModal(true);
                             AIGuess(classifier).then(stuff => {
                                 let points = calculatePoints(stuff.results, myPrompt);
@@ -122,6 +132,7 @@ function JoinGamePage() {
                         case "review results":
                             setShowDoneDrawingModal(false);
                             setShowResults(true);
+                            setShowNewPrompt(false);
                             // console.log("review results!");
                         break;
                         default:
@@ -206,8 +217,9 @@ function JoinGamePage() {
                 alignItems: "center",
             }}>
                 <MultiplayerDrawPage mode={Modes.Multi} time={timeRemaining} prompt={prompt} />
-                <MultiplayerModal show={showResults} setShow={setShowResults} rows={resultsRows} isHost={false} />
+                <MultiplayerResultsModal show={showResults} round={round} isGameOver={round >= totalRounds - 1} setShow={setShowResults} rows={resultsRows} isHost={false} />
                 <DoneDrawingModal show={showDoneDrawingModal} setShow={setShowDoneDrawingModal} />
+                <NewPromptModal show={showNewPrompt} setShow={setShowNewPrompt} prompt={prompt} round={round} />
             </div>
         }
 

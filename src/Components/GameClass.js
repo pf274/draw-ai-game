@@ -166,3 +166,5 @@ export const phases = [
       name: "review results"
   }
 ];
+
+export const totalRounds = 2;

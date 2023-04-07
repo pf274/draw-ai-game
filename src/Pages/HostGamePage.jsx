@@ -7,7 +7,9 @@ import io from 'socket.io-client';
 import Participants from '../Components/Participants.jsx';
 import MultiplayerDrawPage from './MultiplayerDrawPage.jsx';
 import DoneDrawingModal from '../Components/DoneDrawingModal.jsx';
-import MultiplayerModal from '../Components/MultiplayerModal.jsx';
+import MultiplayerResultsModal from '../Components/MultiplayerResultsModal.jsx';
+import NewPromptModal from '../Components/NewPromptModal';
+
 import * as ml5 from "ml5";
 import {
     AIGuess,
@@ -18,7 +20,8 @@ import {
     newPrompt,
     numberOfCategories,
     phases,
-    removeParticipantRow
+    removeParticipantRow,
+    totalRounds
 } from '../Components/GameClass.js';
 import {
     socketStartGame,
@@ -42,6 +45,7 @@ function HostGamePage() {
     const [prompt, setPrompt] = useState('...');
     const [categoriesLength, setCategoriesLength] = useState(0);
     const [showResults, setShowResults] = useState(false);
+    const [showNewPrompt, setShowNewPrompt] = useState(false);
     const [resultsRows, setResultsRows] = useState([]);
     const [showDoneDrawingModal, setShowDoneDrawingModal] = useState(false);
     const [timeRemaining, setTimeRemaining] = useState(0);
@@ -50,6 +54,7 @@ function HostGamePage() {
     const [phase, setPhase] = useState(0);
     const [promptIndex, setPromptIndex] = useState(0);
     const [totalPoints, setTotalPoints] = useState(0);
+    const [gameOver, setGameOver] = useState(false);
     function addResultsRow(data) {
         if (resultsRows.map(row => row.username).includes(data.username) === false) {
             setResultsRows(resultsRows => [...resultsRows, data]);
@@ -64,17 +69,14 @@ function HostGamePage() {
         setGameRunning(true);
     }
     useInterval(() => {
-        console.log(`Time Remaining: ${timeRemaining}`);
-        console.log(`Phase: ${phase}`);
         if (timeRemaining <= 0) {
             if (phase >= phases.length) {
-                if (round > 4) {
+                if (round >= totalRounds - 1) {
                     // Game over
                     console.log("Game over!");
                     setGameRunning(false);
+                    setGameOver(true);
                 } else {
-                    // Move to next round
-                    setRound(round + 1);
                     setPhase(0);
                     setTimeRemaining(0);
                     setGameRunning(false);
@@ -106,15 +108,18 @@ function HostGamePage() {
                 // display stuff
                 setShowResults(false);
                 setShowDoneDrawingModal(false);
+                setShowNewPrompt(true);
                 setResultsRows([]);
                 clearCanvas();
             break;
             case "draw":
                 setShowResults(false);
+                setShowNewPrompt(false);
                 setShowDoneDrawingModal(false);
             break;
             case "done drawing":
                 setShowDoneDrawingModal(true);
+                setShowNewPrompt(false);
                 setShowResults(false);
                 AIGuess(classifier).then(stuff => {
                     let roundPoints = calculatePoints(stuff.results, currentPrompt);
@@ -134,6 +139,7 @@ function HostGamePage() {
             break;
             case "review results":
                 setShowResults(true);
+                setShowNewPrompt(false);
                 setShowDoneDrawingModal(false);
             break;
         }
@@ -232,8 +238,9 @@ function HostGamePage() {
                 alignItems: "center",
             }}>
                 <MultiplayerDrawPage time={timeRemaining} prompt={prompt} />
-                <MultiplayerModal show={showResults} setShow={setShowResults} rows={resultsRows} setGameRunning={setGameRunning} gameRunning={gameRunning} isHost={true} />
+                <MultiplayerResultsModal show={showResults} isGameOver={round >= totalRounds - 1} setShow={setShowResults} round={round} setRound={setRound} rows={resultsRows} setGameRunning={setGameRunning} gameRunning={gameRunning} isHost={true} />
                 <DoneDrawingModal show={showDoneDrawingModal} setShow={setShowDoneDrawingModal} />
+                <NewPromptModal show={showNewPrompt} setShow={setShowNewPrompt} prompt={prompt} round={round} />
             </div>
             }
     </div>)
