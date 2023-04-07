@@ -6,19 +6,18 @@ import {useState, useEffect, useRef} from 'react';
 import io from 'socket.io-client';
 import Participants from '../Components/Participants.jsx';
 import MultiplayerDrawPage from './MultiplayerDrawPage.jsx';
-import rawCategoryData from '../Data/categories.txt';
 import DoneDrawingModal from '../Components/DoneDrawingModal.jsx';
 import MultiplayerModal from '../Components/MultiplayerModal.jsx';
 import * as ml5 from "ml5";
 import {
     AIGuess,
-    Capitalize,
     addParticipantRow,
     calculatePoints,
     clearCanvas,
     generateCode,
     newPrompt,
     numberOfCategories,
+    phases,
     removeParticipantRow
 } from '../Components/GameClass.js';
 import {
@@ -29,7 +28,7 @@ import {
     socketJoinRoom,
     socketIAmLeaving
 } from '../Components/SocketCommands';
-
+import { useInterval } from "react-use";
 
 function HostGamePage() {
     let classifier = useRef();
@@ -45,8 +44,12 @@ function HostGamePage() {
     const [showResults, setShowResults] = useState(false);
     const [resultsRows, setResultsRows] = useState([]);
     const [showDoneDrawingModal, setShowDoneDrawingModal] = useState(false);
-
-
+    const [timeRemaining, setTimeRemaining] = useState(0);
+    const [gameRunning, setGameRunning] = useState(false);
+    const [round, setRound] = useState(0);
+    const [phase, setPhase] = useState(0);
+    const [promptIndex, setPromptIndex] = useState(0);
+    const [totalPoints, setTotalPoints] = useState(0);
     function addResultsRow(data) {
         if (resultsRows.map(row => row.username).includes(data.username) === false) {
             setResultsRows(resultsRows => [...resultsRows, data]);
@@ -57,55 +60,65 @@ function HostGamePage() {
     }
     function startGame() {
         setInGame(true);
-        socketStartGame(socket, gameID, true);
-        runCycle();
+        socketStartGame(socket, gameID, true); // GIVE THEM AN INITIAL PROMPT
+        setGameRunning(true);
     }
-    function runCycle() {
-        let phases = [
-            {
-                time: 2,
-                name: "get new prompt"
-            },
-            {
-                time: 15,
-                name: "draw"
-            },
-            {
-                time: 3,
-                name: "done drawing"
-            },
-            {
-                time: 5,
-                name: "review results"
+    useInterval(() => {
+        console.log(`Time Remaining: ${timeRemaining}`);
+        console.log(`Phase: ${phase}`);
+        if (timeRemaining <= 0) {
+            if (phase >= phases.length) {
+                if (round > 4) {
+                    // Game over
+                    console.log("Game over!");
+                    setGameRunning(false);
+                } else {
+                    // Move to next round
+                    setRound(round + 1);
+                    setPhase(0);
+                    setTimeRemaining(0);
+                    setGameRunning(false);
+                }
+            } else {
+                // do the phase
+                runPhase(prompt, totalPoints);
+                // Start awaiting the next phase to next phase
+                setTimeRemaining(phases[phase].time);
+                setPhase(phase + 1);
             }
-        ];
-        let phase = 0;
-        let round = 0;
-        let prompt_index = Math.floor(Math.random() * categoriesLength);
-        let totalPoints = 0;
-        newPrompt(prompt_index).then(result => {setPrompt(result); runPhase(result, prompt_index, totalPoints);});
-        function runPhase(currentPrompt, prompt_index, totalPoints) {
-            let points = 0;
-            let phaseName = phases[phase].name;
-            let duration = phases[phase].time;
-            let endTime = new Date();
-            endTime.setSeconds(endTime.getSeconds() + duration);
-            setRoundEndTime(endTime);
-            if (phaseName === "get new prompt") {
+        } else {
+            setTimeRemaining(timeRemaining - 1);
+        }
+    }, gameRunning ? 1000 : null);
+
+    async function runPhase(currentPrompt) {
+        let phaseName = phases[phase].name;
+        let thePrompt = prompt;
+        let thePromptIndex = promptIndex;
+        console.log(`Starting phase '${phaseName}'`);
+        switch (phaseName) {
+            case "get new prompt":
+                // get new prompt
+                thePromptIndex = Math.floor(Math.random() * categoriesLength);
+                setPromptIndex(thePromptIndex);
+                thePrompt = await newPrompt(thePromptIndex);
+                setPrompt(thePrompt);
+                // display stuff
                 setShowResults(false);
+                setShowDoneDrawingModal(false);
                 setResultsRows([]);
                 clearCanvas();
-            } else if (phaseName === "draw") {
+            break;
+            case "draw":
                 setShowResults(false);
-            } else {
-                setShowResults(false);
-            }
-            if (phaseName === "done drawing") {
+                setShowDoneDrawingModal(false);
+            break;
+            case "done drawing":
                 setShowDoneDrawingModal(true);
                 setShowResults(false);
                 AIGuess(classifier).then(stuff => {
-                    points = calculatePoints(stuff.results, currentPrompt);
-                    socketSendResults(socket, {...stuff, points: points, totalPoints: totalPoints + points}, gameID, true);
+                    let roundPoints = calculatePoints(stuff.results, currentPrompt);
+                    socketSendResults(socket, {...stuff, points: roundPoints, totalPoints: totalPoints + roundPoints}, gameID, true);
                     addResultsRow({
                         message: "my results",
                         room: gameID,
@@ -113,38 +126,20 @@ function HostGamePage() {
                         isHost: true,
                         results: stuff.results,
                         picture: stuff.picture,
-                        points: points,
-                        totalPoints: totalPoints + points,
+                        points: roundPoints,
+                        totalPoints: totalPoints + roundPoints,
                     });
+                    setTotalPoints(totalPoints + roundPoints);
                 });
-            }
-            if (phaseName === "review results") {
+            break;
+            case "review results":
                 setShowResults(true);
                 setShowDoneDrawingModal(false);
-            }
-            socketNewPhase(socket, phaseName, duration, prompt_index, gameID, true);
-            
-            console.log("Starting phase:", phaseName);
-            setTimeout(() => {
-                if (phase + 1 === phases.length) {
-                    // trigger event for end of round
-                    console.log("Round ended:", round);
-                    round++;
-                    if (round <= 5) {
-                        phase = 0;
-                        let new_prompt_index = Math.floor(Math.random() * categoriesLength);
-                        newPrompt(new_prompt_index).then(result => {setPrompt(result); runPhase(result, new_prompt_index, totalPoints + points);});
-                    } else {
-                        alert("Game over! There's still some details that need to be added, like announcing the round number, the prompt, and the winner at the end.");
-                    }
-                } else {
-                    phase++;
-                    runPhase(currentPrompt, prompt_index, totalPoints + points);
-                }
-                
-            }, duration * 1000);
-        };
-    }
+            break;
+        }
+        socketNewPhase(socket, phases[phase].name, phases[phase].time, thePromptIndex, gameID, true); // announce the phase to others!
+    };
+
     useEffect(() => {
         let newCode = generateCode();
         setGameID(newCode);
@@ -236,8 +231,8 @@ function HostGamePage() {
                 justifyContent: "center",
                 alignItems: "center",
             }}>
-                <MultiplayerDrawPage time={roundEndTime} prompt={prompt} />
-                <MultiplayerModal show={showResults} setShow={setShowResults} rows={resultsRows} />
+                <MultiplayerDrawPage time={timeRemaining} prompt={prompt} />
+                <MultiplayerModal show={showResults} setShow={setShowResults} rows={resultsRows} setGameRunning={setGameRunning} gameRunning={gameRunning} isHost={true} />
                 <DoneDrawingModal show={showDoneDrawingModal} setShow={setShowDoneDrawingModal} />
             </div>
             }

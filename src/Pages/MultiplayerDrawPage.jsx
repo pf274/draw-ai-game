@@ -37,7 +37,7 @@ const MultiplayerDrawPage = ({time, prompt}) => {
             <Card id="DrawPage">
                 <Card.Header id="DrawPageHeader">
                     <h1 id="title">Start Drawing!</h1>
-                    <h2 id="timer" className="multiplayer">{remainingTime}</h2>
+                    <h2 id="timer" className="multiplayer">{time}</h2>
                     <OverlayTrigger
                         placement="top"
                         trigger={['hover', 'click']}

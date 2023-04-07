@@ -147,3 +147,22 @@ export function clearCanvas() {
       context.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);
   }
 }
+
+export const phases = [
+  {
+      time: 2,
+      name: "get new prompt"
+  },
+  {
+      time: 15,
+      name: "draw"
+  },
+  {
+      time: 3,
+      name: "done drawing"
+  },
+  {
+      time: 2,
+      name: "review results"
+  }
+];

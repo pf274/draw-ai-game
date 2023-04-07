@@ -26,6 +26,7 @@ import {
     socketIAmLeaving,
     socketWhoIsHere
 } from '../Components/SocketCommands';
+import { useInterval } from "react-use";
 
 function JoinGamePage() {
     let classifier = useRef();
@@ -39,6 +40,7 @@ function JoinGamePage() {
     const [showResults, setShowResults] = useState(false);
     const [resultsRows, setResultsRows] = useState([]);
     const [showDoneDrawingModal, setShowDoneDrawingModal] = useState(false);
+    const [timeRemaining, setTimeRemaining] = useState(0);
 
     function addResultsRow(data) {
         if (resultsRows.map(row => row.username).includes(data.username) === false) {
@@ -54,7 +56,9 @@ function JoinGamePage() {
         localStorage.setItem("gameID", gameID);
         socketJoinRoom(socket, gameID, false);
     }
-
+    useInterval(() => {
+        setTimeRemaining(Math.max(timeRemaining - 1, 0));
+    }, 1000);
     useEffect(() => {
         let myParticipants = [];
         let myPrompt = "";
@@ -79,9 +83,7 @@ function JoinGamePage() {
                 } else if (data.message === "starting game") {
                     setInGame(true);
                 } else if (data.message === "new phase") {
-                    let endTime = new Date();
-                    endTime.setSeconds(endTime.getSeconds() + (data.phaseInfo.time));
-                    setRoundEndTime(endTime);
+                    setTimeRemaining(data.phaseInfo.time);
                     newPrompt(data.phaseInfo.prompt_index).then(result => {
                         myPrompt = result;
                         setPrompt(result);
@@ -203,8 +205,8 @@ function JoinGamePage() {
                 justifyContent: "center",
                 alignItems: "center",
             }}>
-                <MultiplayerDrawPage mode={Modes.Multi} time={roundEndTime} prompt={prompt} />
-                <MultiplayerModal show={showResults} setShow={setShowResults} rows={resultsRows} />
+                <MultiplayerDrawPage mode={Modes.Multi} time={timeRemaining} prompt={prompt} />
+                <MultiplayerModal show={showResults} setShow={setShowResults} rows={resultsRows} isHost={false} />
                 <DoneDrawingModal show={showDoneDrawingModal} setShow={setShowDoneDrawingModal} />
             </div>
         }

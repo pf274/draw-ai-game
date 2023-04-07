@@ -1,6 +1,11 @@
 import Modal from 'react-bootstrap/Modal';
 import Table from 'react-bootstrap/Table';
-function MultiplayerModal({show, setShow, rows}) {
+import Button from 'react-bootstrap/Button';
+
+function MultiplayerModal({show, setShow, rows, setGameRunning, gameRunning, isHost}) {
+    function handleStartRound() {
+        setGameRunning(true);
+    }
     function handleClose() {
         setShow(false);
     }
@@ -47,9 +52,9 @@ function MultiplayerModal({show, setShow, rows}) {
             <Modal.Body>
 
             </Modal.Body>
-            {/* <Modal.Footer>
-                <Button onClick={handleClose}>Close</Button>
-            </Modal.Footer> */}
+            <Modal.Footer>
+                {isHost && <Button disabled={gameRunning} onClick={handleStartRound}>Next Round</Button>}
+            </Modal.Footer>
         </Modal>
     );
 }
