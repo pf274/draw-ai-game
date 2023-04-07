@@ -2,10 +2,11 @@ import Modal from 'react-bootstrap/Modal';
 import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 
-function MultiplayerResultsModal({show, setShow, rows, setRound, round, isGameOver, setGameRunning, gameRunning, isHost}) {
+function MultiplayerResultsModal({show, setShow, rows, setRound, round, isGameOver, setGameRunning, gameRunning, isHost, setShowWinnerModal}) {
     function handleProceed() {
         if (isGameOver) {
-            // TODO: KICK EVERYONE OUT
+            setShowWinnerModal(true);
+            setShow(false);
         } else {
             setTimeout(() => {
                 setRound(round => round + 1);

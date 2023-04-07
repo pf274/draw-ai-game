@@ -31,6 +31,7 @@ import {
     socketIAmLeaving
 } from '../Components/SocketCommands';
 import { useInterval } from "react-use";
+import WinnerModal from '../Components/WinnerModal';
 
 function HostGamePage() {
     let classifier = useRef();
@@ -55,7 +56,7 @@ function HostGamePage() {
     const [totalPoints, setTotalPoints] = useState(0);
     const [gameOver, setGameOver] = useState(false);
     const [totalRounds, setTotalRounds] = useState(4);
-
+    const [showWinnerModal, setShowWinnerModal] = useState(false);
     function handleTotalRoundNumberChange(event) {
         setTotalRounds(event.target.value.split('').filter((character) => /^\d+$/.test(character)).join(''));
     }
@@ -202,6 +203,11 @@ function HostGamePage() {
             console.log("socket disconnected");
         });
     }, []);
+    useEffect(() => {
+        if (showWinnerModal) {
+            socketNewPhase(socket, "Game Over!", 0, 0, gameID, true);
+        }
+    }, [showWinnerModal]);
 
     return (
         <div style={{
@@ -249,9 +255,10 @@ function HostGamePage() {
                 alignItems: "center",
             }}>
                 <MultiplayerDrawPage time={timeRemaining} prompt={prompt} />
-                <MultiplayerResultsModal show={showResults} isGameOver={round >= totalRounds - 1} setShow={setShowResults} round={round} setRound={setRound} rows={resultsRows} setGameRunning={setGameRunning} gameRunning={gameRunning} isHost={true} />
+                <MultiplayerResultsModal show={showResults} isGameOver={round >= totalRounds - 1} setShow={setShowResults} round={round} setRound={setRound} rows={resultsRows} setGameRunning={setGameRunning} gameRunning={gameRunning} isHost={true} setShowWinnerModal={setShowWinnerModal}/>
                 <DoneDrawingModal show={showDoneDrawingModal} setShow={setShowDoneDrawingModal} />
                 <NewPromptModal show={showNewPrompt} setShow={setShowNewPrompt} prompt={prompt} round={round} />
+                <WinnerModal show={showWinnerModal} setShow={setShowWinnerModal} rows={resultsRows} />
             </div>
             }
     </div>)

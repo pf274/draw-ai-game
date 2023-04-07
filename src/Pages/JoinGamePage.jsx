@@ -4,7 +4,7 @@ import Form from 'react-bootstrap/Form';
 import "../Components/JoinGamePage/JoinGamePage.css";
 import {useState, useEffect, useRef} from 'react';
 import io from 'socket.io-client';
-
+import WinnerModal from '../Components/WinnerModal';
 import Participants from '../Components/Participants.jsx';
 import MultiplayerDrawPage from './MultiplayerDrawPage.jsx';
 import {Modes} from '../index.js';
@@ -45,6 +45,7 @@ function JoinGamePage() {
     const [round, setRound] = useState(-1);
     const [showNewPrompt, setShowNewPrompt] = useState(false);
     const [totalRounds, setTotalRounds] = useState(4);
+    const [showWinnerModal, setShowWinnerModal] = useState(false);
 
     function addResultsRow(data) {
         if (resultsRows.map(row => row.username).includes(data.username) === false) {
@@ -136,6 +137,10 @@ function JoinGamePage() {
                             setShowNewPrompt(false);
                             // console.log("review results!");
                         break;
+                        case "Game Over!":
+                            setShowWinnerModal(true);
+                            setShowResults(false);
+                        break;
                         default:
                             console.log("Unrecognized phase!");
                         break;
@@ -146,6 +151,9 @@ function JoinGamePage() {
                     myParticipants = removeParticipantRow(myParticipants, data);
                     setParticipantRows(myParticipants);
                     console.log(`${data.username} has left.`);
+                    if (data.isHost) {
+                        alert("Host has left. The game will no longer work properly.");
+                    }
                 } else {
                     // alert(data.message);
                 }
@@ -221,6 +229,7 @@ function JoinGamePage() {
                 <MultiplayerResultsModal show={showResults} round={round} isGameOver={round >= totalRounds - 1} setShow={setShowResults} rows={resultsRows} isHost={false} />
                 <DoneDrawingModal show={showDoneDrawingModal} setShow={setShowDoneDrawingModal} />
                 <NewPromptModal show={showNewPrompt} setShow={setShowNewPrompt} prompt={prompt} round={round} />
+                <WinnerModal show={showWinnerModal} setShow={setShowWinnerModal} rows={resultsRows} />
             </div>
         }
 
