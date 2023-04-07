@@ -21,7 +21,6 @@ import {
     numberOfCategories,
     phases,
     removeParticipantRow,
-    totalRounds
 } from '../Components/GameClass.js';
 import {
     socketStartGame,
@@ -55,6 +54,11 @@ function HostGamePage() {
     const [promptIndex, setPromptIndex] = useState(0);
     const [totalPoints, setTotalPoints] = useState(0);
     const [gameOver, setGameOver] = useState(false);
+    const [totalRounds, setTotalRounds] = useState(4);
+
+    function handleTotalRoundNumberChange(event) {
+        setTotalRounds(event.target.value.split('').filter((character) => /^\d+$/.test(character)).join(''));
+    }
     function addResultsRow(data) {
         if (resultsRows.map(row => row.username).includes(data.username) === false) {
             setResultsRows(resultsRows => [...resultsRows, data]);
@@ -65,7 +69,7 @@ function HostGamePage() {
     }
     function startGame() {
         setInGame(true);
-        socketStartGame(socket, gameID, true); // GIVE THEM AN INITIAL PROMPT
+        socketStartGame(socket, gameID, true, totalRounds); // GIVE THEM AN INITIAL PROMPT
         setGameRunning(true);
     }
     useInterval(() => {
@@ -199,7 +203,6 @@ function HostGamePage() {
         });
     }, []);
 
-
     return (
         <div style={{
             display: "flex",
@@ -221,10 +224,18 @@ function HostGamePage() {
                     display: "flex",
                     flexDirection: "row",
                     flex: 1,
-                    alignItems: "center"
+                    alignItems: "center",
+                    flexWrap: 'wrap',
+                    justifyContent: "center"
                 }}>
-                    <Form.Check type="switch" id="theSwitch" disabled checked={participating} label="I am Participating" onChange={toggleParticipate} />
-                </Form>
+                    <div className="mb-3">
+                        <Form.Check type="switch" id="theSwitch" disabled checked={participating} label="I am Participating" onChange={toggleParticipate} />
+                    </div>
+                    <div>
+                        <label for="roundsField" style={{marginRight: "1em"}}>{`Rounds:`}</label>
+                        <Form.Control style={{display: "inline-flex", width: 40}} id="roundsField" placeholder="Enter number of rounds" value={totalRounds} onChange={handleTotalRoundNumberChange}/>
+                    </div>
+                    </Form>
                 <Button disabled={participantRows.length < 2} style={{display: "inline"}} onClick={startGame}>Start Game</Button>
             </Card.Footer>
         </Card>}

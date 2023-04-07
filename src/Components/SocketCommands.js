@@ -1,9 +1,10 @@
-export function socketStartGame(socket, gameID, isHost) {
+export function socketStartGame(socket, gameID, isHost, rounds) {
     socket.emit("send_message", {
         message: "starting game",
         room: gameID,
         username: localStorage.getItem("username"),
         isHost: isHost,
+        rounds: rounds
     });
 }
 export function socketSendResults(socket, stuff, gameID, isHost) {

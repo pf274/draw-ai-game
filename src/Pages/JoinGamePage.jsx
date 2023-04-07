@@ -18,7 +18,6 @@ import {
     clearCanvas,
     newPrompt,
     removeParticipantRow,
-    totalRounds
 } from '../Components/GameClass.js';
 import {
     socketSendResults,
@@ -45,6 +44,7 @@ function JoinGamePage() {
     const [timeRemaining, setTimeRemaining] = useState(0);
     const [round, setRound] = useState(-1);
     const [showNewPrompt, setShowNewPrompt] = useState(false);
+    const [totalRounds, setTotalRounds] = useState(4);
 
     function addResultsRow(data) {
         if (resultsRows.map(row => row.username).includes(data.username) === false) {
@@ -86,6 +86,7 @@ function JoinGamePage() {
                     setParticipantRows(myParticipants);
                 } else if (data.message === "starting game") {
                     setInGame(true);
+                    setTotalRounds(data.rounds);
                 } else if (data.message === "new phase") {
                     setTimeRemaining(data.phaseInfo.time);
                     newPrompt(data.phaseInfo.prompt_index).then(result => {
