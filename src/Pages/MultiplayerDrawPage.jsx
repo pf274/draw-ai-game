@@ -6,7 +6,7 @@ import Spinner from 'react-bootstrap/Spinner';
 import WordDefinitionTooltip from '../Components/DrawPage/WordDefinitionTooltip.jsx';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 
-const MultiplayerDrawPage = ({time, prompt}) => {
+const MultiplayerDrawPage = ({time, prompt, showTimer}) => {
     const [showTooltip, setShowTooltip] = useState(false);
     let [showSpinner, setShowSpinner] = useState(true);
     const [remainingTime, setRemainingTime] = useState(0);
@@ -37,7 +37,7 @@ const MultiplayerDrawPage = ({time, prompt}) => {
             <Card id="DrawPage">
                 <Card.Header id="DrawPageHeader">
                     <h1 id="title">Start Drawing!</h1>
-                    <h2 id="timer" className="multiplayer">{time}</h2>
+                    {showTimer && <h2 id="timer" className="multiplayer">{time}</h2>}
                     <OverlayTrigger
                         placement="top"
                         trigger={['hover', 'click']}

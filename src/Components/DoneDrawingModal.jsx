@@ -1,12 +1,17 @@
 import Modal from 'react-bootstrap/Modal';
 
-function DoneDrawingModal({show, setShow}) {
+function DoneDrawingModal({show, setShow, fullscreen, animation}) {
     function handleClose() {
         setShow(false);
     }
     return (
-        <Modal show={show} id="DoneDrawingModal" backdrop="static" keyboard={false} onHide={handleClose}>
-            <Modal.Body>
+        <Modal show={show} animation={animation} fullscreen={fullscreen} id="DoneDrawingModal" backdrop="static" keyboard={false} onHide={handleClose}>
+            <Modal.Body style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                textAlign: "center"
+            }}>
                 <h1>Done Drawing!</h1>
             </Modal.Body>
         </Modal>

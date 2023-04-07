@@ -38,7 +38,7 @@ function HostGamePage() {
     const [categoriesLength, setCategoriesLength] = useState(0);
     const [showWinnerModal, setShowWinnerModal] = useState(false);
     const [participantRows, setParticipantRows] = useState([]);
-    const [participating, setParticipating] = useState(true);
+    const [participating, setParticipating] = useState(false);
     const [showNewPrompt, setShowNewPrompt] = useState(false);
     const [timeRemaining, setTimeRemaining] = useState(0);
     const [showResults, setShowResults] = useState(false);
@@ -47,6 +47,7 @@ function HostGamePage() {
     const [totalRounds, setTotalRounds] = useState(4);
     const [promptIndex, setPromptIndex] = useState(0);
     const [totalPoints, setTotalPoints] = useState(0);
+    const [showTimer, setShowTimer] = useState(false);
     const [inGame, setInGame] = useState(false);
     const [gameID, setGameID] = useState("...");
     const [socket, setSocket] = useState(null);
@@ -111,17 +112,20 @@ function HostGamePage() {
                 setShowResults(false);
                 setShowDoneDrawingModal(false);
                 setShowNewPrompt(true);
+                setShowTimer(false);
                 setResultsRows([]);
                 clearCanvas();
             break;
             case "draw":
                 setShowResults(false);
                 setShowNewPrompt(false);
+                setShowTimer(true);
                 setShowDoneDrawingModal(false);
             break;
             case "done drawing":
                 setShowDoneDrawingModal(true);
                 setShowNewPrompt(false);
+                setShowTimer(false);
                 setShowResults(false);
                 AIGuess(classifier).then(stuff => {
                     let roundPoints = calculatePoints(stuff.results, currentPrompt);
@@ -142,6 +146,7 @@ function HostGamePage() {
             case "review results":
                 setShowResults(true);
                 setShowNewPrompt(false);
+                setShowTimer(false);
                 setShowDoneDrawingModal(false);
             break;
         }
@@ -241,7 +246,7 @@ function HostGamePage() {
                 <Button disabled={participantRows.length < 2} style={{display: "inline"}} onClick={startGame}>Start Game</Button>
             </Card.Footer>
         </Card>}
-        {(inGame && participating) &&
+        {(inGame) &&
             <div style={{
                 display: "flex",
                 flexDirection: "column",
@@ -250,11 +255,12 @@ function HostGamePage() {
                 justifyContent: "center",
                 alignItems: "center",
             }}>
-                <MultiplayerDrawPage time={timeRemaining} prompt={prompt} />
-                <MultiplayerResultsModal show={showResults} isGameOver={round >= totalRounds - 1} setShow={setShowResults} round={round} setRound={setRound} rows={resultsRows} setGameRunning={setGameRunning} gameRunning={gameRunning} isHost={true} setShowWinnerModal={setShowWinnerModal}/>
-                <DoneDrawingModal show={showDoneDrawingModal} setShow={setShowDoneDrawingModal} />
-                <NewPromptModal show={showNewPrompt} setShow={setShowNewPrompt} prompt={prompt} round={round} />
-                <WinnerModal show={showWinnerModal} setShow={setShowWinnerModal} rows={resultsRows} />
+                {participating && <MultiplayerDrawPage time={timeRemaining} prompt={prompt} showTimer={showTimer} />}
+                {(!participating && showTimer) && <div><h1>{prompt}</h1><h1 style={{fontSize: "600%"}}>{timeRemaining}</h1></div>}
+                <MultiplayerResultsModal fullscreen={!participating} animation={participating} show={showResults} isGameOver={round >= totalRounds - 1} setShow={setShowResults} round={round} setRound={setRound} rows={resultsRows} setGameRunning={setGameRunning} gameRunning={gameRunning} isHost={true} setShowWinnerModal={setShowWinnerModal}/>
+                <DoneDrawingModal fullscreen={!participating} animation={participating} show={showDoneDrawingModal} setShow={setShowDoneDrawingModal} />
+                <NewPromptModal fullscreen={!participating} animation={participating} show={showNewPrompt} setShow={setShowNewPrompt} prompt={prompt} round={round} />
+                <WinnerModal fullscreen={!participating} animation={participating} show={showWinnerModal} setShow={setShowWinnerModal} rows={resultsRows} />
             </div>
             }
     </div>)

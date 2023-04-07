@@ -3,7 +3,7 @@ import { Button } from 'react-bootstrap';
 import Modal from 'react-bootstrap/Modal';
 import { useNavigate } from 'react-router-dom';
 
-function WinnerModal({show, setShow, rows}) {
+function WinnerModal({show, setShow, rows, fullscreen, animation}) {
     const navigate = useNavigate();
     const [winner, setWinner] = useState("...");
     function handleClose() {
@@ -18,15 +18,16 @@ function WinnerModal({show, setShow, rows}) {
     }, [rows]);
 
     return (
-        <Modal show={show} id="WinnerModal" backdrop="static" keyboard={false} onHide={handleClose}>
+        <Modal show={show} fullscreen={fullscreen} animation={animation} id="WinnerModal" backdrop="static" keyboard={false} onHide={handleClose}>
             <Modal.Header>
                 <Modal.Title style={{textAlign: "center"}}>Winner!</Modal.Title>
             </Modal.Header>
-            <Modal.Body style={{textAlign: "center"}}>
-                <h2>{winner}</h2>
+            <Modal.Body style={{display: "flex", textAlign: "center", alignItems: "center", justifyContent: "center"}}>
+                {!fullscreen && <h2>{winner}</h2>}
+                {fullscreen && <h1 style={{fontSize: "600%"}}>{winner}</h1>}
             </Modal.Body>
-            <Modal.Footer>
-                <Button onClick={() => {navigate('/')}}>Return to Main Menu</Button>
+            <Modal.Footer style={{justifyContent: "center"}}>
+                <Button size={fullscreen ? "lg" : "normal"} onClick={() => {navigate('/')}}>Return to Main Menu</Button>
             </Modal.Footer>
         </Modal>
     )

@@ -1,16 +1,17 @@
 import Modal from 'react-bootstrap/Modal';
 
-function NewPromptModal({show, setShow, prompt, round}) {
+function NewPromptModal({show, setShow, animation, prompt, round, fullscreen}) {
     function handleClose() {
         setShow(false);
     }
     return (
-        <Modal show={show} id="NewPromptModal" backdrop="static" keyboard={false} onHide={handleClose}>
+        <Modal show={show} fullscreen={fullscreen} animation={animation} id="NewPromptModal" backdrop="static" keyboard={false} onHide={handleClose}>
             <Modal.Header>
                 <Modal.Title style={{textAlign: "center"}}>{`Round ${round + 1}!`}</Modal.Title>
             </Modal.Header>
-            <Modal.Body style={{textAlign: "center"}}>
-                <h2>{prompt}</h2>
+            <Modal.Body style={{display: "flex", textAlign: "center", justifyContent: "center", alignItems: "center"}}>
+                {!fullscreen && <h2>{prompt}</h2>}
+                {fullscreen && <h1 style={{fontSize: "600%"}}>{prompt}</h1>}
             </Modal.Body>
         </Modal>
     )

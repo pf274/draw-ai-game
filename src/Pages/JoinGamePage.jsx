@@ -38,6 +38,7 @@ function JoinGamePage() {
     const [showResults, setShowResults] = useState(false);
     const [totalRounds, setTotalRounds] = useState(4);
     const [resultsRows, setResultsRows] = useState([]);
+    const [showTimer, setShowTimer] = useState(false);
     const [socket, setSocket] = useState(null);
     const [inRoom, setInRoom] = useState(false);
     const [inGame, setInGame] = useState(false);
@@ -99,6 +100,7 @@ function JoinGamePage() {
                             setResultsRows([]);
                             setShowResults(false);
                             setShowNewPrompt(true);
+                            setShowTimer(false);
                             setShowDoneDrawingModal(false);
                             // console.log("get new prompt!");
                             clearCanvas();
@@ -106,12 +108,14 @@ function JoinGamePage() {
                         case "draw":
                             setShowResults(false);
                             setShowNewPrompt(false);
+                            setShowTimer(true);
                             setShowDoneDrawingModal(false);
                             // console.log("time to draw!");
                         break;
                         case "done drawing":
                             setShowResults(false);
                             setShowNewPrompt(false);
+                            setShowTimer(false);
                             setShowDoneDrawingModal(true);
                             AIGuess(classifier).then(stuff => {
                                 let points = calculatePoints(stuff.results, myPrompt);
@@ -133,6 +137,7 @@ function JoinGamePage() {
                         case "review results":
                             setShowDoneDrawingModal(false);
                             setShowResults(true);
+                            setShowTimer(false);
                             setShowNewPrompt(false);
                             // console.log("review results!");
                         break;
@@ -224,11 +229,11 @@ function JoinGamePage() {
                 justifyContent: "center",
                 alignItems: "center",
             }}>
-                <MultiplayerDrawPage mode={Modes.Multi} time={timeRemaining} prompt={prompt} />
-                <MultiplayerResultsModal show={showResults} round={round} isGameOver={round >= totalRounds - 1} setShow={setShowResults} rows={resultsRows} isHost={false} />
-                <DoneDrawingModal show={showDoneDrawingModal} setShow={setShowDoneDrawingModal} />
-                <NewPromptModal show={showNewPrompt} setShow={setShowNewPrompt} prompt={prompt} round={round} />
-                <WinnerModal show={showWinnerModal} setShow={setShowWinnerModal} rows={resultsRows} />
+                <MultiplayerDrawPage fullscreen={false} animation={false} mode={Modes.Multi} time={timeRemaining} prompt={prompt} showTimer={showTimer} />
+                <MultiplayerResultsModal fullscreen={false} animation={false} show={showResults} round={round} isGameOver={round >= totalRounds - 1} setShow={setShowResults} rows={resultsRows} isHost={false} />
+                <DoneDrawingModal fullscreen={false} animation={false} show={showDoneDrawingModal} setShow={setShowDoneDrawingModal} />
+                <NewPromptModal fullscreen={false} animation={false} show={showNewPrompt} setShow={setShowNewPrompt} prompt={prompt} round={round} />
+                <WinnerModal fullscreen={false} animation={false} show={showWinnerModal} setShow={setShowWinnerModal} rows={resultsRows} />
             </div>
         }
 

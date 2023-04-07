@@ -2,7 +2,7 @@ import Modal from 'react-bootstrap/Modal';
 import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 
-function MultiplayerResultsModal({show, setShow, rows, setRound, round, isGameOver, setGameRunning, gameRunning, isHost, setShowWinnerModal}) {
+function MultiplayerResultsModal({show, fullscreen, animation, setShow, rows, setRound, round, isGameOver, setGameRunning, gameRunning, isHost, setShowWinnerModal}) {
     function handleProceed() {
         if (isGameOver) {
             setShowWinnerModal(true);
@@ -24,15 +24,15 @@ function MultiplayerResultsModal({show, setShow, rows, setRound, round, isGameOv
         }
     }
     return (
-        <Modal show={show} onHide={handleClose} id="MultiplayerResultsModal" backdrop="static" keyboard={false}>
-            <Modal.Header>
+        <Modal show={show} fullscreen={fullscreen} animation={animation} onHide={handleClose} id="MultiplayerResultsModal" backdrop="static" keyboard={false}>
+            <Modal.Header style={{display: "flex", justifyContent: "center"}}>
                 {!isGameOver && <h1>{`Round ${round + 1}`}</h1>}
                 {isGameOver && <h1>Game Over!</h1>}
             </Modal.Header>
             <Modal.Body>
             <Table>
                 <thead>
-                    <tr>
+                    <tr style={{textAlign: "center"}}>
                         <th>Username</th>
                         <th>Picture</th>
                         <th>Round Points</th>
@@ -42,7 +42,7 @@ function MultiplayerResultsModal({show, setShow, rows, setRound, round, isGameOv
                 <tbody>
                     {uniqueRows.map((row) => {
                         return (
-                            <tr key={row.username}>
+                            <tr key={row.username} style={{textAlign: "center"}}>
                                 <td>{row.username}</td>
                                 <td>
                                     <img
@@ -61,8 +61,8 @@ function MultiplayerResultsModal({show, setShow, rows, setRound, round, isGameOv
                 </tbody>
             </Table>
             </Modal.Body>
-            <Modal.Footer>
-                {isHost && <Button disabled={gameRunning} onClick={handleProceed}>{isGameOver ? "End Game" : "Next Round"}</Button>}
+            <Modal.Footer style={{justifyContent: "center"}}>
+                {isHost && <Button size={fullscreen ? "lg" : "normal"} disabled={gameRunning} onClick={handleProceed}>{isGameOver ? "End Game" : "Next Round"}</Button>}
             </Modal.Footer>
         </Modal>
     );
