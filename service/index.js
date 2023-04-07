@@ -124,34 +124,6 @@ secureApiRouter.get('/users/login/:username/:password', async (req, res) => {
   }
 });
 
-// ----------- Game APIs -----------
-
-secureApiRouter.get('/games/list', async (req, res) => {
-  let all_games = await DB.getGames();
-  res.send(all_games);
-});
-
-secureApiRouter.get('/games/:game', async (req, res) => {
-  let game = await DB.getGame(req.params.game);
-  res.send(game);
-});
-
-secureApiRouter.delete('/games/clear', async (req, res) => {
-  let cleared_all = await DB.clearAllGames();
-  res.send(cleared_all);
-})
-
-secureApiRouter.post('/games/host', async (req, res) => {
-  let game_info = req.body;
-  let response = await DB.hostGame(game_info);
-  res.send(response);
-});
-
-secureApiRouter.post('/games/start/:game_id', async (req, res) => {
-  let response = await DB.startGame(req.params.game_id);
-  res.send(response);
-});
-
 // ----------- Final Setup -----------
 
 // Default error handler
