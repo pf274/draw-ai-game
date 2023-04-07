@@ -1,4 +1,4 @@
-import '../Components/HomePage/HomePage.css';
+import '../Components/Styles/HomePage.css';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import { useNavigate } from 'react-router-dom';

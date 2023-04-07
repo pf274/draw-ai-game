@@ -1,4 +1,4 @@
-import "../Components/DrawPage/DrawPage.css";
+import "../Components/Styles/DrawPage.css";
 import Card from 'react-bootstrap/Card';
 import Toolbar from '../Components/DrawPage/Toolbar.jsx';
 import DrawingCanvas from '../Components/DrawPage/DrawingCanvas.jsx';

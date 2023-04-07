@@ -1,7 +1,7 @@
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import Form from 'react-bootstrap/Form';
-import "../Components/HostGamePage/HostGamePage.css";
+import "../Components/Styles/HostGamePage.css";
 import io from 'socket.io-client';
 import Participants from '../Components/Participants.jsx';
 import MultiplayerDrawPage from './SubPages/MultiplayerDrawPage.jsx';

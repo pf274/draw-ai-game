@@ -1,4 +1,4 @@
-import "../Components/DrawPage/DrawPage.css";
+import "../../Components/Styles/DrawPage.css";
 import Card from 'react-bootstrap/Card';
 import DrawingCanvas from '../../Components/DrawPage/DrawingCanvas.jsx';
 import {useState, useMemo, useEffect} from 'react';

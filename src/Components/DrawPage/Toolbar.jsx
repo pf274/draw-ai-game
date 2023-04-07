@@ -1,4 +1,4 @@
-import "./Toolbar.css";
+import "../Styles/Toolbar.css";
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import FormRange from 'react-bootstrap/FormRange';

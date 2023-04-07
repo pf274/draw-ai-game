@@ -1,4 +1,4 @@
-import './DrawingCanvas.css';
+import '../Styles/DrawingCanvas.css';
 import {useEffect, useRef, useCallback} from 'react';
 
 const DrawingCanvas = ({setShowSpinner}) => {

@@ -1,4 +1,4 @@
-import "../Components/JoinGamePage/JoinGamePage.css";
+import "../Components/Styles/JoinGamePage.css";
 import MultiplayerResultsModal from '../Components/Modals/MultiplayerResultsModal.jsx';
 import MultiplayerDrawPage from './SubPages/MultiplayerDrawPage.jsx';
 import DoneDrawingModal from '../Components/Modals/DoneDrawingModal.jsx';
