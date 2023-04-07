@@ -152,7 +152,7 @@ function HostGamePage() {
     };
 
     useEffect(() => {
-        let newCode = generateCode();
+        let newCode = generateCode(4);
         setGameID(newCode);
         numberOfCategories().then(result => setCategoriesLength(result));
         let myParticipants = [];

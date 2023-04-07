@@ -86,8 +86,16 @@ export async function AIGuess(classifier) {
     }
 }
 
-export function generateCode() {
-  return ((36 ** 3) + Math.floor(Math.random() * (34 * 36**3 + 35 * 36**2 + 35 * 36 + 35))).toString(36).toUpperCase();
+export function generateCode(n) {
+  let characters = Array(n);
+  // debugger;
+  for (let index = 0; index < n; index++) {
+    characters[index] = (Math.floor(Math.random() * 36)).toString(36).toUpperCase();
+    while (['I', "1", "0", "O"].includes(characters[index])) {
+      characters[index] = (Math.floor(Math.random() * 36)).toString(36).toUpperCase();
+    }
+  }
+  return characters.join("");
 }
 export function addParticipantRow(myParticipants, data) {
   if (myParticipants.map(row => row.username).includes(data.username) === false) {
