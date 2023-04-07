@@ -11,10 +11,9 @@ function WinnerModal({show, setShow, rows, fullscreen, animation}) {
     }
     useEffect(() => {
         let scores = {};
-        console.log(rows);
         rows.forEach((row) => scores[row.totalPoints] = row.username);
         let sortedScores = Object.keys(scores).map(score => parseInt(score)).sort((a, b) => b - a);
-        setWinner(`${scores[sortedScores[0]]}: ${sortedScores[0]}`);
+        setWinner(sortedScores?.length ? `${scores[sortedScores[0]]}: ${sortedScores[0]}` : "Nobody");
     }, [rows]);
 
     return (

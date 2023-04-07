@@ -9,7 +9,7 @@ import DoneDrawingModal from '../Components/Modals/DoneDrawingModal.jsx';
 import MultiplayerResultsModal from '../Components/Modals/MultiplayerResultsModal.jsx';
 import NewPromptModal from '../Components/Modals/NewPromptModal';
 import * as ml5 from "ml5";
-
+// import { HiVolumeOff, HiVolumeUp } from "react-icons/hi";
 import {useState, useEffect, useRef} from 'react';
 import {
     AIGuess,
@@ -54,7 +54,7 @@ function HostGamePage() {
     const [prompt, setPrompt] = useState('...');
     const [round, setRound] = useState(0);
     const [phase, setPhase] = useState(0);
-
+    const [volume, setVolume] = useState(1);
     let classifier = useRef();
     function handleTotalRoundNumberChange(event) {
         setTotalRounds(event.target.value.split('').filter((character) => /^\d+$/.test(character)).join(''));
@@ -71,6 +71,12 @@ function HostGamePage() {
         setInGame(true);
         socketStartGame(socket, gameID, true, totalRounds); // GIVE THEM AN INITIAL PROMPT
         setGameRunning(true);
+        if (!participating && volume) {
+            soundIntroPlay();
+        }
+    }
+    function handleToggleVolume() {
+        setVolume(!volume);
     }
     useInterval(() => {
         if (timeRemaining <= 0) {
@@ -127,21 +133,23 @@ function HostGamePage() {
                 setShowNewPrompt(false);
                 setShowTimer(false);
                 setShowResults(false);
-                AIGuess(classifier).then(stuff => {
-                    let roundPoints = calculatePoints(stuff.results, currentPrompt);
-                    socketSendResults(socket, {...stuff, points: roundPoints, totalPoints: totalPoints + roundPoints}, gameID, true);
-                    addResultsRow({
-                        message: "my results",
-                        room: gameID,
-                        username: localStorage.getItem("username"),
-                        isHost: true,
-                        results: stuff.results,
-                        picture: stuff.picture,
-                        points: roundPoints,
-                        totalPoints: totalPoints + roundPoints,
+                if (participating) {
+                    AIGuess(classifier).then(stuff => {
+                        let roundPoints = calculatePoints(stuff.results, currentPrompt);
+                        socketSendResults(socket, {...stuff, points: roundPoints, totalPoints: totalPoints + roundPoints}, gameID, true);
+                        addResultsRow({
+                            message: "my results",
+                            room: gameID,
+                            username: localStorage.getItem("username"),
+                            isHost: true,
+                            results: stuff.results,
+                            picture: stuff.picture,
+                            points: roundPoints,
+                            totalPoints: totalPoints + roundPoints,
+                        });
+                        setTotalPoints(totalPoints + roundPoints);
                     });
-                    setTotalPoints(totalPoints + roundPoints);
-                });
+                }
             break;
             case "review results":
                 setShowResults(true);
@@ -226,6 +234,7 @@ function HostGamePage() {
             <Card id="HostGameCard">
                 <Card.Header>
                     <h3>{gameID}</h3>
+                    
                 </Card.Header>
                 <Card.Body>
                     <Participants rows={participantRows} />
@@ -267,6 +276,17 @@ function HostGamePage() {
                 <WinnerModal fullscreen={!participating} animation={participating} show={showWinnerModal} setShow={setShowWinnerModal} rows={resultsRows} />
             </div>
             }
+        {/* {!participating && <div
+            style={{
+                position: "absolute",
+                right: "2em",
+                bottom: "2em"
+            }}
+            onClick={handleToggleVolume}
+        >
+            {volume && <HiVolumeUp size={50}/>}
+            {!volume && <HiVolumeOff size={50}/>}
+        </div>} */}
         </div>);
 }
 
