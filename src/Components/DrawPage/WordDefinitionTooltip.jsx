@@ -1,7 +1,7 @@
 import Popover from 'react-bootstrap/Popover';
-import {useState, useEffect} from 'react';
+import {useState, useEffect, forwardRef} from 'react';
 
-function WordDefinitionTooltip({word}, show) {
+const WordDefinitionTooltip = forwardRef(({word}, ref) => {
     const [definition, setDefinition] = useState("...");
     useEffect(() => {
         fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word.toLowerCase()}`).then(result => result.text()).then((result) => {
@@ -27,11 +27,11 @@ function WordDefinitionTooltip({word}, show) {
         });
     }, [word]);
     return(
-        <Popover style={{position: "absolute", right: "0%", top: "50px"}} id="DefinitionPopover">
-            <Popover.Header as="h3">{word}</Popover.Header>
+        <Popover style={{position: "absolute", right: "0%", top: "70px"}} id="DefinitionPopover">
+            <Popover.Header>{word}</Popover.Header>
             <Popover.Body>{definition}</Popover.Body>
         </Popover>
     )
-}
+});
 
 export default WordDefinitionTooltip;

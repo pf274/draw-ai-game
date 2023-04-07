@@ -232,7 +232,7 @@ function HostGamePage() {
                         <Form.Check type="switch" id="theSwitch" disabled checked={participating} label="I am Participating" onChange={toggleParticipate} />
                     </div>
                     <div>
-                        <label for="roundsField" style={{marginRight: "1em"}}>{`Rounds:`}</label>
+                        <label style={{marginRight: "1em"}}>{`Rounds:`}</label>
                         <Form.Control style={{display: "inline-flex", width: 40}} id="roundsField" placeholder="Enter number of rounds" value={totalRounds} onChange={handleTotalRoundNumberChange}/>
                     </div>
                     </Form>
