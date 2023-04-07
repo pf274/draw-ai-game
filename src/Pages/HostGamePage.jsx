@@ -218,34 +218,38 @@ function HostGamePage() {
             height: "100%",
             justifyContent: "center",
             alignItems: "center",
+            userSelect: "none",
+            WebkitUserSelect: "none",
+            MozUserSelect: "none",
         }}>
-        {!inGame && <Card id="HostGameCard">
-            <Card.Header>
-                <h3>{gameID}</h3>
-            </Card.Header>
-            <Card.Body>
-                <Participants rows={participantRows} />
-            </Card.Body>
-            <Card.Footer>
-                <Form style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    flex: 1,
-                    alignItems: "center",
-                    flexWrap: 'wrap',
-                    justifyContent: "center"
-                }}>
-                    <div className="mb-3">
-                        <Form.Check type="switch" checked={participating} label="I am Participating" onChange={toggleParticipate} />
-                    </div>
-                    <div>
-                        <label style={{marginRight: "1em"}}>{`Rounds:`}</label>
-                        <Form.Control style={{display: "inline-flex", width: 40}} id="roundsField" placeholder="Enter number of rounds" value={totalRounds} onChange={handleTotalRoundNumberChange}/>
-                    </div>
-                    </Form>
-                <Button disabled={participantRows.length < 2} style={{display: "inline"}} onClick={startGame}>Start Game</Button>
-            </Card.Footer>
-        </Card>}
+        {!inGame &&
+            <Card id="HostGameCard">
+                <Card.Header>
+                    <h3>{gameID}</h3>
+                </Card.Header>
+                <Card.Body>
+                    <Participants rows={participantRows} />
+                </Card.Body>
+                <Card.Footer>
+                    <Form style={{
+                        display: "flex",
+                        flexDirection: "row",
+                        flex: 1,
+                        alignItems: "center",
+                        flexWrap: 'wrap',
+                        justifyContent: "center"
+                    }}>
+                        <div className="mb-3">
+                            <Form.Check type="switch" checked={participating} label="I am Participating" onChange={toggleParticipate} />
+                        </div>
+                        <div>
+                            <label style={{marginRight: "1em"}}>{`Rounds:`}</label>
+                            <Form.Control style={{display: "inline-flex", width: 40}} id="roundsField" placeholder="Enter number of rounds" value={totalRounds} onChange={handleTotalRoundNumberChange}/>
+                        </div>
+                        </Form>
+                    <Button disabled={participantRows.length < 2} style={{display: "inline"}} onClick={startGame}>Start Game</Button>
+                </Card.Footer>
+            </Card>}
         {(inGame) &&
             <div style={{
                 display: "flex",
@@ -263,7 +267,7 @@ function HostGamePage() {
                 <WinnerModal fullscreen={!participating} animation={participating} show={showWinnerModal} setShow={setShowWinnerModal} rows={resultsRows} />
             </div>
             }
-    </div>)
+        </div>);
 }
 
 export default HostGamePage;

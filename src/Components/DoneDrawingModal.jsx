@@ -5,7 +5,19 @@ function DoneDrawingModal({show, setShow, fullscreen, animation}) {
         setShow(false);
     }
     return (
-        <Modal show={show} animation={animation} fullscreen={fullscreen} id="DoneDrawingModal" backdrop="static" keyboard={false} onHide={handleClose}>
+        <Modal
+            show={show}
+            animation={animation}
+            fullscreen={fullscreen}
+            id="DoneDrawingModal"
+            backdrop="static"
+            keyboard={false}
+            onHide={handleClose}
+            style={{
+                userSelect: "none",
+                WebkitUserSelect: "none",
+                MozUserSelect: "none"
+            }}>
             <Modal.Body style={{
                 display: "flex",
                 justifyContent: "center",

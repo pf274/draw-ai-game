@@ -53,7 +53,7 @@ function Toolbar({setShowGuessesModal, setPrompt, setGuesses}) {
             <Button onClick={clearCanvas}>Clear Canvas</Button>
             <Button onClick={handleOpenGuessModal}>Guess</Button>
             <FormRange min="0.5" max="3" step="0.1" value={sliderValue} id="thicknessSlider" onChange={handleSliderChange}></FormRange>
-            <input type="color" id="colorPicker" />
+            <input type="color" value={"#000000"}id="colorPicker" />
         </Card>
     );
 }

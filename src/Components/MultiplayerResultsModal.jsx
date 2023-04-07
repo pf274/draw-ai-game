@@ -24,7 +24,19 @@ function MultiplayerResultsModal({show, fullscreen, animation, setShow, rows, se
         }
     }
     return (
-        <Modal show={show} fullscreen={fullscreen} animation={animation} onHide={handleClose} id="MultiplayerResultsModal" backdrop="static" keyboard={false}>
+        <Modal
+            show={show}
+            fullscreen={fullscreen}
+            animation={animation}
+            onHide={handleClose}
+            id="MultiplayerResultsModal"
+            backdrop="static"
+            keyboard={false}
+            style={{
+                userSelect: "none",
+                WebkitUserSelect: "none",
+                MozUserSelect: "none"
+            }}>
             <Modal.Header style={{display: "flex", justifyContent: "center"}}>
                 {!isGameOver && <h1>{`Round ${round + 1}`}</h1>}
                 {isGameOver && <h1>Game Over!</h1>}

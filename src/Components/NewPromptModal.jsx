@@ -5,7 +5,19 @@ function NewPromptModal({show, setShow, animation, prompt, round, fullscreen}) {
         setShow(false);
     }
     return (
-        <Modal show={show} fullscreen={fullscreen} animation={animation} id="NewPromptModal" backdrop="static" keyboard={false} onHide={handleClose}>
+        <Modal
+            show={show}
+            fullscreen={fullscreen}
+            animation={animation}
+            id="NewPromptModal"
+            backdrop="static"
+            keyboard={false}
+            onHide={handleClose}
+            style={{
+                userSelect: "none",
+                WebkitUserSelect: "none",
+                MozUserSelect: "none"
+            }}>
             <Modal.Header>
                 <Modal.Title style={{textAlign: "center"}}>{`Round ${round + 1}!`}</Modal.Title>
             </Modal.Header>
