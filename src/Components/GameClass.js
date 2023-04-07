@@ -1,3 +1,5 @@
+import rawCategoryData from '../Data/categories.txt';
+
 export const EVENTS = {
     GameEnd: "game_end",        // the host disconnects or ends the game
     GameStart: "game_start",    // the host starts the game
@@ -9,6 +11,7 @@ export const ROLES = {
     Host: "host",
     Participant: "participant"
 }
+
 
 async function cropContent(canvas) { // takes in the drawing canvas and outputs a cropped canvas
     const context = canvas.getContext("2d", { willReadFrequently: true });
@@ -81,4 +84,66 @@ export async function AIGuess(classifier) {
         croppedCanvas.remove();
         return {results: [...results], picture: pictureData};
     }
+}
+
+export function generateCode() {
+  return ((36 ** 3) + Math.floor(Math.random() * (34 * 36**3 + 35 * 36**2 + 35 * 36 + 35))).toString(36).toUpperCase();
+}
+export function addParticipantRow(myParticipants, data) {
+  if (myParticipants.map(row => row.username).includes(data.username) === false) {
+      return [...myParticipants, data];
+  } else {
+      return myParticipants;
+  }
+}
+export function removeParticipantRow(myParticipants, data) {
+  if (myParticipants.map(row => row.username).includes(data.username) === true) {
+      return myParticipants.filter((row) => row.username !== data.username);
+  } else {
+      return myParticipants;
+  }
+}
+export async function numberOfCategories() {
+  let allCategories = await fetch(rawCategoryData).then(result => result.text());
+  allCategories = allCategories.split("\n").map((item) => Capitalize(item.trim()));
+  return allCategories.length;
+}
+export function Capitalize(text) {
+  return text.toLowerCase().split(' ')
+      .map((s) => s.charAt(0).toUpperCase() + s.substring(1))
+      .join(' ');
+}
+
+function compareGuessToPrompt(guess, thePrompt) {
+  let formattedGuess = Capitalize(guess.replace(/_/g, " "));
+  let formattedPrompt = Capitalize(thePrompt.replace(/_/g, " "));
+  return formattedGuess === formattedPrompt;
+}
+
+export function calculatePoints(guesses, thePrompt) {
+  let matchingIndex = 10; // if none match, then when points are calculated, 10 will result in zero points.
+
+  for (let index = 0; index < guesses.length; index++) {
+      let guess = guesses[index];
+      if (compareGuessToPrompt(guess.label, thePrompt)) {
+          matchingIndex = index;
+      }
+  }
+  let points = (10 - matchingIndex) * 100;
+  return points;
+}
+
+export async function newPrompt(index) {
+  let allCategories = await fetch(rawCategoryData).then(result => result.text());
+  allCategories = allCategories.split("\n").map((item) => Capitalize(item.trim()));
+  let newCategory = allCategories[index];
+  return newCategory;
+}
+export function clearCanvas() {
+  const drawingCanvas = document.getElementById("drawingCanvas");
+  if (drawingCanvas) {
+      let context = drawingCanvas.getContext("2d");
+      context.fillStyle = "rgba(255, 255, 255, 1)";
+      context.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);
+  }
 }

@@ -8,11 +8,24 @@ import io from 'socket.io-client';
 import Participants from '../Components/Participants.jsx';
 import MultiplayerDrawPage from './MultiplayerDrawPage.jsx';
 import {Modes} from '../index.js';
-import rawCategoryData from '../Data/categories.txt';
 import * as ml5 from "ml5";
-import {AIGuess} from '../Components/GameClass.js';
 import MultiplayerModal from '../Components/MultiplayerModal.jsx';
 import DoneDrawingModal from '../Components/DoneDrawingModal.jsx';
+import {
+    AIGuess,
+    addParticipantRow,
+    calculatePoints,
+    clearCanvas,
+    newPrompt,
+    removeParticipantRow
+} from '../Components/GameClass.js';
+import {
+    socketSendResults,
+    socketIAmHere,
+    socketJoinRoom,
+    socketIAmLeaving,
+    socketWhoIsHere
+} from '../Components/SocketCommands';
 
 function JoinGamePage() {
     let classifier = useRef();
@@ -26,83 +39,22 @@ function JoinGamePage() {
     const [showResults, setShowResults] = useState(false);
     const [resultsRows, setResultsRows] = useState([]);
     const [showDoneDrawingModal, setShowDoneDrawingModal] = useState(false);
-    function addParticipantRow(myParticipants, data) {
-        if (myParticipants.map(row => row.username).includes(data.username) === false) {
-            return [...myParticipants, data];
-        } else {
-            return myParticipants;
-        }
-    }
-    function removeParticipantRow(myParticipants, data) {
-        if (myParticipants.map(row => row.username).includes(data.username) === true) {
-            return myParticipants.filter((row) => row.username !== data.username);
-        } else {
-            return myParticipants;
-        }
-    }
-    function clearCanvas() {
-        const drawingCanvas = document.getElementById("drawingCanvas");
-        if (drawingCanvas) {
-            let context = drawingCanvas.getContext("2d");
-            context.fillStyle = "rgba(255, 255, 255, 1)";
-            context.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);
-        }
-    }
+
     function addResultsRow(data) {
         if (resultsRows.map(row => row.username).includes(data.username) === false) {
             setResultsRows(resultsRows => [...resultsRows, data]);
         }
     }
-    async function newPrompt(index) {
-        let allCategories = await fetch(rawCategoryData).then(result => result.text());
-        allCategories = allCategories.split("\n").map((item) => Capitalize(item.trim()));
-        let newCategory = allCategories[index];
-        return newCategory;
-    }
-    function Capitalize(text) {
-        return text.toLowerCase().split(' ')
-            .map((s) => s.charAt(0).toUpperCase() + s.substring(1))
-            .join(' ');
-    }
     function handleGameCodeInputChange(event) {
         setGameID(event.target.value.toUpperCase().slice(0, 4));
     }
-    function calculatePoints(guesses, thePrompt) {
-        let matchingIndex = 10;
-        function compareGuessToPrompt(guess, thePrompt) {
-            let formattedGuess = Capitalize(guess.replace(/_/g, " "));
-            let formattedPrompt = Capitalize(thePrompt.replace(/_/g, " "));
-            return formattedGuess === formattedPrompt;
-        }
-        for (let index = 0; index < guesses.length; index++) {
-            let guess = guesses[index];
-            if (compareGuessToPrompt(guess.label, thePrompt)) {
-                matchingIndex = index;
-            }
-        }
-        let points = (10 - matchingIndex) * 100;
-        return points;
-    }
+
     // ---------- socket.io ----------
     function handleJoinRoom() {
-        socket.emit("join_room", {
-            room: gameID,
-            asHost: false,
-            username: localStorage.getItem("username")
-        });
+        localStorage.setItem("gameID", gameID);
+        socketJoinRoom(socket, gameID, false);
     }
-    function sendResults(stuff) {
-        socket.emit("send_message", {
-            message: "my results",
-            room: gameID,
-            username: localStorage.getItem("username"),
-            isHost: false,
-            results: stuff.results,
-            picture: stuff.picture,
-            points: stuff.points,
-            totalPoints: stuff.totalPoints
-        });
-    }
+
     useEffect(() => {
         let myParticipants = [];
         let myPrompt = "";
@@ -111,7 +63,7 @@ function JoinGamePage() {
             socket.off("receive_message");
             socket.on("receive_message", (data) => {
                 if (data.message === "joined room") {
-                    socketWhoIsHere();
+                    socketWhoIsHere(socket, localStorage.getItem("gameID"));
                     setInRoom(true);
                     myParticipants = addParticipantRow(myParticipants, {username: localStorage.getItem("username")});
                     setParticipantRows(myParticipants);
@@ -120,7 +72,7 @@ function JoinGamePage() {
                 } else if (data.message === "who is here?") {
                     myParticipants = addParticipantRow(myParticipants, data);
                     setParticipantRows(myParticipants);
-                    socketIAmHere();
+                    socketIAmHere(socket, localStorage.getItem("gameID"), false);
                 } else if (data.message === "I am here") {
                     myParticipants = addParticipantRow(myParticipants, data);
                     setParticipantRows(myParticipants);
@@ -151,10 +103,10 @@ function JoinGamePage() {
                             AIGuess(classifier).then(stuff => {
                                 let points = calculatePoints(stuff.results, myPrompt);
                                 myTotalPoints += points;
-                                sendResults({...stuff, points: points, totalPoints: myTotalPoints});
+                                socketSendResults(socket, {...stuff, points: points, totalPoints: myTotalPoints}, localStorage.getItem("gameID"), false);
                                 addResultsRow({
                                     message: "my results",
-                                    room: gameID,
+                                    room: localStorage.getItem("gameID"),
                                     username: localStorage.getItem("username"),
                                     isHost: false,
                                     results: stuff.results,
@@ -180,7 +132,6 @@ function JoinGamePage() {
                     myParticipants = removeParticipantRow(myParticipants, data);
                     setParticipantRows(myParticipants);
                     console.log(`${data.username} has left.`);
-                    // TODO: remove the person
                 } else {
                     // alert(data.message);
                 }
@@ -201,33 +152,11 @@ function JoinGamePage() {
         }, 1000);
         return (() => {
             socket.off("receive_message");
-            socket.emit("send_message", {
-                message: "I am leaving",
-                username: localStorage.getItem("username"),
-                isHost: false,
-            });
+            socketIAmLeaving(socket, false, localStorage.getItem("gameID"));
             socket.disconnect();
             console.log("socket disconnected");
         })
     }, []);
-
-    function socketWhoIsHere() {
-        socket.emit("send_message", {
-            message: "who is here?",
-            room: gameID,
-            username: localStorage.getItem("username")
-        });
-    }
-    function socketIAmHere() {
-        socket.emit("send_message", {
-            message: "I am here",
-            room: gameID,
-            username: localStorage.getItem("username"),
-            isHost: false,
-        });
-    }
-
-
     
     return (<div style={{
         display: "flex",

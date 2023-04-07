@@ -35,9 +35,13 @@ function socketio(httpService) {
             } else {
                 socket.broadcast.emit("receive_message", data); // sends it to everyone but the sender.
             }
+            if (data?.message == "I am leaving") {
+                console.log("leaving room");
+                socket.leave(data?.room);
+            }
         });
-        socket.on("join_room", ({room, asHost}) => {
-            if (getAllRoomMembers(io, room).length == 0 && asHost == false) {
+        socket.on("join_room", ({room, isHost}) => {
+            if (getAllRoomMembers(io, room).length == 0 && isHost == false) {
                 socket.emit("receive_message", {message: "failed to join room"});
             } else{
                 if (getAllRoomMembers(io, room).length == 0) {
@@ -47,10 +51,6 @@ function socketio(httpService) {
                 socket.emit("receive_message", {message: "joined room"});
             }
         });
-        socket.on("leave_room", ({room}) => {
-            console.log("leaving room");
-            socket.leave(room);
-        })
     });
 }
 

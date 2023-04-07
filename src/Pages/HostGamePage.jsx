@@ -10,7 +10,26 @@ import rawCategoryData from '../Data/categories.txt';
 import DoneDrawingModal from '../Components/DoneDrawingModal.jsx';
 import MultiplayerModal from '../Components/MultiplayerModal.jsx';
 import * as ml5 from "ml5";
-import {AIGuess} from '../Components/GameClass.js';
+import {
+    AIGuess,
+    Capitalize,
+    addParticipantRow,
+    calculatePoints,
+    clearCanvas,
+    generateCode,
+    newPrompt,
+    numberOfCategories,
+    removeParticipantRow
+} from '../Components/GameClass.js';
+import {
+    socketStartGame,
+    socketSendResults,
+    socketNewPhase,
+    socketIAmHere,
+    socketJoinRoom,
+    socketIAmLeaving
+} from '../Components/SocketCommands';
+
 
 function HostGamePage() {
     let classifier = useRef();
@@ -26,108 +45,22 @@ function HostGamePage() {
     const [showResults, setShowResults] = useState(false);
     const [resultsRows, setResultsRows] = useState([]);
     const [showDoneDrawingModal, setShowDoneDrawingModal] = useState(false);
-    function Capitalize(text) {
-        return text.toLowerCase().split(' ')
-            .map((s) => s.charAt(0).toUpperCase() + s.substring(1))
-            .join(' ');
-    }
-    function calculatePoints(guesses, thePrompt) {
-        let matchingIndex = 10;
-        function compareGuessToPrompt(guess, thePrompt) {
-            let formattedGuess = Capitalize(guess.replace(/_/g, " "));
-            let formattedPrompt = Capitalize(thePrompt.replace(/_/g, " "));
-            return formattedGuess === formattedPrompt;
-        }
-        for (let index = 0; index < guesses.length; index++) {
-            let guess = guesses[index];
-            if (compareGuessToPrompt(guess.label, thePrompt)) {
-                matchingIndex = index;
-            }
-        }
-        let points = (10 - matchingIndex) * 100;
-        return points;
-    }
-    async function numberOfCategories() {
-        let allCategories = await fetch(rawCategoryData).then(result => result.text());
-        allCategories = allCategories.split("\n").map((item) => Capitalize(item.trim()));
-        return allCategories.length;
-    }
-    async function newPrompt(index) {
-        let allCategories = await fetch(rawCategoryData).then(result => result.text());
-        allCategories = allCategories.split("\n").map((item) => Capitalize(item.trim()));
-        let newCategory = allCategories[index];
-        return newCategory;
-    }
-    function addParticipantRow(myParticipants, data) {
-        if (myParticipants.map(row => row.username).includes(data.username) === false) {
-            return [...myParticipants, data];
-        } else {
-            return myParticipants;
-        }
-    }
-    function removeParticipantRow(myParticipants, data) {
-        if (myParticipants.map(row => row.username).includes(data.username) === true) {
-            return myParticipants.filter((row) => row.username !== data.username);
-        } else {
-            return myParticipants;
-        }
-    }
+
+
     function addResultsRow(data) {
         if (resultsRows.map(row => row.username).includes(data.username) === false) {
             setResultsRows(resultsRows => [...resultsRows, data]);
         }
     }
-    function clearCanvas() {
-        const drawingCanvas = document.getElementById("drawingCanvas");
-        if (drawingCanvas) {
-            let context = drawingCanvas.getContext("2d");
-            context.fillStyle = "rgba(255, 255, 255, 1)";
-            context.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);
-        }
+    function toggleParticipate() {
+        setParticipating(!participating);
     }
     function startGame() {
-        if (socket) {
-            setInGame(true);
-            socket.emit("send_message", {
-                message: "starting game",
-                room: gameID,
-                username: localStorage.getItem("username"),
-                isHost: true,
-            });
-            runCycle({rounds: 5});
-        }
+        setInGame(true);
+        socketStartGame(socket, gameID, true);
+        runCycle();
     }
-    function sendResults(stuff) {
-        socket.emit("send_message", {
-            message: "my results",
-            room: gameID,
-            username: localStorage.getItem("username"),
-            isHost: true,
-            results: stuff.results,
-            picture: stuff.picture,
-            points: stuff.points,
-            totalPoints: stuff.totalPoints
-        });
-    }
-    function generateCode() {
-        return ((36 ** 3) + Math.floor(Math.random() * (34 * 36**3 + 35 * 36**2 + 35 * 36 + 35))).toString(36).toUpperCase();
-    }
-
-    function newPhase(phase_name, time, prompt_index) {
-        socket.emit("send_message", {
-            message: "new phase",
-            room: gameID,
-            username: localStorage.getItem("username"),
-            isHost: true,
-            phaseInfo: {
-                phase: phase_name,
-                time: time,
-                prompt_index: prompt_index
-            }
-        });
-    }
-    function runCycle(parameters) {
-        const {rounds, currentPrompt} = parameters;
+    function runCycle() {
         let phases = [
             {
                 time: 2,
@@ -172,8 +105,7 @@ function HostGamePage() {
                 setShowResults(false);
                 AIGuess(classifier).then(stuff => {
                     points = calculatePoints(stuff.results, currentPrompt);
-                    
-                    sendResults({...stuff, points: points, totalPoints: totalPoints + points});
+                    socketSendResults(socket, {...stuff, points: points, totalPoints: totalPoints + points}, gameID, true);
                     addResultsRow({
                         message: "my results",
                         room: gameID,
@@ -190,7 +122,7 @@ function HostGamePage() {
                 setShowResults(true);
                 setShowDoneDrawingModal(false);
             }
-            newPhase(phaseName, duration, prompt_index);
+            socketNewPhase(socket, phaseName, duration, prompt_index, gameID, true);
             
             console.log("Starting phase:", phaseName);
             setTimeout(() => {
@@ -224,10 +156,7 @@ function HostGamePage() {
         setSocket(socket);
         console.log("socket connected");
         socket.on("connect", () => {
-            socket.emit("join_room", {
-                room: newCode,
-                asHost: true
-            });
+            socketJoinRoom(socket, newCode, true);
             setIsPublic(true);
         });
         socket.on("receive_message", (data) => {
@@ -237,7 +166,7 @@ function HostGamePage() {
             } else if (data.message === "who is here?") {
                 myParticipants = addParticipantRow(myParticipants, data);
                 setParticipantRows(myParticipants);
-                socketIAmHere(socket, newCode);
+                socketIAmHere(socket, newCode, true);
             } else if (data.message === "I am here") {
                 myParticipants = addParticipantRow(myParticipants, data);
                 setParticipantRows(myParticipants);
@@ -247,7 +176,6 @@ function HostGamePage() {
                 myParticipants = removeParticipantRow(myParticipants, data);
                 setParticipantRows(myParticipants);
                 console.log(`${data.username} has left.`);
-                // TODO: remove the person
             } else {
                 // alert(data.message);
             }
@@ -264,26 +192,13 @@ function HostGamePage() {
             // --------- Socket ---------
             socket.off("receive_message");
             socket.off("connect");
-            socket.emit("send_message", {
-                message: "I am leaving",
-                username: localStorage.getItem("username"),
-                isHost: true,
-            });
+            socketIAmLeaving(socket, true, newCode);
             socket.disconnect();
             console.log("socket disconnected");
         });
-    }, [])
-    function socketIAmHere(socket, gameCode = gameID) {
-        socket.emit("send_message", {
-            message: "I am here",
-            room: gameCode,
-            username: localStorage.getItem("username"),
-            isHost: true,
-        });
-    }
-    function toggleParticipate() {
-        setParticipating(!participating);
-    }
+    }, []);
+
+
     return (
         <div style={{
             display: "flex",
