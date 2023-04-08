@@ -155,8 +155,8 @@ function JoinGamePage() {
                     myParticipants = removeParticipantRow(myParticipants, data);
                     setParticipantRows(myParticipants);
                     console.log(`${data.username} has left.`);
-                    if (data.isHost) {
-                        alert("Host has left. The game will no longer work properly.");
+                    if (data?.isHost) {
+                        alert("The Host has left");
                     }
                 } else {
                     // alert(data.message);

@@ -1,7 +1,7 @@
 import Modal from 'react-bootstrap/Modal';
 import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
-
+import { Capitalize } from '../GameParts';
 function MultiplayerResultsModal({show, fullscreen, animation, setShow, rows, setRound, round, isGameOver, setGameRunning, gameRunning, isHost, setShowWinnerModal}) {
     function handleProceed() {
         if (isGameOver) {
@@ -47,26 +47,64 @@ function MultiplayerResultsModal({show, fullscreen, animation, setShow, rows, se
                     <tr style={{textAlign: "center"}}>
                         <th>Username</th>
                         <th>Picture</th>
-                        <th>Round Points</th>
-                        <th>Total Points</th>
+                        <th>Top Guesses</th>
+                        <th>Points</th>
                     </tr>
                 </thead>
                 <tbody>
                     {uniqueRows.map((row) => {
+                        // debugger;
                         return (
                             <tr key={row.username} style={{textAlign: "center"}}>
                                 <td>{row.username}</td>
                                 <td>
-                                    <img
-                                        style={{
-                                            maxWidth: 150,
-                                            minWidth: 150
-                                        }}
-                                        src={row.picture}
-                                    />
-                                    </td>
-                                <td>{row.points}</td>
-                                <td>{row.totalPoints}</td>
+                                    <div style={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                        width: 150,
+                                        height: 250,
+                                        margin: 0,
+                                    }}>
+                                        <img style={{
+                                            maxWidth: "100%",
+                                            maxHeight: "100%"
+                                        }} src={row.picture} />
+                                    </div>
+                                </td>
+                                <td>{row.results.map((guess, index) => {
+                                    return (
+                                        <div
+                                            style={{
+                                                display: "flex",
+                                                flexDirection: "row",
+                                                color: row.points === (10 - index) * 100 ? "#00AAAA": "#000000"
+                                            }}
+                                            id={guess.label}
+                                        >
+                                            <p
+                                                style={{
+                                                    margin: "0px",
+                                                    padding: "0px"
+                                                }}
+                                            >
+                                                {`${Capitalize(guess.label.replace(/_/g, " "))}`}
+                                            </p>
+                                            <p
+                                                style={{
+                                                    margin: "0px",
+                                                    padding: "0px",
+                                                    flex: 1,
+                                                    textAlign: "right",
+                                                    marginLeft: "1em"
+                                                }}
+                                            >
+                                                {`${Math.floor(guess.confidence * 10000) / 100}%`}
+                                            </p>
+                                        </div>);
+                                    })}
+                                </td>
+                                <td><div><p style={{margin: "0px", padding: "0px"}}>{row.points}</p></div><div><p><strong>{row.totalPoints}</strong></p></div></td>
                             </tr>
                         );
                     })}

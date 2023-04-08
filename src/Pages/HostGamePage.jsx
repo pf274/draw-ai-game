@@ -136,8 +136,7 @@ function HostGamePage() {
             setTimeRemaining(timeRemaining - 1);
         }
         const element = document.querySelector(`.countdown-number`);
-        if (element) {
-            // debugger;
+        if (element && !participating) {
             element.classList.remove('animate');
             element.animate([
                 { transform: 'scale(1.5)' },
@@ -307,7 +306,7 @@ function HostGamePage() {
                             <Form.Control style={{display: "inline-flex", width: 40}} id="roundsField" placeholder="Enter number of rounds" value={totalRounds} onChange={handleTotalRoundNumberChange}/>
                         </div>
                         </Form>
-                    <Button disabled={participantRows.length < 2} style={{display: "inline"}} onClick={startGame}>Start Game</Button>
+                    <Button disabled={participantRows.length - (!participating) < 2} style={{display: "inline"}} onClick={startGame}>Start Game</Button>
                 </Card.Footer>
             </Card>}
         {(inGame) &&
