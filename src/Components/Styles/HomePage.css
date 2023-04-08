@@ -22,4 +22,12 @@
     right: 5%;
     bottom: 0%;
     text-align: right;
+    color: white;
+}
+#HomePage {
+    opacity: 90%;
+}
+a {
+    text-decoration: none;
+    color: rgb(48, 156, 156);
 }

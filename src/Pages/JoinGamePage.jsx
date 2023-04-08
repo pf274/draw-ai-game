@@ -193,7 +193,7 @@ function JoinGamePage() {
         alignItems: "center",
     }}>
         {(!inRoom && !inGame) &&
-            <Card>
+            <Card style={{opacity: "90%"}}>
                 <Card.Header>
                     <h2>Join Game</h2>
                 </Card.Header>
@@ -211,7 +211,7 @@ function JoinGamePage() {
             </Card>
         }
         {(inRoom && !inGame) &&
-            <Card id="JoinGameCard">
+            <Card id="JoinGameCard" style={{opacity: "90%"}}>
                 <Card.Header>
                     <h3>{gameID}</h3>
                 </Card.Header>

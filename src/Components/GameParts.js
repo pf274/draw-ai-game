@@ -88,7 +88,7 @@ export function generateCode(n) {
   // debugger;
   for (let index = 0; index < n; index++) {
     characters[index] = (Math.floor(Math.random() * 36)).toString(36).toUpperCase();
-    while (['I', "1", "0", "O"].includes(characters[index])) {
+    while (['I', "1", "0", "O", "5", "S"].includes(characters[index])) {
       characters[index] = (Math.floor(Math.random() * 36)).toString(36).toUpperCase();
     }
   }

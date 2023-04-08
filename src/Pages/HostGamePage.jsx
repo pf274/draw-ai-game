@@ -9,8 +9,8 @@ import DoneDrawingModal from '../Components/Modals/DoneDrawingModal.jsx';
 import MultiplayerResultsModal from '../Components/Modals/MultiplayerResultsModal.jsx';
 import NewPromptModal from '../Components/Modals/NewPromptModal';
 import * as ml5 from "ml5";
-// import { HiVolumeOff, HiVolumeUp } from "react-icons/hi";
 import {useState, useEffect, useRef} from 'react';
+import {useInterval} from "react-use";
 import {
     AIGuess,
     addParticipantRow,
@@ -30,8 +30,17 @@ import {
     socketJoinRoom,
     socketIAmLeaving
 } from '../Components/SocketCommands';
-import { useInterval } from "react-use";
 import WinnerModal from '../Components/Modals/WinnerModal';
+
+// sounds
+import { HiVolumeOff, HiVolumeUp } from "react-icons/hi";
+import useSound from 'use-sound';
+import Loop from './Sounds/Loop.mp3';
+import Intro from './Sounds/Intro.mp3';
+import Ding1 from './Sounds/bell1.mp3';
+import Ding2 from './Sounds/bell2.mp3';
+import Ding3 from './Sounds/bell3.mp3';
+const dings = [Ding1, Ding2, Ding3];
 
 function HostGamePage() {
     const [showDoneDrawingModal, setShowDoneDrawingModal] = useState(false);
@@ -55,6 +64,23 @@ function HostGamePage() {
     const [round, setRound] = useState(0);
     const [phase, setPhase] = useState(0);
     const [volume, setVolume] = useState(1);
+    const [playDing1] = useSound(dings[0]);
+    const [playDing2] = useSound(dings[1]);
+    const [playDing3] = useSound(dings[2]);
+    const soundDings = [playDing1, playDing2, playDing3];
+    const [playLoop, setPlayLoop] = useState(false);
+    const [playSoundLoop, {sound: theLoopSound}] = useSound(Loop, {onend: () => {setPlayLoop(true);}});
+    const [playSoundIntro, {sound: theIntroSound}] = useSound(Intro, {onend: () => {setPlayLoop(true);}});
+    const currentTrack = useRef();
+    useEffect(() => {
+        if (playLoop) {
+            setPlayLoop(false);
+            if (volume) {
+                currentTrack.current = theLoopSound;
+                playSoundLoop();
+            }
+        }
+    }, [playLoop]);
     let classifier = useRef();
     function handleTotalRoundNumberChange(event) {
         setTotalRounds(event.target.value.split('').filter((character) => /^\d+$/.test(character)).join(''));
@@ -72,11 +98,15 @@ function HostGamePage() {
         socketStartGame(socket, gameID, true, totalRounds); // GIVE THEM AN INITIAL PROMPT
         setGameRunning(true);
         if (!participating && volume) {
-            soundIntroPlay();
+            playSoundIntro();
+            currentTrack.current = theIntroSound;
         }
     }
     function handleToggleVolume() {
         setVolume(!volume);
+        if (currentTrack?.current) {
+            volume ? currentTrack.current.pause() : currentTrack.current.play()
+        }
     }
     useInterval(() => {
         if (timeRemaining <= 0) {
@@ -110,6 +140,9 @@ function HostGamePage() {
         switch (phaseName) {
             case "get new prompt":
                 // get new prompt
+                if (volume && !participating) {
+                    soundDings[Math.floor(Math.random() * soundDings.length)]();
+                }
                 thePromptIndex = Math.floor(Math.random() * categoriesLength);
                 setPromptIndex(thePromptIndex);
                 thePrompt = await newPrompt(thePromptIndex);
@@ -204,6 +237,7 @@ function HostGamePage() {
         }, 1000);
 
         return (() => {
+            currentTrack?.current?.stop();
             // --------- Socket ---------
             socket.off("receive_message");
             socket.off("connect");
@@ -217,7 +251,6 @@ function HostGamePage() {
             socketNewPhase(socket, "Game Over!", 0, 0, gameID, true);
         }
     }, [showWinnerModal]);
-
     return (
         <div style={{
             display: "flex",
@@ -231,7 +264,7 @@ function HostGamePage() {
             MozUserSelect: "none",
         }}>
         {!inGame &&
-            <Card id="HostGameCard">
+            <Card id="HostGameCard" style={{opacity: "90%"}}>
                 <Card.Header>
                     <h3>{gameID}</h3>
                     
@@ -276,7 +309,7 @@ function HostGamePage() {
                 <WinnerModal fullscreen={!participating} animation={participating} show={showWinnerModal} setShow={setShowWinnerModal} rows={resultsRows} />
             </div>
             }
-        {/* {!participating && <div
+        {!participating && <div
             style={{
                 position: "absolute",
                 right: "2em",
@@ -284,9 +317,9 @@ function HostGamePage() {
             }}
             onClick={handleToggleVolume}
         >
-            {volume && <HiVolumeUp size={50}/>}
-            {!volume && <HiVolumeOff size={50}/>}
-        </div>} */}
+            {volume && <HiVolumeUp size={50} color={"white"}/>}
+            {!volume && <HiVolumeOff size={50} color={"white"}/>}
+        </div>}
         </div>);
 }
 

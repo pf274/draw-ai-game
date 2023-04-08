@@ -11,7 +11,7 @@ function AboutPage() {
             justifyContent: "center",
             alignItems: "center",
         }}>
-        <Card style={{width: "100%", height: "100%"}}>
+        <Card style={{width: "100%", height: "100%", opacity: "90%"}}>
             <Card.Header>
                 About
             </Card.Header>
@@ -30,7 +30,7 @@ function AboutPage() {
                     The AI awards points to players depending on how well it recognizes their drawings.`}
                 </h4>
                 <h4 className='mt-3'>&emsp;&emsp;
-                    {`This project is made with Node, Express, React, Ml5.js, and socket.io.`}
+                    {`This project is made with Node, Express, React, Ml5.js, socket.io, and particles.js.`}
                 </h4>
             </Card.Body>
         </Card>

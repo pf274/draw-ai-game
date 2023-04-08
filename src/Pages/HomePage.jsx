@@ -6,6 +6,7 @@ import {useEffect, useState} from 'react';
 import LoginModal from '../Components/Modals/LoginModal.jsx';
 import SignupModal from '../Components/Modals/SignupModal.jsx';
 import Spinner from 'react-bootstrap/Spinner';
+import Particle from '../Components/Particle';
 const HomePage = () => {
     const [showLogin, setShowLogin] = useState(false);
     const [showSignup, setShowSignup] = useState(false);
@@ -73,6 +74,7 @@ const HomePage = () => {
             justifyContent: "center",
             alignItems: "center",
         }}>
+            {/* <Particle /> */}
             <Card id="HomePage">
                 <Card.Header>
                     {!loggedIn && <Card.Title>Draw AI</Card.Title>}

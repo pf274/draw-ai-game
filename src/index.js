@@ -12,6 +12,7 @@ import HomePage from './Pages/HomePage.jsx';
 import HostGamePage from './Pages/HostGamePage.jsx';
 import JoinGamePage from './Pages/JoinGamePage.jsx';
 import AboutPage from './Pages/AboutPage';
+import Particle from './Components/Particle';
 
 export const Pages = {
   Home: "home",
@@ -50,6 +51,7 @@ const router = createBrowserRouter([
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
+    <Particle />
     <RouterProvider router={router} />
   </React.StrictMode>
 );
