@@ -23,7 +23,7 @@ function NewPromptModal({show, setShow, animation, prompt, round, fullscreen}) {
             </Modal.Header>
             <Modal.Body style={{display: "flex", textAlign: "center", justifyContent: "center", alignItems: "center"}}>
                 {!fullscreen && <h2>{prompt}</h2>}
-                {fullscreen && <h1 style={{fontSize: "600%"}}>{prompt}</h1>}
+                {fullscreen && <h1 style={{fontSize: window.innerWidth < 900 ? "200%" : "600%"}}>{prompt}</h1>}
             </Modal.Body>
         </Modal>
     )

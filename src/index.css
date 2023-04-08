@@ -35,3 +35,11 @@ code {
   align-items: center;
 }
 
+.countdown-number {
+  font-size: 2rem;
+  transition: font-size 0.5s;
+}
+
+.countdown-number.animate {
+  font-size: 3rem;
+}

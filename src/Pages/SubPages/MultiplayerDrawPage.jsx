@@ -9,7 +9,6 @@ import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 const MultiplayerDrawPage = ({time, prompt, showTimer}) => {
     const [showTooltip, setShowTooltip] = useState(false);
     let [showSpinner, setShowSpinner] = useState(true);
-    const [remainingTime, setRemainingTime] = useState(0);
     const canvas = useMemo(() => {
         return <DrawingCanvas setShowSpinner={setShowSpinner} />;
     }, []);
@@ -18,12 +17,6 @@ const MultiplayerDrawPage = ({time, prompt, showTimer}) => {
         const seconds = Math.floor(((end_time - new_time) % (1000 * 60)) / 1000);
         return seconds;
     }
-    useEffect(() => {
-        let interval = setInterval(() => {
-            setRemainingTime(Math.max(getRemainingTime(time), 0));
-        }, 1000);
-        return () => clearInterval(interval);
-    }, [time, getRemainingTime]);
     function handleShowTooltip() {
         setShowTooltip(!showTooltip);
     }
@@ -37,7 +30,7 @@ const MultiplayerDrawPage = ({time, prompt, showTimer}) => {
             <Card id="DrawPage">
                 <Card.Header id="DrawPageHeader">
                     <h1 id="title">Start Drawing!</h1>
-                    {showTimer && <h2 id="timer" className="multiplayer">{time}</h2>}
+                    {showTimer && <h2 id="timer" className="multiplayer countdown-number" style={{color: time <= 3 ? "red" : "black"}}>{time}</h2>}
                     <OverlayTrigger
                         placement="top"
                         trigger={['hover', 'click']}

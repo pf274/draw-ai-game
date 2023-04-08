@@ -106,6 +106,11 @@ function HostGamePage() {
         setVolume(!volume);
         if (currentTrack?.current) {
             volume ? currentTrack.current.pause() : currentTrack.current.play()
+        } else {
+            if (!volume) {
+                playSoundIntro();
+                currentTrack.current = theIntroSound;
+            }
         }
     }
     useInterval(() => {
@@ -129,6 +134,19 @@ function HostGamePage() {
             }
         } else {
             setTimeRemaining(timeRemaining - 1);
+        }
+        const element = document.querySelector(`.countdown-number`);
+        if (element) {
+            // debugger;
+            element.classList.remove('animate');
+            element.animate([
+                { transform: 'scale(1.5)' },
+                { transform: 'scale(1)' },
+              ], {
+                duration: 250,
+              })
+            void element.offsetWidth; // force reflow to restart the animation
+            element.classList.add('animate');
         }
     }, gameRunning ? 1000 : null);
 
@@ -302,7 +320,7 @@ function HostGamePage() {
                 alignItems: "center",
             }}>
                 {participating && <MultiplayerDrawPage time={timeRemaining} prompt={prompt} showTimer={showTimer} />}
-                {(!participating && showTimer) && <div><h1>{prompt}</h1><h1 style={{fontSize: "600%"}}>{timeRemaining}</h1></div>}
+                {(!participating && showTimer) && <div><h1>{prompt}</h1><h1 className="countdown-number" style={{fontSize: "600%", color: timeRemaining <= 3 ? "red" : "black"}}>{timeRemaining}</h1></div>}
                 <MultiplayerResultsModal fullscreen={!participating} animation={participating} show={showResults} isGameOver={round >= totalRounds - 1} setShow={setShowResults} round={round} setRound={setRound} rows={resultsRows} setGameRunning={setGameRunning} gameRunning={gameRunning} isHost={true} setShowWinnerModal={setShowWinnerModal}/>
                 <DoneDrawingModal fullscreen={!participating} animation={participating} show={showDoneDrawingModal} setShow={setShowDoneDrawingModal} />
                 <NewPromptModal fullscreen={!participating} animation={participating} show={showNewPrompt} setShow={setShowNewPrompt} prompt={prompt} round={round} />
@@ -317,8 +335,8 @@ function HostGamePage() {
             }}
             onClick={handleToggleVolume}
         >
-            {volume && <HiVolumeUp size={50} color={"white"}/>}
-            {!volume && <HiVolumeOff size={50} color={"white"}/>}
+            {volume && <HiVolumeUp size={50} color={"black"}/>}
+            {!volume && <HiVolumeOff size={50} color={"black"}/>}
         </div>}
         </div>);
 }

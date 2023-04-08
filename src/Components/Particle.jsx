@@ -26,12 +26,12 @@ function Particle() {
                     "number": {
                         "value": 20,
                         "density": {
-                            "enable": false,
-                            "value_area": 800
+                            "enable": true,
+                            "value_area": 900
                         }
                     },
                     "color": {
-                        "value": "#fff"
+                        "value": "#000000"
                     },
                     "shape": {
                         "type": "circle",
@@ -72,7 +72,7 @@ function Particle() {
                     "line_linked": {
                         "enable": true,
                         "distance": 600,
-                        "color": "#ffffff",
+                        "color": "#000000",
                         "opacity": 0.4,
                         "width": 2
                     },
@@ -131,7 +131,7 @@ function Particle() {
                 },
                 "retina_detect": true,
                 "background": {
-                    "color": "#111",
+                    "color": "#ffffff",
                     "image": "",
                     "position": "50% 50%",
                     "repeat": "no-repeat",
