@@ -61,3 +61,10 @@ export function socketWhoIsHere(socket, gameID) {
         username: localStorage.getItem("username")
     });
 }
+export function socketIAmReady(socket, gameID) {
+    socket.emit("send_message", {
+        message: "I am ready!",
+        room: gameID,
+        username: localStorage.getItem("username")
+    });
+}

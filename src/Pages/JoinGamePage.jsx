@@ -23,7 +23,8 @@ import {
     socketIAmHere,
     socketJoinRoom,
     socketIAmLeaving,
-    socketWhoIsHere
+    socketWhoIsHere,
+    socketIAmReady
 } from '../Components/SocketCommands';
 import { useInterval } from "react-use";
 import NewPromptModal from '../Components/Modals/NewPromptModal';
@@ -44,7 +45,8 @@ function JoinGamePage() {
     const [gameID, setGameID] = useState("");
     const [prompt, setPrompt] = useState("...");
     const [round, setRound] = useState(-1);
-    
+    const [ready, setReady] = useState(false);
+
     let classifier = useRef();
     function addResultsRow(data) {
         if (resultsRows.map(row => row.username).includes(data.username) === false) {
@@ -101,6 +103,7 @@ function JoinGamePage() {
                             setShowNewPrompt(true);
                             setShowTimer(false);
                             setShowDoneDrawingModal(false);
+                            setReady(false);
                             // console.log("get new prompt!");
                             clearCanvas();
                         break;
@@ -182,6 +185,12 @@ function JoinGamePage() {
             console.log("socket disconnected");
         })
     }, []);
+
+    useEffect(() => {
+        if (ready) {
+            socketIAmReady(socket, gameID);
+        }
+    }, [ready])
     
     return (<div style={{
         display: "flex",
@@ -229,7 +238,7 @@ function JoinGamePage() {
                 alignItems: "center",
             }}>
                 <MultiplayerDrawPage fullscreen={false} animation={false} time={timeRemaining} prompt={prompt} showTimer={showTimer} />
-                <MultiplayerResultsModal fullscreen={false} animation={false} show={showResults} round={round} isGameOver={round >= totalRounds - 1} setShow={setShowResults} rows={resultsRows} isHost={false} />
+                <MultiplayerResultsModal fullscreen={false} animation={false} show={showResults} round={round} isGameOver={round >= totalRounds - 1} setShow={setShowResults} rows={resultsRows} isHost={false} setReady={setReady} ready={ready} />
                 <DoneDrawingModal fullscreen={false} animation={false} show={showDoneDrawingModal} setShow={setShowDoneDrawingModal} />
                 <NewPromptModal fullscreen={false} animation={false} show={showNewPrompt} setShow={setShowNewPrompt} prompt={prompt} round={round} totalRounds={totalRounds}/>
                 <WinnerModal fullscreen={false} animation={false} show={showWinnerModal} setShow={setShowWinnerModal} rows={resultsRows} />

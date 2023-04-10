@@ -4,6 +4,7 @@ import Button from 'react-bootstrap/Button';
 import { Capitalize } from '../GameParts';
 import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
+import { socketIAmReady } from '../SocketCommands';
 
 function ResultsTable({rows}) {
     return (
@@ -83,7 +84,7 @@ function ResultsTable({rows}) {
   }
 
 
-function MultiplayerResultsModal({show, fullscreen, animation, setShow, rows, setRound, round, isGameOver, setGameRunning, gameRunning, isHost, setShowWinnerModal}) {
+function MultiplayerResultsModal({show, playersReady, ready, fullscreen, animation, setShow, rows, setRound, round, isGameOver, setGameRunning, gameRunning, isHost, setShowWinnerModal, setReady}) {
     function handleProceed() {
         if (isGameOver) {
             setShowWinnerModal(true);
@@ -96,7 +97,7 @@ function MultiplayerResultsModal({show, fullscreen, animation, setShow, rows, se
         }
     }
     function handleReady() {
-        // TODO: HANDLE BEING READY FOR THE NEXT ROUND
+        setReady(true);
     }
     function handleClose() {
         setShow(false);
@@ -133,8 +134,13 @@ function MultiplayerResultsModal({show, fullscreen, animation, setShow, rows, se
                 <ResultsTable rows={uniqueRows} />
             </Modal.Body>
             <Modal.Footer style={{justifyContent: "center"}}>
-                {isHost && <Button size={fullscreen ? "lg" : "normal"} disabled={gameRunning} onClick={handleProceed}>{isGameOver ? "End Game" : "Next Round"}</Button>}
-                {(!isHost && !isGameOver) && <Button size={fullscreen ? "lg" : "normal"} disabled={gameRunning} onClick={handleReady}>Ready!</Button>}
+                {isHost && 
+                    <div>
+                        <Button size={fullscreen ? "lg" : "normal"} disabled={gameRunning} onClick={handleProceed}>{isGameOver ? "End Game" : "Next Round"}</Button>
+                        <p>{`${playersReady} Player${playersReady !== 1 ? "s" : ""} Ready`}</p>
+                    </div>
+                }
+                {(!isHost && !isGameOver) && <Button size={fullscreen ? "lg" : "normal"} disabled={gameRunning || ready} onClick={handleReady}>Ready!</Button>}
             </Modal.Footer>
         </Modal>
     );
