@@ -322,7 +322,7 @@ function HostGamePage() {
                 {(!participating && showTimer) && <div><h1>{prompt}</h1><h1 className="countdown-number" style={{fontSize: "600%", color: timeRemaining <= 3 ? "red" : "black"}}>{timeRemaining}</h1></div>}
                 <MultiplayerResultsModal fullscreen={!participating} animation={participating} show={showResults} isGameOver={round >= totalRounds - 1} setShow={setShowResults} round={round} setRound={setRound} rows={resultsRows} setGameRunning={setGameRunning} gameRunning={gameRunning} isHost={true} setShowWinnerModal={setShowWinnerModal}/>
                 <DoneDrawingModal fullscreen={!participating} animation={participating} show={showDoneDrawingModal} setShow={setShowDoneDrawingModal} />
-                <NewPromptModal fullscreen={!participating} animation={participating} show={showNewPrompt} setShow={setShowNewPrompt} prompt={prompt} round={round} />
+                <NewPromptModal fullscreen={!participating} animation={participating} show={showNewPrompt} setShow={setShowNewPrompt} prompt={prompt} round={round} totalRounds={totalRounds} />
                 <WinnerModal fullscreen={!participating} animation={participating} show={showWinnerModal} setShow={setShowWinnerModal} rows={resultsRows} />
             </div>
             }
