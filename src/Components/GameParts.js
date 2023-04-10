@@ -171,3 +171,32 @@ export const phases = [
       name: "review results"
   }
 ];
+
+/*
+TODO: IMPLEMENT THIS
+import React, { useRef } from 'react';
+
+function FullscreenButton() {
+  const elementRef = useRef(null);
+
+  function handleFullscreenButtonClick() {
+    if (elementRef.current) {
+      if (document.fullscreenElement) {
+        document.exitFullscreen();
+      } else {
+        elementRef.current.requestFullscreen();
+      }
+    }
+  }
+
+  return (
+    <button onClick={handleFullscreenButtonClick}>
+      {document.fullscreenElement ? 'Exit Fullscreen' : 'Fullscreen'}
+    </button>
+    <div ref={elementRef}>
+      </div>
+      );
+    }
+
+    
+*/
