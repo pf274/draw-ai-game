@@ -74,7 +74,6 @@ const HomePage = () => {
             justifyContent: "center",
             alignItems: "center",
         }}>
-            {/* <Particle /> */}
             <Card id="HomePage">
                 <Card.Header>
                     {!loggedIn && <Card.Title>Draw AI</Card.Title>}

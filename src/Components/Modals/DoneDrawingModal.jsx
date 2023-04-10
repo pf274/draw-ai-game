@@ -16,7 +16,8 @@ function DoneDrawingModal({show, setShow, fullscreen, animation}) {
             style={{
                 userSelect: "none",
                 WebkitUserSelect: "none",
-                MozUserSelect: "none"
+                MozUserSelect: "none",
+                touchAction: "none"
             }}>
             <Modal.Body style={{
                 display: "flex",

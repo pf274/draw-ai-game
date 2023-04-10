@@ -35,7 +35,8 @@ function MultiplayerResultsModal({show, fullscreen, animation, setShow, rows, se
             style={{
                 userSelect: "none",
                 WebkitUserSelect: "none",
-                MozUserSelect: "none"
+                MozUserSelect: "none",
+                touchAction: "none"
             }}>
             <Modal.Header style={{display: "flex", justifyContent: "center"}}>
                 {!isGameOver && <h1>{`Round ${round + 1}`}</h1>}

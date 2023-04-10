@@ -16,7 +16,8 @@ function NewPromptModal({show, setShow, animation, prompt, round, fullscreen}) {
             style={{
                 userSelect: "none",
                 WebkitUserSelect: "none",
-                MozUserSelect: "none"
+                MozUserSelect: "none",
+                touchAction: "none"
             }}>
             <Modal.Header>
                 <Modal.Title style={{textAlign: "center"}}>{`Round ${round + 1}!`}</Modal.Title>

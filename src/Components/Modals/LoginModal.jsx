@@ -43,7 +43,7 @@ function LoginModal({show, setShow, setLoggedIn}) {
         setLoading(false);
     }
     return (
-    <Modal show={show} onHide={handleClose}>
+    <Modal show={show} onHide={handleClose} style={{touchAction: "none"}}>
         <Modal.Header>
             <Modal.Title>Log In</Modal.Title>
         </Modal.Header>

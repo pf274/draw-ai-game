@@ -9,7 +9,6 @@ import Card from 'react-bootstrap/Card';
 import Form from 'react-bootstrap/Form';
 import io from 'socket.io-client';
 import {useState, useEffect, useRef} from 'react';
-import {Modes} from '../index.js';
 import * as ml5 from "ml5";
 import {
     AIGuess,
@@ -229,7 +228,7 @@ function JoinGamePage() {
                 justifyContent: "center",
                 alignItems: "center",
             }}>
-                <MultiplayerDrawPage fullscreen={false} animation={false} mode={Modes.Multi} time={timeRemaining} prompt={prompt} showTimer={showTimer} />
+                <MultiplayerDrawPage fullscreen={false} animation={false} time={timeRemaining} prompt={prompt} showTimer={showTimer} />
                 <MultiplayerResultsModal fullscreen={false} animation={false} show={showResults} round={round} isGameOver={round >= totalRounds - 1} setShow={setShowResults} rows={resultsRows} isHost={false} />
                 <DoneDrawingModal fullscreen={false} animation={false} show={showDoneDrawingModal} setShow={setShowDoneDrawingModal} />
                 <NewPromptModal fullscreen={false} animation={false} show={showNewPrompt} setShow={setShowNewPrompt} prompt={prompt} round={round} />

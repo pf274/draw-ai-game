@@ -17,7 +17,7 @@ function WinnerModal({show, setShow, rows, fullscreen, animation}) {
     }, [rows]);
 
     return (
-        <Modal show={show} fullscreen={fullscreen} animation={animation} id="WinnerModal" backdrop="static" keyboard={false} onHide={handleClose}>
+        <Modal show={show} fullscreen={fullscreen} animation={animation} id="WinnerModal" backdrop="static" keyboard={false} onHide={handleClose} style={{touchAction: "none"}}>
             <Modal.Header style={{display: "flex", justifyContent: "center", alignItems: "center", textAlign: "center" }}>
                 <Modal.Title style={{fontSize: fullscreen ? "400%" : "200%"}}>Winner!</Modal.Title>
             </Modal.Header>
