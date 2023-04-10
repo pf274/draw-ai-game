@@ -2,6 +2,9 @@ import Modal from 'react-bootstrap/Modal';
 import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 import { Capitalize } from '../GameParts';
+import Dropdown from 'react-bootstrap/Dropdown';
+import DropdownButton from 'react-bootstrap/DropdownButton';
+
 function MultiplayerResultsModal({show, fullscreen, animation, setShow, rows, setRound, round, isGameOver, setGameRunning, gameRunning, isHost, setShowWinnerModal}) {
     function handleProceed() {
         if (isGameOver) {
@@ -13,6 +16,9 @@ function MultiplayerResultsModal({show, fullscreen, animation, setShow, rows, se
             }, 1400);
             setGameRunning(true);
         }
+    }
+    function handleReady() {
+        // TODO: HANDLE BEING READY FOR THE NEXT ROUND
     }
     function handleClose() {
         setShow(false);
@@ -46,19 +52,19 @@ function MultiplayerResultsModal({show, fullscreen, animation, setShow, rows, se
             <Table>
                 <thead>
                     <tr style={{textAlign: "center"}}>
-                        <th>Username</th>
-                        <th>Picture</th>
-                        <th>Top Guesses</th>
-                        <th>Points</th>
+                        <th>Results</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {uniqueRows.map((row) => {
-                        // debugger;
+                    {uniqueRows.sort((a, b) => {return b.points - a.points}).map((row) => {
                         return (
                             <tr key={row.username} style={{textAlign: "center"}}>
-                                <td>{row.username}</td>
-                                <td>
+                                <td style={{display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center"}}>
+                                    <div style={{display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center"}}>
+                                        <p style={{margin: 0}}>{`${row.username}`}</p>
+                                        <p style={{margin: 0}}>Points: {row.points}</p>
+                                        <p style={{margin: 0}}>Total Points: <strong>{row.totalPoints}</strong></p>
+                                    </div>
                                     <div style={{
                                         display: "flex",
                                         alignItems: "center",
@@ -72,10 +78,10 @@ function MultiplayerResultsModal({show, fullscreen, animation, setShow, rows, se
                                             maxHeight: "100%"
                                         }} src={row.picture} />
                                     </div>
-                                </td>
-                                <td>{row.results.map((guess, index) => {
+                                    <DropdownButton title="See guesses  " drop="centered">
+                                    {row.results.map((guess, index) => {
                                     return (
-                                        <div
+                                        <Dropdown.Item
                                             style={{
                                                 display: "flex",
                                                 flexDirection: "row",
@@ -102,10 +108,10 @@ function MultiplayerResultsModal({show, fullscreen, animation, setShow, rows, se
                                             >
                                                 {`${Math.floor(guess.confidence * 10000) / 100}%`}
                                             </p>
-                                        </div>);
+                                        </Dropdown.Item>);
                                     })}
+                                    </DropdownButton>
                                 </td>
-                                <td><div><p style={{margin: "0px", padding: "0px"}}>{row.points}</p></div><div><p><strong>{row.totalPoints}</strong></p></div></td>
                             </tr>
                         );
                     })}
@@ -114,6 +120,7 @@ function MultiplayerResultsModal({show, fullscreen, animation, setShow, rows, se
             </Modal.Body>
             <Modal.Footer style={{justifyContent: "center"}}>
                 {isHost && <Button size={fullscreen ? "lg" : "normal"} disabled={gameRunning} onClick={handleProceed}>{isGameOver ? "End Game" : "Next Round"}</Button>}
+                {(!isHost && !isGameOver) && <Button size={fullscreen ? "lg" : "normal"} disabled={gameRunning} onClick={handleReady}>Ready!</Button>}
             </Modal.Footer>
         </Modal>
     );
