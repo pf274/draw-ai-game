@@ -32,7 +32,7 @@ function SingleplayerGuessesModal({show, setShow, guesses, prompt}) {
     const handleClose = () => setShow(false);
 
     return (
-        <Modal show={show} onHide={handleClose} id="SingleplayerGuessesModal" style={{touchAction: "none"}}>
+        <Modal show={show} onHide={handleClose} id="SingleplayerGuessesModal" style={{overscrollBehavior: "contain"}}>
             <Modal.Header>
                 Guesses
             </Modal.Header>

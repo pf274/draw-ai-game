@@ -4,6 +4,7 @@ html {
   display: flex;
   flex-direction: column;
   touch-action: none;
+  overscroll-behavior-y: contain;
 }
 
 body {
