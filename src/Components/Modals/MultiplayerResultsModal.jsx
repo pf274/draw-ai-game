@@ -84,7 +84,7 @@ function ResultsTable({rows}) {
   }
 
 
-function MultiplayerResultsModal({show, playersReady, ready, fullscreen, animation, setShow, rows, setRound, round, isGameOver, setGameRunning, gameRunning, isHost, setShowWinnerModal, setReady}) {
+function MultiplayerResultsModal({show, playersReady, ready, participating, animation, setShow, rows, setRound, round, isGameOver, setGameRunning, gameRunning, isHost, setShowWinnerModal, setReady}) {
     function handleProceed() {
         if (isGameOver) {
             setShowWinnerModal(true);
@@ -112,7 +112,7 @@ function MultiplayerResultsModal({show, playersReady, ready, fullscreen, animati
     return (
         <Modal
             show={show}
-            fullscreen={fullscreen}
+            fullscreen={!participating}
             animation={animation}
             onHide={handleClose}
             id="MultiplayerResultsModal"
@@ -136,11 +136,11 @@ function MultiplayerResultsModal({show, playersReady, ready, fullscreen, animati
             <Modal.Footer style={{justifyContent: "center"}}>
                 {isHost && 
                     <div>
-                        <Button size={fullscreen ? "lg" : "normal"} disabled={gameRunning} onClick={handleProceed}>{isGameOver ? "End Game" : "Next Round"}</Button>
+                        <Button size={!participating ? "lg" : "normal"} disabled={gameRunning} onClick={handleProceed}>{isGameOver ? "End Game" : "Next Round"}</Button>
                         <p>{`${playersReady} Player${playersReady !== 1 ? "s" : ""} Ready`}</p>
                     </div>
                 }
-                {(!isHost && !isGameOver) && <Button size={fullscreen ? "lg" : "normal"} disabled={gameRunning || ready} onClick={handleReady}>Ready!</Button>}
+                {(!isHost && !isGameOver) && <Button size={!participating ? "lg" : "normal"} disabled={gameRunning || ready} onClick={handleReady}>Ready!</Button>}
             </Modal.Footer>
         </Modal>
     );

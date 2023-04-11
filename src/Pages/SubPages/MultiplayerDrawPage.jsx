@@ -1,24 +1,23 @@
 import "../../Components/Styles/DrawPage.css";
 import Card from 'react-bootstrap/Card';
 import DrawingCanvas from '../../Components/DrawPage/DrawingCanvas.jsx';
-import {useState, useMemo, useEffect} from 'react';
+import {useState, useMemo} from 'react';
 import Spinner from 'react-bootstrap/Spinner';
 import WordDefinitionTooltip from '../../Components/DrawPage/WordDefinitionTooltip.jsx';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
+import {FiMaximize2, FiMinimize2} from 'react-icons/fi';
 
-const MultiplayerDrawPage = ({time, prompt, showTimer}) => {
+const MultiplayerDrawPage = ({time, prompt, showTimer, fullscreen, setFullscreen}) => {
     const [showTooltip, setShowTooltip] = useState(false);
     let [showSpinner, setShowSpinner] = useState(true);
     const canvas = useMemo(() => {
         return <DrawingCanvas setShowSpinner={setShowSpinner} />;
     }, []);
-    function getRemainingTime(end_time) {
-        const new_time = new Date().getTime();
-        const seconds = Math.floor(((end_time - new_time) % (1000 * 60)) / 1000);
-        return seconds;
-    }
     function handleShowTooltip() {
         setShowTooltip(!showTooltip);
+    }
+    function toggleFullscreen() {
+        setFullscreen(!fullscreen);
     }
     return (
         <div style={{
@@ -28,8 +27,12 @@ const MultiplayerDrawPage = ({time, prompt, showTimer}) => {
             height: "100%",
         }}>
             <Card id="DrawPage">
-                <Card.Header id="DrawPageHeader">
+            <Card.Header id="DrawPageHeader">
                     <h1 id="title">Start Drawing!</h1>
+                    {/* <div id="fullscreenIcon" style={{flex: 1, justifyContent: "left", display: "flex"}}>
+                    {{fullscreen && <FiMinimize2 size="2em" onClick={toggleFullscreen} />}
+                    {!fullscreen && <FiMaximize2 size="2em" onClick={toggleFullscreen} />}}
+                    </div> */}
                     {showTimer && <h2 id="timer" className="multiplayer countdown-number" style={{color: time <= 3 ? "red" : "black"}}>{time}</h2>}
                     <OverlayTrigger
                         placement="top"

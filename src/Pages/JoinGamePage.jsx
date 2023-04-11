@@ -38,6 +38,7 @@ function JoinGamePage() {
     const [showResults, setShowResults] = useState(false);
     const [totalRounds, setTotalRounds] = useState(4);
     const [resultsRows, setResultsRows] = useState([]);
+    const [fullscreen, setFullscreen] = useState(false);
     const [showTimer, setShowTimer] = useState(false);
     const [socket, setSocket] = useState(null);
     const [inRoom, setInRoom] = useState(false);
@@ -237,11 +238,11 @@ function JoinGamePage() {
                 justifyContent: "center",
                 alignItems: "center",
             }}>
-                <MultiplayerDrawPage fullscreen={false} animation={false} time={timeRemaining} prompt={prompt} showTimer={showTimer} />
-                <MultiplayerResultsModal fullscreen={false} animation={false} show={showResults} round={round} isGameOver={round >= totalRounds - 1} setShow={setShowResults} rows={resultsRows} isHost={false} setReady={setReady} ready={ready} />
-                <DoneDrawingModal fullscreen={false} animation={false} show={showDoneDrawingModal} setShow={setShowDoneDrawingModal} />
-                <NewPromptModal fullscreen={false} animation={false} show={showNewPrompt} setShow={setShowNewPrompt} prompt={prompt} round={round} totalRounds={totalRounds}/>
-                <WinnerModal fullscreen={false} animation={false} show={showWinnerModal} setShow={setShowWinnerModal} rows={resultsRows} />
+                <MultiplayerDrawPage animation={false} time={timeRemaining} prompt={prompt} showTimer={showTimer}  fullscreen={fullscreen} setFullscreen={setFullscreen} />
+                <MultiplayerResultsModal participating={true} animation={false} show={showResults} round={round} isGameOver={round >= totalRounds - 1} setShow={setShowResults} rows={resultsRows} isHost={false} setReady={setReady} ready={ready} />
+                <DoneDrawingModal participating={true} animation={false} show={showDoneDrawingModal} setShow={setShowDoneDrawingModal} />
+                <NewPromptModal participating={true} animation={false} show={showNewPrompt} setShow={setShowNewPrompt} prompt={prompt} round={round} totalRounds={totalRounds}/>
+                <WinnerModal participating={true} animation={false} show={showWinnerModal} setShow={setShowWinnerModal} rows={resultsRows} />
             </div>
         }
 

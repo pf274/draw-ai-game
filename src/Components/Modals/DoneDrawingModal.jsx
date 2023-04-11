@@ -1,6 +1,6 @@
 import Modal from 'react-bootstrap/Modal';
 
-function DoneDrawingModal({show, setShow, fullscreen, animation}) {
+function DoneDrawingModal({show, setShow, participating, animation}) {
     function handleClose() {
         setShow(false);
     }
@@ -8,7 +8,7 @@ function DoneDrawingModal({show, setShow, fullscreen, animation}) {
         <Modal
             show={show}
             animation={animation}
-            fullscreen={fullscreen}
+            fullscreen={!participating}
             id="DoneDrawingModal"
             backdrop="static"
             keyboard={false}

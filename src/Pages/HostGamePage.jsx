@@ -63,6 +63,7 @@ function HostGamePage() {
     const [prompt, setPrompt] = useState('...');
     const [round, setRound] = useState(0);
     const [phase, setPhase] = useState(0);
+    const [fullscreen, setFullscreen] = useState(false);
     const [volume, setVolume] = useState(1);
     const [playersReady, setPlayersReady] = useState(0);
     const [playDing1] = useSound(dings[0]);
@@ -73,6 +74,7 @@ function HostGamePage() {
     const [playSoundLoop, {sound: theLoopSound}] = useSound(Loop, {onend: () => {setPlayLoop(true);}});
     const [playSoundIntro, {sound: theIntroSound}] = useSound(Intro, {onend: () => {setPlayLoop(true);}});
     const currentTrack = useRef();
+
     useEffect(() => {
         if (playLoop) {
             setPlayLoop(false);
@@ -322,12 +324,12 @@ function HostGamePage() {
                 justifyContent: "center",
                 alignItems: "center",
             }}>
-                {participating && <MultiplayerDrawPage time={timeRemaining} prompt={prompt} showTimer={showTimer} />}
+                {participating && <MultiplayerDrawPage time={timeRemaining} prompt={prompt} showTimer={showTimer} fullscreen={fullscreen} setFullscreen={setFullscreen} />}
                 {(!participating && showTimer) && <div><h1>{prompt}</h1><h1 className="countdown-number" style={{fontSize: "600%", color: timeRemaining <= 3 ? "red" : "black"}}>{timeRemaining}</h1></div>}
-                <MultiplayerResultsModal playersReady={playersReady} fullscreen={!participating} animation={participating} show={showResults} isGameOver={round >= totalRounds - 1} setShow={setShowResults} round={round} setRound={setRound} rows={resultsRows} setGameRunning={setGameRunning} gameRunning={gameRunning} isHost={true} setShowWinnerModal={setShowWinnerModal}/>
-                <DoneDrawingModal fullscreen={!participating} animation={participating} show={showDoneDrawingModal} setShow={setShowDoneDrawingModal} />
-                <NewPromptModal fullscreen={!participating} animation={participating} show={showNewPrompt} setShow={setShowNewPrompt} prompt={prompt} round={round} totalRounds={totalRounds} />
-                <WinnerModal fullscreen={!participating} animation={participating} show={showWinnerModal} setShow={setShowWinnerModal} rows={resultsRows} />
+                <MultiplayerResultsModal playersReady={playersReady} participating={participating} animation={participating} show={showResults} isGameOver={round >= totalRounds - 1} setShow={setShowResults} round={round} setRound={setRound} rows={resultsRows} setGameRunning={setGameRunning} gameRunning={gameRunning} isHost={true} setShowWinnerModal={setShowWinnerModal}/>
+                <DoneDrawingModal participating={participating} animation={participating} show={showDoneDrawingModal} setShow={setShowDoneDrawingModal} />
+                <NewPromptModal participating={participating} animation={participating} show={showNewPrompt} setShow={setShowNewPrompt} prompt={prompt} round={round} totalRounds={totalRounds} />
+                <WinnerModal participating={participating} animation={participating} show={showWinnerModal} setShow={setShowWinnerModal} rows={resultsRows} />
             </div>
             }
         {!participating && <div

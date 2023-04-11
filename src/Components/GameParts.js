@@ -172,6 +172,8 @@ export const phases = [
   }
 ];
 
+
+
 /*
 TODO: IMPLEMENT THIS
 import React, { useRef } from 'react';
@@ -179,15 +181,15 @@ import React, { useRef } from 'react';
 function FullscreenButton() {
   const elementRef = useRef(null);
 
-  function handleFullscreenButtonClick() {
-    if (elementRef.current) {
-      if (document.fullscreenElement) {
-        document.exitFullscreen();
-      } else {
-        elementRef.current.requestFullscreen();
-      }
+function handleFullscreenButtonClick() {
+  if (elementRef.current) {
+    if (document.fullscreenElement) {
+      document.exitFullscreen();
+    } else {
+      elementRef.current.requestFullscreen();
     }
   }
+}
 
   return (
     <button onClick={handleFullscreenButtonClick}>
