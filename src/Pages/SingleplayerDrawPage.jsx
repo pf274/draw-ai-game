@@ -3,12 +3,12 @@ import Card from 'react-bootstrap/Card';
 import Toolbar from '../Components/DrawPage/Toolbar.jsx';
 import DrawingCanvas from '../Components/DrawPage/DrawingCanvas.jsx';
 import SingleplayerGuessesModal from '../Components/Modals/SingleplayerGuessesModal.jsx';
-import {useState, useMemo} from 'react';
+import { useState, useMemo } from 'react';
 import Spinner from 'react-bootstrap/Spinner';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import WordDefinitionTooltip from "../Components/DrawPage/WordDefinitionTooltip";
 
-const SingleplayerDrawPage = ({providedPrompt}) => {
+const SingleplayerDrawPage = ({ providedPrompt }) => {
     const [showGuessesModal, setShowGuessesModal] = useState(false);
     const [showTooltip, setShowTooltip] = useState(false);
     const [guesses, setGuesses] = useState([]);
@@ -44,8 +44,8 @@ const SingleplayerDrawPage = ({providedPrompt}) => {
                     {canvas}
                 </Card.Body>
             </Card>
-            <SingleplayerGuessesModal show={showGuessesModal} setShow={setShowGuessesModal} guesses={guesses} prompt={prompt}/>
-            {showSpinner && <Spinner id="CanvasSpinner" role="status" aria-hidden="true" animation="border"/>}
+            <SingleplayerGuessesModal show={showGuessesModal} setShow={setShowGuessesModal} guesses={guesses} prompt={prompt} />
+            {showSpinner && <Spinner id="CanvasSpinner" role="status" aria-hidden="true" animation="border" />}
         </div>
 
     );

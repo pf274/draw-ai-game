@@ -1,6 +1,6 @@
 import Modal from 'react-bootstrap/Modal';
 
-function DoneDrawingModal({show, setShow, participating, animation}) {
+function DoneDrawingModal({ show, setShow, participating, animation }) {
     function handleClose() {
         setShow(false);
     }

@@ -4,16 +4,15 @@ import { loadFull } from 'tsparticles';
 
 function Particle() {
     const particlesInit = async (main) => {
-        console.log(main);
+        // console.log(main);
         await loadFull(main);
     };
 
     const particlesLoaded = (container) => {
-        console.log(container);
+        // console.log(container);
     }
     return (
-        <Particles
-            id="tsparticles"
+        <Particles id="tsparticles"
             init={particlesInit}
             loaded={particlesLoaded}
 
@@ -137,10 +136,7 @@ function Particle() {
                     "repeat": "no-repeat",
                     "size": "cover"
                 }
-            }}
-        >
-
-        </Particles>
+            }} />
     )
 }
 

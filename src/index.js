@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import {Route, Routes, Navigate, BrowserRouter} from 'react-router-dom';
+import { Route, Routes, Navigate, BrowserRouter } from 'react-router-dom';
 import SingleplayerDrawPage from './Pages/SingleplayerDrawPage.jsx';
 import HomePage from './Pages/HomePage.jsx';
 import HostGamePage from './Pages/HostGamePage.jsx';

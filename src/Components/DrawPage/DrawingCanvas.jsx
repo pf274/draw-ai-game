@@ -1,14 +1,13 @@
 import '../Styles/DrawingCanvas.css';
-import {useEffect, useRef, useCallback} from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 
-const DrawingCanvas = ({setShowSpinner}) => {
-    let drawing = useRef(false);
+const DrawingCanvas = ({ setShowSpinner }) => {
+    const drawing = useRef(false);
     let prevCoords = useRef([0, 0]);
     let resizeTimeout = useRef();
-    let tap = useRef(false);
-    let context = useRef();
-    let drawTimeout = useRef();
-    
+    const tap = useRef(false);
+    const context = useRef();
+
     const cleanup = useCallback(() => {
         const drawingCanvas = document.getElementById("drawingCanvas");
         window.removeEventListener('resize', startResize);
@@ -23,7 +22,6 @@ const DrawingCanvas = ({setShowSpinner}) => {
         }
     }, []);
     const initialize = useCallback(() => {
-        const drawingCanvas = document.getElementById("drawingCanvas");
         console.log("intialized");
         window.addEventListener('resize', startResize);
         window.addEventListener('mousedown', startDraw, { passive: true });
@@ -43,16 +41,16 @@ const DrawingCanvas = ({setShowSpinner}) => {
         }
     }, [cleanup, initialize]);
     function finishResize() {
-        let canvas = document.getElementById("drawingCanvas");
-        let canvasContainer = document.getElementById("canvasContainer");
+        const canvas = document.getElementById("drawingCanvas");
+        const canvasContainer = document.getElementById("canvasContainer");
         canvas.width = canvasContainer.offsetWidth - 5;
         canvas.height = canvasContainer.offsetHeight - 10;
         canvas.style.border = "1px solid gray";
         setShowSpinner(false);
     }
     function startResize() {
-        let canvas = document.getElementById("drawingCanvas");
-        let canvasContainer = document.getElementById("canvasContainer");
+        const canvas = document.getElementById("drawingCanvas");
+        const canvasContainer = document.getElementById("canvasContainer");
         canvas.width = canvasContainer.offsetWidth;
         canvas.height = 0;
         canvas.style.border = "0px";
@@ -72,27 +70,23 @@ const DrawingCanvas = ({setShowSpinner}) => {
     }
     function continueDraw(event) {
         const drawingCanvas = document.getElementById("drawingCanvas");
-        if (drawingCanvas) {
-            if (drawing.current) {
-                tap.current = false;
-                const thicknessSlider = document.getElementById("thicknessSlider");
-                let newCoords = calculateMouseCoords(event, drawingCanvas);
-                context.current = context?.current || drawingCanvas.getContext("2d", { willReadFrequently: true });
-                let thickness = 16 * (thicknessSlider?.value || 1) * Math.min((window.innerWidth / 650), (window.innerHeight / 850));
-                if (event?.targetTouches) {
-                    if (event.targetTouches.length > 0) {
-                        thickness = 0.5 * thickness + (1.5 * thickness * event?.targetTouches[0].force);
-                    }
-                }
-                context.current.lineWidth = thickness;
-                context.current.lineCap = "round";
-                context.current.strokeStyle = drawingCanvas.getAttribute("penColor");
-                context.current.moveTo(...prevCoords);
-                context.current.lineTo(...newCoords);
-                context.current.stroke();
-                context.current.beginPath();
-                prevCoords = [...newCoords];
+        if (drawingCanvas && drawing.current) {
+            tap.current = false;
+            const thicknessSlider = document.getElementById("thicknessSlider");
+            const newCoords = calculateMouseCoords(event, drawingCanvas);
+            context.current = context?.current || drawingCanvas.getContext("2d", { willReadFrequently: true });
+            let thickness = 16 * (thicknessSlider?.value || 1) * Math.min((window.innerWidth / 650), (window.innerHeight / 850));
+            if (event?.targetTouches && event.targetTouches.length > 0) {
+                thickness = 0.5 * thickness + (1.5 * thickness * event?.targetTouches[0].force);
             }
+            context.current.lineWidth = thickness;
+            context.current.lineCap = "round";
+            context.current.strokeStyle = drawingCanvas.getAttribute("penColor");
+            context.current.moveTo(...prevCoords);
+            context.current.lineTo(...newCoords);
+            context.current.stroke();
+            context.current.beginPath();
+            prevCoords = [...newCoords];
         }
     }
     function endDraw(event) {
@@ -101,13 +95,11 @@ const DrawingCanvas = ({setShowSpinner}) => {
             drawing.current = false;
             if (tap.current) {
                 const thicknessSlider = document.getElementById("thicknessSlider");
-                let newCoords = calculateMouseCoords(event, drawingCanvas);
+                const newCoords = calculateMouseCoords(event, drawingCanvas);
                 tap.current = false;
                 let thickness = 16 * (thicknessSlider?.value || 1) * Math.min((window.innerWidth / 650), (window.innerHeight / 850));
-                if (event?.targetTouches) {
-                    if (event.targetTouches.length > 0) {
-                        thickness = 0.5 * thickness + 1.5 * thickness * event?.targetTouches[0].force;
-                    }        
+                if (event?.targetTouches && event.targetTouches.length > 0) {
+                    thickness = 0.5 * thickness + 1.5 * thickness * event?.targetTouches[0].force;
                 }
                 context.current = context?.current || drawingCanvas.getContext("2d", { willReadFrequently: true });
                 context.current.lineWidth = thickness;
@@ -124,7 +116,7 @@ const DrawingCanvas = ({setShowSpinner}) => {
         try {
             const clientX = event?.clientX || event?.touches[0]?.clientX || 0;
             const clientY = event?.clientY || event?.touches[0]?.clientY || 0;
-            let rect = canvas?.getBoundingClientRect();
+            const rect = canvas?.getBoundingClientRect();
             return [clientX - rect?.left, clientY - rect?.top];
         } catch (err) {
             console.log(err);

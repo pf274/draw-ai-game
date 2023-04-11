@@ -8,7 +8,7 @@ import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import Form from 'react-bootstrap/Form';
 import io from 'socket.io-client';
-import {useState, useEffect, useRef} from 'react';
+import { useState, useEffect, useRef } from 'react';
 import * as ml5 from "ml5";
 import {
     AIGuess,
@@ -47,8 +47,8 @@ function JoinGamePage() {
     const [prompt, setPrompt] = useState("...");
     const [round, setRound] = useState(-1);
     const [ready, setReady] = useState(false);
+    const classifier = useRef();
 
-    let classifier = useRef();
     function addResultsRow(data) {
         if (resultsRows.map(row => row.username).includes(data.username) === false) {
             setResultsRows(resultsRows => [...resultsRows, data]);
@@ -76,7 +76,7 @@ function JoinGamePage() {
                 if (data.message === "joined room") {
                     socketWhoIsHere(socket, localStorage.getItem("gameID"));
                     setInRoom(true);
-                    myParticipants = addParticipantRow(myParticipants, {username: localStorage.getItem("username")});
+                    myParticipants = addParticipantRow(myParticipants, { username: localStorage.getItem("username") });
                     setParticipantRows(myParticipants);
                 } else if (data.message === "failed to join room") {
                     alert("The room you entered does not exist.");
@@ -107,23 +107,23 @@ function JoinGamePage() {
                             setReady(false);
                             // console.log("get new prompt!");
                             clearCanvas();
-                        break;
+                            break;
                         case "draw":
                             setShowResults(false);
                             setShowNewPrompt(false);
                             setShowTimer(true);
                             setShowDoneDrawingModal(false);
                             // console.log("time to draw!");
-                        break;
+                            break;
                         case "done drawing":
                             setShowResults(false);
                             setShowNewPrompt(false);
                             setShowTimer(false);
                             setShowDoneDrawingModal(true);
                             AIGuess(classifier).then(stuff => {
-                                let points = calculatePoints(stuff.results, myPrompt);
+                                const points = calculatePoints(stuff.results, myPrompt);
                                 myTotalPoints += points;
-                                socketSendResults(socket, {...stuff, points: points, totalPoints: myTotalPoints}, localStorage.getItem("gameID"), false);
+                                socketSendResults(socket, { ...stuff, points, totalPoints: myTotalPoints }, localStorage.getItem("gameID"), false);
                                 addResultsRow({
                                     message: "my results",
                                     room: localStorage.getItem("gameID"),
@@ -131,26 +131,26 @@ function JoinGamePage() {
                                     isHost: false,
                                     results: stuff.results,
                                     picture: stuff.picture,
-                                    points: points,
+                                    points,
                                     totalPoints: myTotalPoints
                                 });
                             });
                             // console.log("done drawing!");
-                        break;
+                            break;
                         case "review results":
                             setShowDoneDrawingModal(false);
                             setShowResults(true);
                             setShowTimer(false);
                             setShowNewPrompt(false);
                             // console.log("review results!");
-                        break;
+                            break;
                         case "Game Over!":
                             setShowWinnerModal(true);
                             setShowResults(false);
-                        break;
+                            break;
                         default:
                             console.log("Unrecognized phase!");
-                        break;
+                            break;
                     }
                 } else if (data.message === "my results") {
                     addResultsRow(data);
@@ -169,8 +169,8 @@ function JoinGamePage() {
     }, [socket]);
 
     useEffect(() => {
-        let socketAddress = process.env.NODE_ENV === 'development' ? "http://localhost:4000" : "https://startup.peterfullmer.net";
-        let socket = io.connect(socketAddress);
+        const socketAddress = process.env.NODE_ENV === 'development' ? "http://localhost:4000" : "https://startup.peterfullmer.net";
+        const socket = io.connect(socketAddress);
         console.log("socket connected");
         setSocket(socket); // the url to the backend server.
         setTimeout(() => {
@@ -192,7 +192,7 @@ function JoinGamePage() {
             socketIAmReady(socket, gameID);
         }
     }, [ready])
-    
+
     return (<div style={{
         display: "flex",
         flexDirection: "column",
@@ -202,17 +202,17 @@ function JoinGamePage() {
         alignItems: "center",
     }}>
         {(!inRoom && !inGame) &&
-            <Card style={{opacity: "90%"}}>
+            <Card style={{ opacity: "90%" }}>
                 <Card.Header>
                     <h2>Join Game</h2>
                 </Card.Header>
                 <Card.Body>
                     <Form>
                         <Form.Group>
-                            <Form.Control placeholder="Enter room code" value={gameID} onChange={handleGameCodeInputChange}/>
+                            <Form.Control placeholder="Enter room code" value={gameID} onChange={handleGameCodeInputChange} />
                         </Form.Group>
                     </Form>
-                    
+
                 </Card.Body>
                 <Card.Footer>
                     <Button disabled={gameID.length !== 4} onClick={handleJoinRoom}>Join Game</Button>
@@ -220,7 +220,7 @@ function JoinGamePage() {
             </Card>
         }
         {(inRoom && !inGame) &&
-            <Card id="JoinGameCard" style={{opacity: "90%"}}>
+            <Card id="JoinGameCard" style={{ opacity: "90%" }}>
                 <Card.Header>
                     <h3>{gameID}</h3>
                 </Card.Header>
@@ -238,10 +238,10 @@ function JoinGamePage() {
                 justifyContent: "center",
                 alignItems: "center",
             }}>
-                <MultiplayerDrawPage animation={false} time={timeRemaining} prompt={prompt} showTimer={showTimer}  fullscreen={fullscreen} setFullscreen={setFullscreen} />
+                <MultiplayerDrawPage animation={false} time={timeRemaining} prompt={prompt} showTimer={showTimer} fullscreen={fullscreen} setFullscreen={setFullscreen} />
                 <MultiplayerResultsModal participating={true} animation={false} show={showResults} round={round} isGameOver={round >= totalRounds - 1} setShow={setShowResults} rows={resultsRows} isHost={false} setReady={setReady} ready={ready} />
                 <DoneDrawingModal participating={true} animation={false} show={showDoneDrawingModal} setShow={setShowDoneDrawingModal} />
-                <NewPromptModal participating={true} animation={false} show={showNewPrompt} setShow={setShowNewPrompt} prompt={prompt} round={round} totalRounds={totalRounds}/>
+                <NewPromptModal participating={true} animation={false} show={showNewPrompt} setShow={setShowNewPrompt} prompt={prompt} round={round} totalRounds={totalRounds} />
                 <WinnerModal participating={true} animation={false} show={showWinnerModal} setShow={setShowWinnerModal} rows={resultsRows} />
             </div>
         }

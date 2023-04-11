@@ -1,5 +1,5 @@
 
-const {MongoClient} = require("mongodb");
+const { MongoClient } = require("mongodb");
 const bcrypt = require('bcrypt');
 const uuid = require('uuid');
 
@@ -17,31 +17,31 @@ userCollection = client.db('startup').collection('users');
 // ----------- Users -----------
 
 async function getUser(username) {
-    let cursor = userCollection.find({username: username});
+    const cursor = userCollection.find({ username });
     return cursor.toArray().then(results => results.length > 0 ? results[0] : false);
 }
 async function getUsers() {
-    let cursor = userCollection.find();
+    const cursor = userCollection.find();
     return cursor.toArray();
 }
 async function newUser(username, password) {
     const passwordHash = await bcrypt.hash(password, 10);
-    let user = {username: username, password: passwordHash, token: uuid.v4()};
-    let response = await userCollection.insertOne(user);
+    const user = { username, password: passwordHash, token: uuid.v4() };
+    await userCollection.insertOne(user);
     return user;
 }
 async function getUserByToken(token) {
-    return userCollection.findOne({ token: token });
-  }
+    return userCollection.findOne({ token });
+}
 
 // ----------- Games -----------
 
 async function getGames() {
-    let cursor = gameCollection.find();
+    const cursor = gameCollection.find();
     return cursor.toArray();
 }
 async function getGame(game_id) {
-    let cursor = gameCollection.find({id: game_id});
+    const cursor = gameCollection.find({ id: game_id });
     return cursor.toArray().then(results => results.length > 0 ? results[0] : false);
 }
 async function clearAllGames() {
@@ -55,7 +55,7 @@ async function clearAllGames() {
 }
 async function startGame(game_id) {
     try {
-        userCollection.updateOne({id: game_id}, {$set: {status: "started"}});
+        userCollection.updateOne({ id: game_id }, { $set: { status: "started" } });
         return true;
     } catch (err) {
         console.log(err);
@@ -63,7 +63,7 @@ async function startGame(game_id) {
     }
 }
 async function hostGame(game_info) {
-    let game_exists = await getGame(game_info.id);
+    const game_exists = await getGame(game_info.id);
     if (!game_exists) {
         await gameCollection.insertOne(game_info);
         return true;
@@ -72,21 +72,21 @@ async function hostGame(game_info) {
 }
 
 async function joinGame(id, connection) {
-    await gameCollection.updateOne({id: id}, {$push: {participants: connection}});
+    await gameCollection.updateOne({ id }, { $push: { participants: connection } });
 }
 async function leaveGame(id, connection) {
-    await gameCollection.updateOne({id: id}, {$pull: {participants: connection}});
+    await gameCollection.updateOne({ id }, { $pull: { participants: connection } });
 }
 async function endGame(game_id) {
-    let game_exists = await getGame(game_id);
+    const game_exists = await getGame(game_id);
     if (game_exists) {
-        await gameCollection.deleteOne({id: game_id});
+        await gameCollection.deleteOne({ id: game_id });
         return true;
     }
     return false;
 }
 async function updateGame(game_data) {
-    await gameCollection.updateOne({id: game_data.id}, game_data);
+    await gameCollection.updateOne({ id: game_data.id }, game_data);
 }
 
 async function keepConnectionAlive(game_id, connection) {

@@ -3,8 +3,8 @@ export function socketStartGame(socket, gameID, isHost, rounds) {
         message: "starting game",
         room: gameID,
         username: localStorage.getItem("username"),
-        isHost: isHost,
-        rounds: rounds
+        isHost,
+        rounds
     });
 }
 export function socketSendResults(socket, stuff, gameID, isHost) {
@@ -12,7 +12,7 @@ export function socketSendResults(socket, stuff, gameID, isHost) {
         message: "my results",
         room: gameID,
         username: localStorage.getItem("username"),
-        isHost: isHost,
+        isHost,
         results: stuff.results,
         picture: stuff.picture,
         points: stuff.points,
@@ -24,11 +24,11 @@ export function socketNewPhase(socket, phase_name, time, prompt_index, gameID, i
         message: "new phase",
         room: gameID,
         username: localStorage.getItem("username"),
-        isHost: isHost,
+        isHost,
         phaseInfo: {
             phase: phase_name,
-            time: time,
-            prompt_index: prompt_index
+            time,
+            prompt_index
         }
     });
 }
@@ -37,20 +37,20 @@ export function socketIAmHere(socket, gameCode, isHost) {
         message: "I am here",
         room: gameCode,
         username: localStorage.getItem("username"),
-        isHost: isHost,
+        isHost,
     });
 }
 export function socketJoinRoom(socket, gameID, isHost) {
     socket.emit("join_room", {
         room: gameID,
-        isHost: isHost
+        isHost
     });
 }
 export function socketIAmLeaving(socket, isHost, gameID) {
     socket.emit("send_message", {
         message: "I am leaving",
         username: localStorage.getItem("username"),
-        isHost: isHost,
+        isHost,
         room: gameID,
     });
 }

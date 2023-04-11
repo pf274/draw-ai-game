@@ -9,8 +9,8 @@ import DoneDrawingModal from '../Components/Modals/DoneDrawingModal.jsx';
 import MultiplayerResultsModal from '../Components/Modals/MultiplayerResultsModal.jsx';
 import NewPromptModal from '../Components/Modals/NewPromptModal';
 import * as ml5 from "ml5";
-import {useState, useEffect, useRef} from 'react';
-import {useInterval} from "react-use";
+import { useState, useEffect, useRef } from 'react';
+import { useInterval } from "react-use";
 import {
     AIGuess,
     addParticipantRow,
@@ -71,9 +71,10 @@ function HostGamePage() {
     const [playDing3] = useSound(dings[2]);
     const soundDings = [playDing1, playDing2, playDing3];
     const [playLoop, setPlayLoop] = useState(false);
-    const [playSoundLoop, {sound: theLoopSound}] = useSound(Loop, {onend: () => {setPlayLoop(true);}});
-    const [playSoundIntro, {sound: theIntroSound}] = useSound(Intro, {onend: () => {setPlayLoop(true);}});
+    const [playSoundLoop, { sound: theLoopSound }] = useSound(Loop, { onend: () => { setPlayLoop(true); } });
+    const [playSoundIntro, { sound: theIntroSound }] = useSound(Intro, { onend: () => { setPlayLoop(true); } });
     const currentTrack = useRef();
+    const classifier = useRef();
 
     useEffect(() => {
         if (playLoop) {
@@ -84,7 +85,6 @@ function HostGamePage() {
             }
         }
     }, [playLoop]);
-    let classifier = useRef();
     function handleTotalRoundNumberChange(event) {
         setTotalRounds(event.target.value.split('').filter((character) => /^\d+$/.test(character)).join(''));
     }
@@ -108,27 +108,25 @@ function HostGamePage() {
     function handleToggleVolume() {
         setVolume(!volume);
         if (currentTrack?.current) {
-            volume ? currentTrack.current.pause() : currentTrack.current.play()
-        } else {
-            if (!volume) {
-                playSoundIntro();
-                currentTrack.current = theIntroSound;
+            if (volume) {
+                currentTrack.current.pause();
+            } else {
+                currentTrack.current.play();
             }
+        } else if (!volume) {
+            playSoundIntro();
+            currentTrack.current = theIntroSound;
         }
     }
     useInterval(() => {
         if (timeRemaining <= 0) {
             if (phase >= phases.length) {
-                if (round >= totalRounds - 1) {
-                    // Game over
-                    // console.log("Game over!");
-                    setGameRunning(false);
-                } else {
+                if (!(round >= totalRounds - 1)) {
                     setPhase(0);
                     setPlayersReady(0);
                     setTimeRemaining(0);
-                    setGameRunning(false);
                 }
+                setGameRunning(false);
             } else {
                 // do the phase
                 runPhase(prompt, totalPoints);
@@ -145,16 +143,16 @@ function HostGamePage() {
             element.animate([
                 { transform: 'scale(1.5)' },
                 { transform: 'scale(1)' },
-              ], {
+            ], {
                 duration: 250,
-              })
+            })
             void element.offsetWidth; // force reflow to restart the animation
             element.classList.add('animate');
         }
     }, gameRunning ? 1000 : null);
 
     async function runPhase(currentPrompt) {
-        let phaseName = phases[phase].name;
+        const phaseName = phases[phase].name;
         let thePrompt = prompt;
         let thePromptIndex = promptIndex;
         // console.log(`Starting phase '${phaseName}'`);
@@ -175,13 +173,13 @@ function HostGamePage() {
                 setShowTimer(false);
                 setResultsRows([]);
                 clearCanvas();
-            break;
+                break;
             case "draw":
                 setShowResults(false);
                 setShowNewPrompt(false);
                 setShowTimer(true);
                 setShowDoneDrawingModal(false);
-            break;
+                break;
             case "done drawing":
                 setShowDoneDrawingModal(true);
                 setShowNewPrompt(false);
@@ -189,8 +187,8 @@ function HostGamePage() {
                 setShowResults(false);
                 if (participating) {
                     AIGuess(classifier).then(stuff => {
-                        let roundPoints = calculatePoints(stuff.results, currentPrompt);
-                        socketSendResults(socket, {...stuff, points: roundPoints, totalPoints: totalPoints + roundPoints}, gameID, true);
+                        const roundPoints = calculatePoints(stuff.results, currentPrompt);
+                        socketSendResults(socket, { ...stuff, points: roundPoints, totalPoints: totalPoints + roundPoints }, gameID, true);
                         addResultsRow({
                             message: "my results",
                             room: gameID,
@@ -204,25 +202,25 @@ function HostGamePage() {
                         setTotalPoints(totalPoints + roundPoints);
                     });
                 }
-            break;
+                break;
             case "review results":
                 setShowResults(true);
                 setShowNewPrompt(false);
                 setShowTimer(false);
                 setShowDoneDrawingModal(false);
-            break;
+                break;
         }
         socketNewPhase(socket, phases[phase].name, phases[phase].time, thePromptIndex, gameID, true); // announce the phase to others!
     };
 
     useEffect(() => {
-        let newCode = generateCode(4);
+        const newCode = generateCode(4);
         setGameID(newCode);
         numberOfCategories().then(result => setCategoriesLength(result));
         let myParticipants = [];
         // --------- Socket ---------
-        let socketAddress = process.env.NODE_ENV === 'development' ? "http://localhost:4000" : "https://startup.peterfullmer.net";
-        let socket = io.connect(socketAddress); // the url to the backend server.
+        const socketAddress = process.env.NODE_ENV === 'development' ? "http://localhost:4000" : "https://startup.peterfullmer.net";
+        const socket = io.connect(socketAddress); // the url to the backend server.
         setSocket(socket);
         console.log("socket connected");
         socket.on("connect", () => {
@@ -230,7 +228,7 @@ function HostGamePage() {
         });
         socket.on("receive_message", (data) => {
             if (data.message === "joined room") {
-                myParticipants = addParticipantRow(myParticipants, {username: localStorage.getItem("username")});
+                myParticipants = addParticipantRow(myParticipants, { username: localStorage.getItem("username") });
                 setParticipantRows(myParticipants);
             } else if (data.message === "who is here?") {
                 myParticipants = addParticipantRow(myParticipants, data);
@@ -286,63 +284,63 @@ function HostGamePage() {
             WebkitUserSelect: "none",
             MozUserSelect: "none",
         }}>
-        {!inGame &&
-            <Card id="HostGameCard" style={{opacity: "90%"}}>
-                <Card.Header>
-                    <h3>{gameID}</h3>
-                    
-                </Card.Header>
-                <Card.Body>
-                    <Participants rows={participantRows} />
-                </Card.Body>
-                <Card.Footer>
-                    <Form style={{
-                        display: "flex",
-                        flexDirection: "row",
-                        flex: 1,
-                        alignItems: "center",
-                        flexWrap: 'wrap',
-                        justifyContent: "center"
-                    }}>
-                        <div className="mb-3">
-                            <Form.Check type="switch" checked={participating} label="I am Participating" onChange={toggleParticipate} />
-                        </div>
-                        <div>
-                            <label style={{marginRight: "1em"}}>{`Rounds:`}</label>
-                            <Form.Control style={{display: "inline-flex", width: 40}} id="roundsField" placeholder="Enter number of rounds" value={totalRounds} onChange={handleTotalRoundNumberChange}/>
-                        </div>
+            {!inGame &&
+                <Card id="HostGameCard" style={{ opacity: "90%" }}>
+                    <Card.Header>
+                        <h3>{gameID}</h3>
+
+                    </Card.Header>
+                    <Card.Body>
+                        <Participants rows={participantRows} />
+                    </Card.Body>
+                    <Card.Footer>
+                        <Form style={{
+                            display: "flex",
+                            flexDirection: "row",
+                            flex: 1,
+                            alignItems: "center",
+                            flexWrap: 'wrap',
+                            justifyContent: "center"
+                        }}>
+                            <div className="mb-3">
+                                <Form.Check type="switch" checked={participating} label="I am Participating" onChange={toggleParticipate} />
+                            </div>
+                            <div>
+                                <label style={{ marginRight: "1em" }}>{`Rounds:`}</label>
+                                <Form.Control style={{ display: "inline-flex", width: 40 }} id="roundsField" placeholder="Enter number of rounds" value={totalRounds} onChange={handleTotalRoundNumberChange} />
+                            </div>
                         </Form>
-                    <Button disabled={participantRows.length - (!participating) < 2} style={{display: "inline"}} onClick={startGame}>Start Game</Button>
-                </Card.Footer>
-            </Card>}
-        {(inGame) &&
-            <div style={{
-                display: "flex",
-                flexDirection: "column",
-                width: "100%",
-                height: "100%",
-                justifyContent: "center",
-                alignItems: "center",
-            }}>
-                {participating && <MultiplayerDrawPage time={timeRemaining} prompt={prompt} showTimer={showTimer} fullscreen={fullscreen} setFullscreen={setFullscreen} />}
-                {(!participating && showTimer) && <div><h1>{prompt}</h1><h1 className="countdown-number" style={{fontSize: "600%", color: timeRemaining <= 3 ? "red" : "black"}}>{timeRemaining}</h1></div>}
-                <MultiplayerResultsModal playersReady={playersReady} participating={participating} animation={participating} show={showResults} isGameOver={round >= totalRounds - 1} setShow={setShowResults} round={round} setRound={setRound} rows={resultsRows} setGameRunning={setGameRunning} gameRunning={gameRunning} isHost={true} setShowWinnerModal={setShowWinnerModal}/>
-                <DoneDrawingModal participating={participating} animation={participating} show={showDoneDrawingModal} setShow={setShowDoneDrawingModal} />
-                <NewPromptModal participating={participating} animation={participating} show={showNewPrompt} setShow={setShowNewPrompt} prompt={prompt} round={round} totalRounds={totalRounds} />
-                <WinnerModal participating={participating} animation={participating} show={showWinnerModal} setShow={setShowWinnerModal} rows={resultsRows} />
-            </div>
+                        <Button disabled={participantRows.length - (!participating) < 2} style={{ display: "inline" }} onClick={startGame}>Start Game</Button>
+                    </Card.Footer>
+                </Card>}
+            {(inGame) &&
+                <div style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    width: "100%",
+                    height: "100%",
+                    justifyContent: "center",
+                    alignItems: "center",
+                }}>
+                    {participating && <MultiplayerDrawPage time={timeRemaining} prompt={prompt} showTimer={showTimer} fullscreen={fullscreen} setFullscreen={setFullscreen} />}
+                    {(!participating && showTimer) && <div><h1>{prompt}</h1><h1 className="countdown-number" style={{ fontSize: "600%", color: timeRemaining <= 3 ? "red" : "black" }}>{timeRemaining}</h1></div>}
+                    <MultiplayerResultsModal playersReady={playersReady} participating={participating} animation={participating} show={showResults} isGameOver={round >= totalRounds - 1} setShow={setShowResults} round={round} setRound={setRound} rows={resultsRows} setGameRunning={setGameRunning} gameRunning={gameRunning} isHost={true} setShowWinnerModal={setShowWinnerModal} />
+                    <DoneDrawingModal participating={participating} animation={participating} show={showDoneDrawingModal} setShow={setShowDoneDrawingModal} />
+                    <NewPromptModal participating={participating} animation={participating} show={showNewPrompt} setShow={setShowNewPrompt} prompt={prompt} round={round} totalRounds={totalRounds} />
+                    <WinnerModal participating={participating} animation={participating} show={showWinnerModal} setShow={setShowWinnerModal} rows={resultsRows} />
+                </div>
             }
-        {!participating && <div
-            style={{
-                position: "absolute",
-                right: "2em",
-                bottom: "2em"
-            }}
-            onClick={handleToggleVolume}
-        >
-            {volume && <HiVolumeUp size={50} color={"black"}/>}
-            {!volume && <HiVolumeOff size={50} color={"black"}/>}
-        </div>}
+            {!participating && <div
+                style={{
+                    position: "absolute",
+                    right: "2em",
+                    bottom: "2em"
+                }}
+                onClick={handleToggleVolume}
+            >
+                {volume && <HiVolumeUp size={50} color={"black"} />}
+                {!volume && <HiVolumeOff size={50} color={"black"} />}
+            </div>}
         </div>);
 }
 

@@ -1,15 +1,15 @@
-const {Server} = require("socket.io");
+const { Server } = require("socket.io");
 
 
 function getAllRoomMembers(io, room, _nsp) {
     try {
         const roomMembers = [];
         const nsp = (typeof _nsp !== 'string') ? '/' : _nsp;
-    
-        for(const member in [...(io._nsps.get(nsp).adapter.rooms.get(room) || [])]) {
+
+        for (const member in [...(io._nsps.get(nsp).adapter.rooms.get(room) || [])]) {
             roomMembers.push(member);
         }
-    
+
         return roomMembers;
     } catch (err) {
         console.log(err);
@@ -40,16 +40,16 @@ function socketio(httpService) {
                 socket.leave(data?.room);
             }
         });
-        socket.on("join_room", ({room, isHost}) => {
+        socket.on("join_room", ({ room, isHost }) => {
             if (getAllRoomMembers(io, room).length == 0 && isHost == false) {
-                socket.emit("receive_message", {message: "failed to join room"});
-            } else{
-                if (getAllRoomMembers(io, room).length == 0) {
-                    console.log(`Started room ${room}`);
-                }
-                socket.join(room);
-                socket.emit("receive_message", {message: "joined room"});
+                socket.emit("receive_message", { message: "failed to join room" });
+                return;
             }
+            if (getAllRoomMembers(io, room).length == 0) {
+                console.log(`Started room ${room}`);
+            }
+            socket.join(room);
+            socket.emit("receive_message", { message: "joined room" });
         });
     });
 }

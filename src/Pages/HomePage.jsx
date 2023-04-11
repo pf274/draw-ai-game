@@ -2,7 +2,7 @@ import '../Components/Styles/HomePage.css';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import { useNavigate } from 'react-router-dom';
-import {useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 import LoginModal from '../Components/Modals/LoginModal.jsx';
 import SignupModal from '../Components/Modals/SignupModal.jsx';
 import Spinner from 'react-bootstrap/Spinner';
@@ -14,8 +14,8 @@ const HomePage = () => {
     const [logoutLoading, setLogoutLoading] = useState(false);
     useEffect(() => {
         if (localStorage.getItem("username")) {
-            let response = fetch(`/api/user/${localStorage.getItem("username")}`, {
-                headers: {'Content-Type': 'application/json'}
+            fetch(`/api/user/${localStorage.getItem("username")}`, {
+                headers: { 'Content-Type': 'application/json' }
             }).then((response) => {
                 if (response.status === 200) {
                     setLoggedIn(true);
@@ -49,13 +49,13 @@ const HomePage = () => {
         window.location.href = "https://github.com/pf274/startup";
     }
     const handleLogout = async () => {
-        if (logoutLoading) {return; };
+        if (logoutLoading) { return; };
         setLogoutLoading(true);
-        let response = await fetch('/api/auth/logout', {
+        const response = await fetch('/api/auth/logout', {
             method: "delete",
-            headers: {'Content-Type': 'application/json'}
+            headers: { 'Content-Type': 'application/json' }
         });
-        let body = await response.json();
+        const body = await response.json();
         if (response.status === 200) {
             // console.log("Logout Successful!");
             setLoggedIn(false);
@@ -84,7 +84,7 @@ const HomePage = () => {
                         <h3 className="mb-3">Log In to Play</h3>
                         <Button variant="primary" onClick={handleShowSignup}>Sign Up</Button>
                         <Button variant="primary" onClick={handleShowLogin}>Log In</Button>
-                        
+
                     </div>}
                     {loggedIn && <div>
                         <h2>Multiplayer</h2>
@@ -95,17 +95,17 @@ const HomePage = () => {
                     </div>}
                 </Card.Body>
                 <Card.Footer className="d-flex justify-content-between">
-                    {loggedIn && 
+                    {loggedIn &&
                         <Button variant="secondary" onClick={handleLogout}>
                             {!logoutLoading && "Log Out"}
-                            {logoutLoading && <div><Spinner as="span" variant="light" size="sm" role="status" aria-hidden="true" animation="border"/> Loading...</div>}
+                            {logoutLoading && <div><Spinner as="span" variant="light" size="sm" role="status" aria-hidden="true" animation="border" /> Loading...</div>}
                         </Button>
                     }
                     <Button variant="secondary" onClick={goToAboutPage}>About</Button>
                 </Card.Footer>
             </Card>
             <LoginModal show={showLogin} setShow={setShowLogin} setLoggedIn={setLoggedIn} />
-            <SignupModal show={showSignup} setShow={setShowSignup} setLoggedIn={setLoggedIn}/>
+            <SignupModal show={showSignup} setShow={setShowSignup} setLoggedIn={setLoggedIn} />
             <p id="Author"><a href="https://github.com/pf274/startup" target="_blank" rel="noopener noreferrer">Github Repository</a>  -  Peter Fullmer</p>
         </div>
     );

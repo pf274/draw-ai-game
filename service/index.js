@@ -5,7 +5,7 @@ const bcrypt = require('bcrypt');
 const app = express();
 const DB = require('./database.js');
 const http = require('http');
-const {socketio} = require('./socketio.js');
+const { socketio } = require('./socketio.js');
 const cors = require("cors");
 
 // ----------- Express Settings and Setup -----------
@@ -13,7 +13,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors());
-app.use(function(req, res, next) {
+app.use((req, res, next) => {
   res.setHeader('Content-Type', 'application/javascript');
   next();
 });
@@ -33,30 +33,28 @@ function setAuthCookie(res, authToken) {
 
 // CreateAuth token for a new user
 apiRouter.post('/auth/create', async (req, res) => {
-  let userExists = await DB.getUser(req.body.username);
+  const userExists = await DB.getUser(req.body.username);
   if (userExists) {
     res.status(409).send({ msg: 'User already exists' });
-  } else {
-    const user = await DB.newUser(req.body.username, req.body.password);
-
-    // Set the cookie
-    setAuthCookie(res, user.token);
-
-    res.send({
-      id: user._id,
-    });
+    return;
   }
+  const user = await DB.newUser(req.body.username, req.body.password);
+
+  // Set the cookie
+  setAuthCookie(res, user.token);
+
+  res.send({
+    id: user._id,
+  });
 });
 
 // GetAuth token for the provided credentials
 apiRouter.post('/auth/login', async (req, res) => {
   const user = await DB.getUser(req.body.username);
-  if (user) {
-    if (await bcrypt.compare(req.body.password, user.password)) {
-      setAuthCookie(res, user.token);
-      res.send({ id: user._id });
-      return;
-    }
+  if (user && await bcrypt.compare(req.body.password, user.password)) {
+    setAuthCookie(res, user.token);
+    res.send({ id: user._id });
+    return;
   }
   res.status(401).send({ msg: 'Unauthorized' });
 });
@@ -65,7 +63,7 @@ apiRouter.post('/auth/login', async (req, res) => {
 apiRouter.delete('/auth/logout', (_req, res) => {
   res.clearCookie(authCookieName);
   // res.status(204).end();
-  res.status(200).send({msg: "Logged out"});
+  res.status(200).send({ msg: "Logged out" });
 });
 
 // GetUser returns information about a user
@@ -80,11 +78,11 @@ apiRouter.get('/user/:username', async (req, res) => {
 });
 
 // secureApiRouter verifies credentials for endpoints
-var secureApiRouter = express.Router();
+const secureApiRouter = express.Router();
 apiRouter.use(secureApiRouter);
 
 secureApiRouter.use(async (req, res, next) => {
-  let authToken = req.cookies[authCookieName];
+  const authToken = req.cookies[authCookieName];
   const user = await DB.getUserByToken(authToken);
   if (user) {
     next();
@@ -96,12 +94,12 @@ secureApiRouter.use(async (req, res, next) => {
 // ----------- User APIs -----------
 
 secureApiRouter.get('/users/list', async (req, res) => {
-  let users = await DB.getUsers();
+  const users = await DB.getUsers();
   res.send(users);
 });
 
 secureApiRouter.post('/users/register', async (req, res) => {
-  let user_exists = await DB.getUser(req.body.username);
+  const user_exists = await DB.getUser(req.body.username);
   if (!user_exists) {
     await DB.newUser(req.body.username, req.body.password);
     res.send(true);
@@ -110,24 +108,24 @@ secureApiRouter.post('/users/register', async (req, res) => {
 });
 
 secureApiRouter.get('/users/login/:username/:password', async (req, res) => {
-  let user_info = await DB.getUser(req.params.username);
+  const user_info = await DB.getUser(req.params.username);
   if (user_info) {
-    let password_matches = await bcrypt.compare(user_info.password, req.params.password);
+    const password_matches = await bcrypt.compare(user_info.password, req.params.password);
     if (password_matches) {
       setAuthCookie(res, user_info.token);
-      res.status(200).send({msg: "successful"});
+      res.status(200).send({ msg: "successful" });
     } else {
-      res.status(401).send({msg: "invalid password"});
+      res.status(401).send({ msg: "invalid password" });
     }
   } else {
-    res.status(401).send({msg: "invalid username"});
+    res.status(401).send({ msg: "invalid username" });
   }
 });
 
 // ----------- Final Setup -----------
 
 // Default error handler
-app.use(function (err, req, res, next) {
+app.use((err, req, res, next) => {
   res.status(500).send({ type: err.name, message: err.message });
 });
 
