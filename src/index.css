@@ -55,3 +55,6 @@ code {
 .countdown-number.animate {
   font-size: 3rem;
 }
+.modal {
+  z-index: 10500;
+}

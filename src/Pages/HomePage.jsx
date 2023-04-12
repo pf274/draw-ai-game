@@ -56,9 +56,6 @@ const HomePage = ({fullscreenExit, fullscreenRequest, fullscreenEnabled, setFull
     }
     const handleShowLogin = () => setShowLogin(true);
     const handleShowSignup = () => setShowSignup(true);
-    function handleGithubNavigate() {
-        window.location.href = "https://github.com/pf274/startup";
-    }
     const handleLogout = async () => {
         if (logoutLoading) {return; };
         setLogoutLoading(true);
@@ -118,8 +115,8 @@ const HomePage = ({fullscreenExit, fullscreenRequest, fullscreenEnabled, setFull
             <LoginModal show={showLogin} setShow={setShowLogin} setLoggedIn={setLoggedIn} />
             <SignupModal show={showSignup} setShow={setShowSignup} setLoggedIn={setLoggedIn}/>
             <p id="Author"><a href="https://github.com/pf274/startup" target="_blank" rel="noopener noreferrer">Github Repository</a>  -  Peter Fullmer</p>
-            {/* {fullscreenEnabled && <FiMinimize2 className="fullscreenIcon" size="1.5em" onClick={toggleFullscreen} />}
-            {!fullscreenEnabled && <FiMaximize2 className="fullscreenIcon" size="1.5em" onClick={toggleFullscreen} />} */}
+            {fullscreenEnabled && <FiMinimize2 className="fullscreenIcon" size="1.5em" onClick={toggleFullscreen} />}
+            {!fullscreenEnabled && <FiMaximize2 className="fullscreenIcon" size="1.5em" onClick={toggleFullscreen} />}
 
         </div>
     );

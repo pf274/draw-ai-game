@@ -19,8 +19,8 @@
 }
 #Author {
     position: absolute;
-    right: 5%;
-    bottom: 0%;
+    right: 1em;
+    bottom: 0em;
     text-align: right;
     color: black;
 }

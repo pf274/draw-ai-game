@@ -3,9 +3,11 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Spinner from 'react-bootstrap/Spinner';
 import Alert from 'react-bootstrap/Alert';
-import {useState, useRef, useEffect} from 'react';
+import {useState, useRef, useEffect, useContext} from 'react';
+import { ModalContext } from '../../App';
 
 function LoginModal({show, setShow, setLoggedIn}) {
+    const fullscreenRef = useContext(ModalContext);
     const [loading, setLoading] = useState(false);
     const [visibleAlert, setVisibleAlert] = useState(false);
     let alertText = useRef("Error");
@@ -43,7 +45,7 @@ function LoginModal({show, setShow, setLoggedIn}) {
         setLoading(false);
     }
     return (
-    <Modal show={show} onHide={handleClose} style={{overscrollBehavior: "contain"}}>
+    <Modal show={show} onHide={handleClose} style={{overscrollBehavior: "contain"}} container={fullscreenRef.current}>
         <Modal.Header>
             <Modal.Title>Log In</Modal.Title>
         </Modal.Header>

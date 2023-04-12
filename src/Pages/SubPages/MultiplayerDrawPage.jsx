@@ -34,11 +34,11 @@ const MultiplayerDrawPage = ({time, prompt, showTimer, setFullscreen, fullscreen
         }}>
             <Card id="DrawPage">
             <Card.Header id="DrawPageHeader">
-                    <h1 id="title">Start Drawing!</h1>
-                    {/* <div id="fullscreenIcon" style={{flex: 1, justifyContent: "left", display: "flex"}}>
+                    {/* <h1 id="title">Start Drawing!</h1> */}
+                    <div id="fullscreenIcon" style={{flex: 1, justifyContent: "left", display: "flex"}}>
                     {fullscreenEnabled && <FiMinimize2 size="1.5em" onClick={toggleFullscreen} />}
                     {!fullscreenEnabled && <FiMaximize2 size="1.5em" onClick={toggleFullscreen} />}
-                    </div> */}
+                    </div>
                     {showTimer && <h2 id="timer" className="multiplayer countdown-number" style={{color: time <= 3 ? "red" : "black"}}>{time}</h2>}
                     <OverlayTrigger
                         placement="top"
