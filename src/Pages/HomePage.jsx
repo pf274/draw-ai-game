@@ -87,19 +87,23 @@ const HomePage = ({fullscreenExit, fullscreenRequest, fullscreenEnabled, setFull
                     {!loggedIn && <Card.Title>Draw AI</Card.Title>}
                     {loggedIn && <Card.Title id="LobbyTitle">{`Welcome, ${localStorage.getItem("username")}!`}</Card.Title>}
                 </Card.Header>
-                <Card.Body id="HomePageBody">
-                    {!loggedIn && <div>
+                <Card.Body className="HomePageBody">
+                    {!loggedIn && <div className="HomePageBody">
                         <h3 className="mb-3">Log In to Play</h3>
                         <Button variant="primary" onClick={handleShowSignup}>Sign Up</Button>
                         <Button variant="primary" onClick={handleShowLogin}>Log In</Button>
                         
                     </div>}
-                    {loggedIn && <div>
-                        <h2>Multiplayer</h2>
-                        <Button variant="primary" onClick={goToJoinGamePage}>Join Game</Button>
-                        <Button variant="primary" id="hostGameModalButton" onClick={goToHostGamePage}>Host Game</Button>
-                        <h2 className="mt-2">Singleplayer</h2>
-                        <Button variant="primary" id="freeDrawButton" onClick={goToSingleplayerDrawPage}>Free Draw</Button>
+                    {loggedIn && <div className="HomePageBody">
+                        <div>
+                            <h2>Multiplayer</h2>
+                            <Button variant="primary" onClick={goToJoinGamePage}>Join Game</Button>
+                            <Button variant="primary" id="hostGameModalButton" onClick={goToHostGamePage}>Host Game</Button>
+                        </div>
+                        <div id="singleplayerOptions">
+                            <h2 className="mt-2">Singleplayer</h2>
+                            <Button variant="primary" id="freeDrawButton" onClick={goToSingleplayerDrawPage}>Free Draw</Button>
+                        </div>
                     </div>}
                 </Card.Body>
                 <Card.Footer className="d-flex justify-content-between">

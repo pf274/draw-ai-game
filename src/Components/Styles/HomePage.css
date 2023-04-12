@@ -4,9 +4,9 @@
     min-width: 300px;
     max-width: 400px;
     max-height: 400px;
-    min-height: 200px;
+    min-height: 350px;
 }
-#HomePageBody {
+.HomePageBody {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -36,3 +36,20 @@ a {
     text-decoration: none;
     color: rgb(48, 156, 156);
 }
+
+@media (max-height: 440px) {
+    #HomePage {
+        max-height: none;
+        max-width: none;
+    }
+    .HomePageBody {
+        flex-direction: row;
+    }
+    #singleplayerOptions {
+        margin-left: 2em;
+        margin-right: 2em;
+    }
+    #Author {
+        max-width: 100px;
+    }
+  }
