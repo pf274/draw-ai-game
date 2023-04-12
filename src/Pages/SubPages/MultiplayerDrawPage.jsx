@@ -7,7 +7,7 @@ import WordDefinitionTooltip from '../../Components/DrawPage/WordDefinitionToolt
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import {FiMaximize2, FiMinimize2} from 'react-icons/fi';
 
-const MultiplayerDrawPage = ({time, prompt, showTimer, fullscreen, setFullscreen}) => {
+const MultiplayerDrawPage = ({time, prompt, showTimer, setFullscreen, fullscreenRequest, fullscreenExit, fullscreenEnabled}) => {
     const [showTooltip, setShowTooltip] = useState(false);
     let [showSpinner, setShowSpinner] = useState(true);
     const canvas = useMemo(() => {
@@ -17,7 +17,13 @@ const MultiplayerDrawPage = ({time, prompt, showTimer, fullscreen, setFullscreen
         setShowTooltip(!showTooltip);
     }
     function toggleFullscreen() {
-        setFullscreen(!fullscreen);
+        if (fullscreenEnabled) {
+            setFullscreen(false);
+            fullscreenExit();
+        } else {
+            setFullscreen(true);
+            fullscreenRequest();
+        }
     }
     return (
         <div style={{
@@ -30,8 +36,8 @@ const MultiplayerDrawPage = ({time, prompt, showTimer, fullscreen, setFullscreen
             <Card.Header id="DrawPageHeader">
                     <h1 id="title">Start Drawing!</h1>
                     {/* <div id="fullscreenIcon" style={{flex: 1, justifyContent: "left", display: "flex"}}>
-                    {{fullscreen && <FiMinimize2 size="2em" onClick={toggleFullscreen} />}
-                    {!fullscreen && <FiMaximize2 size="2em" onClick={toggleFullscreen} />}}
+                    {fullscreenEnabled && <FiMinimize2 size="1.5em" onClick={toggleFullscreen} />}
+                    {!fullscreenEnabled && <FiMaximize2 size="1.5em" onClick={toggleFullscreen} />}
                     </div> */}
                     {showTimer && <h2 id="timer" className="multiplayer countdown-number" style={{color: time <= 3 ? "red" : "black"}}>{time}</h2>}
                     <OverlayTrigger

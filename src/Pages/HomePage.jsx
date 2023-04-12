@@ -6,15 +6,16 @@ import {useEffect, useState} from 'react';
 import LoginModal from '../Components/Modals/LoginModal.jsx';
 import SignupModal from '../Components/Modals/SignupModal.jsx';
 import Spinner from 'react-bootstrap/Spinner';
-import Particle from '../Components/Particle';
-const HomePage = () => {
+import {FiMaximize2, FiMinimize2} from 'react-icons/fi';
+
+const HomePage = ({fullscreenExit, fullscreenRequest, fullscreenEnabled, setFullscreen}) => {
     const [showLogin, setShowLogin] = useState(false);
     const [showSignup, setShowSignup] = useState(false);
     const [loggedIn, setLoggedIn] = useState(false);
     const [logoutLoading, setLogoutLoading] = useState(false);
     useEffect(() => {
         if (localStorage.getItem("username")) {
-            let response = fetch(`/api/user/${localStorage.getItem("username")}`, {
+            fetch(`/api/user/${localStorage.getItem("username")}`, {
                 headers: {'Content-Type': 'application/json'}
             }).then((response) => {
                 if (response.status === 200) {
@@ -26,6 +27,16 @@ const HomePage = () => {
             });
         }
     }, []);
+    function toggleFullscreen() {
+        
+        if (fullscreenEnabled) {
+            setFullscreen(false);
+            fullscreenExit();
+        } else {
+            setFullscreen(true);
+            fullscreenRequest();
+        }
+    }
     const navigate = useNavigate();
 
     function goToSingleplayerDrawPage() {
@@ -107,6 +118,9 @@ const HomePage = () => {
             <LoginModal show={showLogin} setShow={setShowLogin} setLoggedIn={setLoggedIn} />
             <SignupModal show={showSignup} setShow={setShowSignup} setLoggedIn={setLoggedIn}/>
             <p id="Author"><a href="https://github.com/pf274/startup" target="_blank" rel="noopener noreferrer">Github Repository</a>  -  Peter Fullmer</p>
+            {/* {fullscreenEnabled && <FiMinimize2 className="fullscreenIcon" size="1.5em" onClick={toggleFullscreen} />}
+            {!fullscreenEnabled && <FiMaximize2 className="fullscreenIcon" size="1.5em" onClick={toggleFullscreen} />} */}
+
         </div>
     );
 };

@@ -141,6 +141,7 @@ function MultiplayerResultsModal({show, playersReady, ready, participating, anim
                     </div>
                 }
                 {(!isHost && !isGameOver) && <Button size={!participating ? "lg" : "normal"} disabled={gameRunning || ready} onClick={handleReady}>Ready!</Button>}
+                {(!isHost && isGameOver) && <Button size={!participating ? "lg": "normal"} disabled={gameRunning || ready} onClick={handleProceed}>See Winner</Button>}
             </Modal.Footer>
         </Modal>
     );
