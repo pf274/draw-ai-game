@@ -238,7 +238,7 @@ function JoinGamePage({fullscreenRequest, fullscreenExit, fullscreenEnabled, set
                 alignItems: "center",
             }}>
                 <MultiplayerDrawPage animation={false} time={timeRemaining} prompt={prompt} showTimer={showTimer} fullscreenRequest={fullscreenRequest} fullscreenExit={fullscreenExit} fullscreenEnabled={fullscreenEnabled} setFullscreen={setFullscreen} />
-                <MultiplayerResultsModal participating={true} animation={false} show={showResults} round={round} isGameOver={round >= totalRounds - 1} setShow={setShowResults} rows={resultsRows} isHost={false} setReady={setReady} ready={ready} />
+                <MultiplayerResultsModal participating={true} animation={false} show={showResults} round={round} isGameOver={round >= totalRounds - 1} setShow={setShowResults} rows={resultsRows} isHost={false} setReady={setReady} ready={ready} setShowWinnerModal={setShowWinnerModal} />
                 <DoneDrawingModal participating={true} animation={false} show={showDoneDrawingModal} setShow={setShowDoneDrawingModal} />
                 <NewPromptModal participating={true} animation={false} show={showNewPrompt} setShow={setShowNewPrompt} prompt={prompt} round={round} totalRounds={totalRounds}/>
                 <WinnerModal participating={true} animation={false} show={showWinnerModal} setShow={setShowWinnerModal} rows={resultsRows} />

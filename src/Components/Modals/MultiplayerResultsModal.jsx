@@ -137,7 +137,7 @@ function MultiplayerResultsModal({show, playersReady, ready, participating, anim
                 {isHost && 
                     <div>
                         <Button size={!participating ? "lg" : "normal"} disabled={gameRunning} onClick={handleProceed}>{isGameOver ? "End Game" : "Next Round"}</Button>
-                        <p>{`${playersReady} Player${playersReady !== 1 ? "s" : ""} Ready`}</p>
+                        {(!isGameOver) && <p>{`${playersReady} Player${playersReady !== 1 ? "s" : ""} Ready`}</p>}
                     </div>
                 }
                 {(!isHost && !isGameOver) && <Button size={!participating ? "lg" : "normal"} disabled={gameRunning || ready} onClick={handleReady}>Ready!</Button>}
