@@ -42,7 +42,8 @@ import Ding2 from './Sounds/bell2.mp3';
 import Ding3 from './Sounds/bell3.mp3';
 const dings = [Ding1, Ding2, Ding3];
 
-function HostGamePage({fullscreenRequest, fullscreenExit, fullscreenEnabled, setFullscreen}) {
+// function HostGamePage({fullscreenRequest, fullscreenExit, fullscreenEnabled, setFullscreen}) {
+function HostGamePage() {
     const [showDoneDrawingModal, setShowDoneDrawingModal] = useState(false);
     const [categoriesLength, setCategoriesLength] = useState(0);
     const [showWinnerModal, setShowWinnerModal] = useState(false);
@@ -323,7 +324,8 @@ function HostGamePage({fullscreenRequest, fullscreenExit, fullscreenEnabled, set
                 justifyContent: "center",
                 alignItems: "center",
             }}>
-                {participating && <MultiplayerDrawPage time={timeRemaining} prompt={prompt} showTimer={showTimer} fullscreenRequest={fullscreenRequest} fullscreenExit={fullscreenExit} fullscreenEnabled={fullscreenEnabled} setFullscreen={setFullscreen} />}
+                {/* {participating && <MultiplayerDrawPage time={timeRemaining} prompt={prompt} showTimer={showTimer} fullscreenRequest={fullscreenRequest} fullscreenExit={fullscreenExit} fullscreenEnabled={fullscreenEnabled} setFullscreen={setFullscreen} />} */}
+                {participating && <MultiplayerDrawPage time={timeRemaining} prompt={prompt} showTimer={showTimer} />}
                 {(!participating && showTimer) && <div><h1>{prompt}</h1><h1 className="countdown-number" style={{fontSize: "600%", color: timeRemaining <= 3 ? "red" : "black"}}>{timeRemaining}</h1></div>}
                 <MultiplayerResultsModal playersReady={playersReady} participating={participating} animation={participating} show={showResults} isGameOver={round >= totalRounds - 1} setShow={setShowResults} round={round} setRound={setRound} rows={resultsRows} setGameRunning={setGameRunning} gameRunning={gameRunning} isHost={true} setShowWinnerModal={setShowWinnerModal}/>
                 <DoneDrawingModal participating={participating} animation={participating} show={showDoneDrawingModal} setShow={setShowDoneDrawingModal} />
