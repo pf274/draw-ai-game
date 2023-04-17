@@ -5,6 +5,7 @@ import { Capitalize } from '../GameParts';
 import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import { socketIAmReady } from '../SocketCommands';
+import SingleplayerGuessesModal from './SingleplayerGuessesModal';
 
 function ResultsTable({rows}) {
     return (

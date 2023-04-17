@@ -29,7 +29,7 @@ import {
 import { useInterval } from "react-use";
 import NewPromptModal from '../Components/Modals/NewPromptModal';
 
-function JoinGamePage({fullscreenRequest, fullscreenExit, fullscreenEnabled, setFullscreen}) {
+function JoinGamePage() {
     const [showDoneDrawingModal, setShowDoneDrawingModal] = useState(false);
     const [showWinnerModal, setShowWinnerModal] = useState(false);
     const [participantRows, setParticipantRows] = useState([]);
@@ -237,7 +237,6 @@ function JoinGamePage({fullscreenRequest, fullscreenExit, fullscreenEnabled, set
                 justifyContent: "center",
                 alignItems: "center",
             }}>
-                {/* <MultiplayerDrawPage animation={false} time={timeRemaining} prompt={prompt} showTimer={showTimer} fullscreenRequest={fullscreenRequest} fullscreenExit={fullscreenExit} fullscreenEnabled={fullscreenEnabled} setFullscreen={setFullscreen} /> */}
                 <MultiplayerDrawPage animation={false} time={timeRemaining} prompt={prompt} showTimer={showTimer} />
                 <MultiplayerResultsModal participating={true} animation={false} show={showResults} round={round} isGameOver={round >= totalRounds - 1} setShow={setShowResults} rows={resultsRows} isHost={false} setReady={setReady} ready={ready} setShowWinnerModal={setShowWinnerModal} />
                 <DoneDrawingModal participating={true} animation={false} show={showDoneDrawingModal} setShow={setShowDoneDrawingModal} />
