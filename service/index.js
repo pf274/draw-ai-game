@@ -13,10 +13,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors());
-app.use(function(req, res, next) {
-  res.setHeader('Content-Type', 'application/javascript');
-  next();
-});
 const apiRouter = express.Router();
 app.use(`/api`, apiRouter);
 
