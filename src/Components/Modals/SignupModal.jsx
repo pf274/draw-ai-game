@@ -8,10 +8,16 @@ import {useState, useRef, useEffect} from 'react';
 function SignupModal({show, setShow, setLoggedIn}) {
     const [loading, setLoading] = useState(false);
     const [visibleAlert, setVisibleAlert] = useState(false);
+    const [username, setUsername] = useState("");
     let alertText = useRef("Error");
     useEffect(() => {
         setVisibleAlert(false);
-    }, [show])
+    }, [show]);
+
+    function handleUsernameChange(event) {
+        let newUsername = event.target.value.replace(/[^A-Za-z0-9 ]/g, '');
+        setUsername(newUsername.slice(0, Math.min(15, newUsername.length)));
+    }
     const handleClose = () => setShow(false);
     const handleSubmit = async () => {
         if (loading) {return; };
@@ -72,7 +78,7 @@ function SignupModal({show, setShow, setLoggedIn}) {
             <Form>
                 <Form.Group>
                     <Form.Label>Username</Form.Label>
-                    <Form.Control type="text" placeholder="Username" id="signupUsernameElement"></Form.Control>
+                    <Form.Control type="text" placeholder="Username" value={username} onChange={handleUsernameChange} id="signupUsernameElement"></Form.Control>
                 </Form.Group>
                 <Form.Group className="mt-3">
                     <Form.Label>Password</Form.Label>
