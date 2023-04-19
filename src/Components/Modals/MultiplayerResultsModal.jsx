@@ -136,7 +136,7 @@ function MultiplayerResultsModal({show, playersReady, ready, participating, anim
             </Modal.Body>
             <Modal.Footer style={{justifyContent: "center"}}>
                 {isHost && 
-                    <div>
+                    <div style={{display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center"}}>
                         <Button size={!participating ? "lg" : "normal"} disabled={gameRunning} onClick={handleProceed}>{isGameOver ? "End Game" : "Next Round"}</Button>
                         {(!isGameOver) && <p>{`${playersReady} Player${playersReady !== 1 ? "s" : ""} Ready`}</p>}
                     </div>
